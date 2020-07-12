@@ -1,10 +1,12 @@
 package app
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 
 	"phenix/types"
+	"phenix/types/version"
 )
 
 func init() {
@@ -89,7 +91,10 @@ type App interface {
 // the given experiment for the given lifecycle phase. It returns any errors
 // encountered while applying the apps.
 func ApplyApps(action Action, exp *types.Experiment) error {
-	var err error
+	var (
+		err          error
+		validator, _ = version.GetVersionedValidatorForKind("Experiment", "v1")
+	)
 
 	for _, a := range DefaultApps() {
 		switch action {
@@ -147,6 +152,16 @@ func ApplyApps(action Action, exp *types.Experiment) error {
 
 				return fmt.Errorf("applying experiment app %s for action %s: %w", a.Name(), action, err)
 			}
+
+			// HACK: The openapi3 package we're using for validation expects a generic
+			// type of interface{} in order to validate a generic JSON object.
+			data, _ := json.Marshal(exp.Spec)
+			var spec interface{}
+			json.Unmarshal(data, &spec)
+
+			if err := validator.VisitJSON(spec); err != nil {
+				return fmt.Errorf("validating experiment spec against schema: %w", err)
+			}
 		}
 
 		for _, h := range exp.Spec.Scenario.Apps.Host {
@@ -178,6 +193,16 @@ func ApplyApps(action Action, exp *types.Experiment) error {
 				}
 
 				return fmt.Errorf("applying host app %s for action %s: %w", a.Name(), action, err)
+			}
+
+			// HACK: The openapi3 package we're using for validation expects a generic
+			// type of interface{} in order to validate a generic JSON object.
+			data, _ := json.Marshal(exp.Spec)
+			var spec interface{}
+			json.Unmarshal(data, &spec)
+
+			if err := validator.VisitJSON(spec); err != nil {
+				return fmt.Errorf("validating experiment spec against schema: %w", err)
 			}
 		}
 	}
