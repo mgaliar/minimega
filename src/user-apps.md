@@ -21,6 +21,7 @@ This is the documentation for phenix's user apps.
     
     `v2` of experiment data -- includes topology, experiment, and scenario YAML
     configuation files
+<br>
 
 ## Custom User Apps
 

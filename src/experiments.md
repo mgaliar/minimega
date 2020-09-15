@@ -1,15 +1,15 @@
 # Experiments
-<br>
 
 ## Listing Experiments
-<br>
 
 ### From the Web-UI
 
-Click on the `Experiments` tab.
+Click on the `Experiments` tab. This will display all available experiments that the user has access to view or edit.
 <br>
 
 ### From the Command Line Binary
+
+This will display a list of all available experiments: it is run as a `root` user.
 
 ```
 ~# phenix exp list
@@ -17,7 +17,6 @@ Click on the `Experiments` tab.
 <br>
 
 ## Starting / Stopping Experiments
-<br>
 
 ### From the Web-UI
 
@@ -79,7 +78,6 @@ Use "phenix experiment [command] --help" for more information about a command.
 <br>
 
 ## Create a New Experiment
-<br>
 
 ### From the Web-UI
 
@@ -89,18 +87,16 @@ Use "phenix experiment [command] --help" for more information about a command.
 
 Click the `+` button to the right of the filter field. 
 
-**TODO**: update image, replacing Applications with Scenarios.
-
 <p align="center">
     <img width="400" src="images/create_exp_dia.png">
 </p>
 
-Enter `Experiment Name` and `Experiment Topology`, the remaining selection are optional. 
+Enter `Experiment Name` and `Experiment Topology`, the remaining selection are optional. (In this example, `bennu` is an example Topology and is not included by default.)
 <br>
 
 ### From the Command Line Binary
 
-Three options are available from the command line.
+Three options are available from the command line. The only requiremnts are for an experiment and topology name; scenario and base directory are optional.
 
 ```
 $> phenix experiment create <experiment name> -t <topology name>
@@ -146,7 +142,7 @@ Global Flags:
 
 ### From Web-UI
 
-The experiment must be stopped; click on the experiment name to enter the Stopped Experiment component. Click on the hamburger menu to the right of the filter field and start button.
+The experiment must be stopped; click on the experiment name to enter the Stopped Experiment component. Click on the hamburger menu to the right of the filter field and start button to select a desire schedule.
 
 <p align="center">
     <img width="450" src="images/schedule.png">

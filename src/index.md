@@ -7,6 +7,7 @@ This is the documentation for minimega's phenix orchestration tool.
 ### Building
 
 Simply run `make bin/phenix`.
+<br>
 
 ### Using
 
@@ -39,6 +40,7 @@ Subcommands:
   experiment <start,stop> <name>          - start an existing experiment
   docs <port>                             - start documentation server on port (default 8000)
 ```
+<br>
 
 Right now, you can create configs and **start** an experiment (which will
 simply print out the minimega script).
@@ -131,12 +133,14 @@ vm launch kvm turbine-02
 
 $> bin/phenix experiment stop foobar
 ```
+<br>
 
 You can also edit configs in place via something like:
 
 ```
 $> bin/phenix edit experiment/foobar
 ```
+<br>
 
 ## Advanced Usage
 

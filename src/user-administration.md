@@ -1,5 +1,4 @@
 # User Administration in phēnix
-<br>
 
 ## Create a new user
 
@@ -36,11 +35,11 @@ Without the `-k` (or `--jwt-signing-key`), authentication is disabled.
 <br>
 
 ## User Administration
-<br>
 
 ### Updating users
 
 An administrator is able to click on the username on the table in the Users tab to update a user. They can update `First Name` or `Last Name`, `Role`, or `Resource Name(s)`.
+<br>
 
 ### Role
 
