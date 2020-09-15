@@ -1,25 +1,28 @@
 # Experiments
+<br>
 
 ## Listing Experiments
+<br>
 
 ### From the Web-UI
 
 Click on the `Experiments` tab.
+<br>
 
 ### From the Command Line Binary
 
 ```
 ~# phenix exp list
 ```
+<br>
 
 ## Starting / Stopping Experiments
+<br>
 
 ### From the Web-UI
 
-Clicking the `stopped` button will start the experiment; similarly the `started`
-button will stop the experiment. A progress bar is used to update the progress
-of starting an experiment. During the update to the experiment -- starting or
-stopping -- it will not be accessible or available to delete. 
+Clicking the `stopped` button will start the experiment; similarly the `started` button will stop the experiment. A progress bar is used to update the progress of starting an experiment. During the update to the experiment -- starting or stopping -- it will not be accessible or available to delete. 
+<br>
 
 ### From the Command Line Binary
 
@@ -35,8 +38,7 @@ Or ...
 ~# phenix exp restart <experiment name>
 ```
 
-Optionally, you can use the `--dry-run` flag to do everything expect call out to
-minimega.
+Optionally, you can use the `--dry-run` flag to do everything expect call out to minimega.
 
 The `phenix exp --help` command will output:
 
@@ -77,19 +79,24 @@ Use "phenix experiment [command] --help" for more information about a command.
 <br>
 
 ## Create a New Experiment
+<br>
 
 ### From the Web-UI
 
-![screenshot](images/create_exp.png)
+<p align="center">
+    <img width="800" src="images/create_exp.png">
+</p>
 
 Click the `+` button to the right of the filter field. 
 
 **TODO**: update image, replacing Applications with Scenarios.
 
-![screenshot](images/create_exp_dia.png)
+<p align="center">
+    <img width="400" src="images/create_exp_dia.png">
+</p>
 
-Enter `Experiment Name` and `Experiment Topology`, the remaining selection are
-optional. 
+Enter `Experiment Name` and `Experiment Topology`, the remaining selection are optional. 
+<br>
 
 ### From the Command Line Binary
 
@@ -139,11 +146,12 @@ Global Flags:
 
 ### From Web-UI
 
-The experiment must be stopped; click on the experiment name to enter the
-Stopped Experiment component. Click on the hamburger menu to the right of the
-filter field and start button.
+The experiment must be stopped; click on the experiment name to enter the Stopped Experiment component. Click on the hamburger menu to the right of the filter field and start button.
 
-![screenshot](images/schedule.png)
+<p align="center">
+    <img width="450" src="images/schedule.png">
+</p>
+<br>
 
 ### From the Command Line Binary
 
