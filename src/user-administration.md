@@ -29,7 +29,7 @@ The login page is self-descriptive. Using the `Remember me` checkbox will set a 
 If an administrator starts the UI server with the following command, authentication is enabled:
 
 ```
-~# phenix ui -k <some_string>
+$> phenix ui -k <some_string>
 ```
 
 Without the `-k` (or `--jwt-signing-key`), authentication is disabled.

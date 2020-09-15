@@ -18,11 +18,11 @@ The experiment must be started; click on the experiment name to enter the Runnin
 There are two options for displaying the information for VMs in an experiment. First run the following command to see information for all VMs in a given experiment.
 
 ```
-~# phenix vm info <experiment name>
+$> phenix vm info <experiment name>
 ```
 Or ... run the following to see the information for a specific VM in an experiment.
 ```
-~# phenix vm info <experiment name>/<VM name>
+$> phenix vm info <experiment name>/<VM name>
 ```
 <br>
 
@@ -38,11 +38,11 @@ Click on the name of a running VM in a started experiment to access the VM infor
 To pause a VM, run the following command.
 
 ```
-~# phenix vm pause <experiment name> <VM name>
+$> phenix vm pause <experiment name> <VM name>
 ```
 To resume a paused VM, run the following command.
 ```
-~# phenix vm resume <experiment name> <VM name>
+$> phenix vm resume <experiment name> <VM name>
 ```
 <br>
 
@@ -58,7 +58,7 @@ Click on the name of a running VM in a started experiment to access the VM infor
 To redploy a VM, run the following command.
 
 ```
-~# phenix vm redeploy <experiment name> <VM name>
+$> phenix vm redeploy <experiment name> <VM name>
 ```
 <br>
 

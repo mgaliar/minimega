@@ -27,15 +27,15 @@ Clicking the `stopped` button will start the experiment; similarly the `started`
 ### From the Command Line Binary
 
 ```
-~# phenix exp start <experiment name>
+$> phenix exp start <experiment name>
 ```
 Or ...
 ```
-~# phenix exp stop <experiment name>
+$> phenix exp stop <experiment name>
 ```
 Or ...
 ```
-~# phenix exp restart <experiment name>
+$> phenix exp restart <experiment name>
 ```
 
 Optionally, you can use the `--dry-run` flag to do everything expect call out to minimega.
@@ -103,9 +103,9 @@ Enter `Experiment Name` and `Experiment Topology`, the remaining selection are o
 Three options are available from the command line.
 
 ```
-~# phenix experiment create <experiment name> -t <topology name>
-~# phenix experiment create <experiment name> -t <topology name> -s <scenario name>
-~# phenix experiment create <experiment name> -t <topology name> -s <scenario name> -d </path/to/dir/>`
+$> phenix experiment create <experiment name> -t <topology name>
+$> phenix experiment create <experiment name> -t <topology name> -s <scenario name>
+$> phenix experiment create <experiment name> -t <topology name> -s <scenario name> -d </path/to/dir/>`
 ```
 
 The `phenix exp create --help` command will output:
@@ -158,13 +158,11 @@ The experiment must be stopped; click on the experiment name to enter the Stoppe
 The list of available scehedules can be found by running the folowing command.
 
 ```
-~# phenix exp schedulers
+$> phenix exp schedulers
 ```
 
 Then apply the desired schedule with the following command.
 
 ```
-~# phenix experiment schedule <experiment name> <algorithm>
+$> phenix experiment schedule <experiment name> <algorithm>
 ```
-<br>
-
