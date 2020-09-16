@@ -11,136 +11,57 @@ Simply run `make bin/phenix`.
 
 ### Using
 
-The following output results from `bin/phenix --help`:
+The following output results from `bin/phenix help`:
 
 ```
-minimega phenix
+A cli application for phēnix
 
-Global Options:
-  -help
-        show this help message
-  -level value
-        set log level: [debug, info, warn, error, fatal] [PHENIX_LEVEL] (default error)
-  -logfile string
-        specify file to log to [PHENIX_LOGFILE]
-  -minimega-base string
-        base path for minimega [PHENIX_MINIMEGA_BASE] (default "/tmp/minimega")
-  -store string
-        path to Bolt store file [PHENIX_STORE] (default "phenix.bdb")
-  -v    log on stderr [PHENIX_V] (default true)
-  -verbose
-        log on stderr [PHENIX_VERBOSE] (default true)
+Usage:
+  phenix [flags]
+  phenix [command]
 
-Subcommands:
-  list [all,topology,scenario,experiment] - get a list of configs
-  get <kind/name>                         - get an existing config
-  create <path/to/config>                 - create a new config
-  edit <kind/name>                        - edit an existing config
-  delete <kind/name>                      - delete a config
-  experiment <start,stop> <name>          - start an existing experiment
-  docs <port>                             - start documentation server on port (default 8000)
-```
-<br>
+Available Commands:
+  config      Configuration file management
+  experiment  Experiment management
+  help        Help about any command
+  image       Virtual disk image management
+  ui          Run the phenix UI
+  util        Utility commands
+  version     print version information
+  vlan        Used to manage VLANs
+  vm          Virtual machine management
 
-Right now, you can create configs and **start** an experiment (which will
-simply print out the minimega script).
+Flags:
+      --base-dir.minimega string   base minimega directory (default "/tmp/minimega")
+      --base-dir.phenix string     base phenix directory (default "/phenix")
+  -h, --help                       help for phenix
+      --hostname-suffixes string   hostname suffixes to strip
+      --log.error-file string      log fatal errors to file (default "/var/log/phenix/error.log")
+      --log.error-stderr           log fatal errors to STDERR
+      --store.endpoint string      endpoint for storage service (default "bolt:///etc/phenix/store.bdb")
 
-As an example:
-
-```
-$> bin/phenix create data/topology.yml data/scenario.yml data/experiment.yml
-Topology/foo-bar-topo config created
-Scenario/foo-bar-scenario config created
-experiment app sink not found
-host app protonuke not found
-host app wireguard not found
-Experiment/foobar config created
-```
-... or ...
-```
-$> bin/phenix list
-
-+------------+----------------------+------------------+---------------------------+
-|    KIND    |       VERSION        |       NAME       |          CREATED          |
-+------------+----------------------+------------------+---------------------------+
-| Topology   | phenix.sandia.gov/v1 | foo-bar-topo     | 2020-04-17T12:13:48-06:00 |
-| Scenario   | phenix.sandia.gov/v1 | foo-bar-scenario | 2020-04-17T12:13:48-06:00 |
-| Experiment | phenix.sandia.gov/v1 | foobar           | 2020-04-17T12:13:48-06:00 |
-+------------+----------------------+------------------+---------------------------+
-```
-... or ...
-```
-$> bin/phenix get scenario/foo-bar-scenario
-apiVersion: phenix.sandia.gov/v1
-kind: Scenario
-metadata:
-    name: foo-bar-scenario
-    created: "2020-04-17T12:13:48-06:00"
-    updated: "2020-04-17T12:13:48-06:00"
-    annotations:
-        topology: foo-bar-topo
-spec:
-    apps:
-        experiment:
-          - metadata: {}
-            name: sink
-        host:
-          - hosts:
-              - hostname: turbine-01
-                metadata:
-                    args: -logfile /var/log/protonuke.log -level debug -http -https
-                        -smtp -ssh 192.168.100.100
-            name: protonuke
-          - hosts:
-              - hostname: turbine-01
-                metadata:
-                    infrastructure:
-                        address: 10.255.255.1/24
-                        listen_port: 51820
-                        private_key: GLlxWJom8cQViGHojqOUShWIZG7IsSX8
-                    peers:
-                        allowed_ips: 10.255.255.10/32
-                        public_key: +joyya2F9g72qbKBtPDn00mIevG1j1OqeN76ylFLsiE=
-            name: wireguard
-```
-... or ...
-```
-$> bin/phenix experiment start foobar
-namespace foobar
-ns queueing true
-
-disk snapshot bennu.qc2 0b02f5d75d22_foobar_turbine-01_snapshot 
-clear vm config
-vm config vcpus 1
-vm config cpu Broadwell
-vm config memory 512
-vm config snapshot true
-vm config disk 0b02f5d75d22_foobar_turbine-01_snapshot
-vm config qemu-append -vga qxl
-vm config net ot MGMT
-vm launch kvm turbine-01
-
-disk snapshot bennu.qc2 0b02f5d75d22_foobar_turbine-02_snapshot 
-clear vm config
-vm config vcpus 1
-vm config cpu Broadwell
-vm config memory 512
-vm config snapshot true
-vm config disk 0b02f5d75d22_foobar_turbine-02_snapshot
-vm config qemu-append -vga qxl
-vm config net ot MGMT
-vm launch kvm turbine-02
-
-$> bin/phenix experiment stop foobar
+Use "phenix [command] --help" for more information about a command.
 ```
 <br>
 
-You can also edit configs in place via something like:
+Further documentation on the above can be found at:
 
-```
-$> bin/phenix edit experiment/foobar
-```
-<br>
+* [config](configuration.md)
+* [experiment](experiment.md)
+* [image](image.md)
+* [vm](vms.md)
+
+!!! todo
+    Do we need additional documentation for: ui, util, vlan?
+
+### Store
+
+The phenix tool uses a data store as the storage service for all of data needed throughout the various capabilities. Some important considerations are worth understanding prior to working with phenix.
+
+1. If you are running as a standard user, the store is created in your home directory by default.
+2. If you are running as a root user, the default location will be `/etc/phenix/store.bdb`.
+3. It is possible to configure the store endpoint either by including the location as a flag with each command using `--store.endpoint <string>`.
+4. Finally, there are global values that can be set in a YAML file; see the [config documentation](configuration.md) for more information.
 
 ## Advanced Usage
 
