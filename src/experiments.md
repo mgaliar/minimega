@@ -12,7 +12,7 @@ Click on the `Experiments` tab. This will display all available experiments that
 This will display a list of all available experiments: it is run as a `root` user.
 
 ```
-~# phenix exp list
+$> phenix exp list
 ```
 <br>
 
