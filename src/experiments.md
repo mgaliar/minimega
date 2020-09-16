@@ -82,13 +82,13 @@ Use "phenix experiment [command] --help" for more information about a command.
 ### From the Web-UI
 
 <p align="center">
-    <img width="800" src="images/create_exp.png">
+    <img width="800" src="/images/create_exp.png">
 </p>
 
 Click the `+` button to the right of the filter field. 
 
 <p align="center">
-    <img width="400" src="images/create_exp_dia.png">
+    <img width="400" src="/images/create_exp_dia.png">
 </p>
 
 Enter `Experiment Name` and `Experiment Topology`, the remaining selection are optional. (In this example, `bennu` is an example Topology and is not included by default.)
@@ -145,7 +145,7 @@ Global Flags:
 The experiment must be stopped; click on the experiment name to enter the Stopped Experiment component. Click on the hamburger menu to the right of the filter field and start button to select a desire schedule.
 
 <p align="center">
-    <img width="450" src="images/schedule.png">
+    <img width="450" src="/images/schedule.png">
 </p>
 <br>
 

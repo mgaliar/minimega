@@ -7,7 +7,7 @@
 The experiment must be started; click on the experiment name to enter the Running Experiment component. Within that component, click on the VM name and you will be presented with a VM information modal.
 
 <p align="center">
-    <img width="400" src="images/vm_diag.png">
+    <img width="400" src="/images/vm_diag.png">
 </p>
 <br>
 

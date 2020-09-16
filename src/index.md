@@ -70,4 +70,4 @@ The phenix tool uses a data store as the storage service for all of data needed 
     
     `-store` discussion on Bolt store file
     
-    Further discussion on the [configuration](http://localhost:8000/configuration/) files
+    Further discussion on the phenix app configuration file
