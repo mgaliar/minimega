@@ -11,10 +11,7 @@ $> phenix image list
 
 ## Creating a disk image
 
-The `vmdb2` utility is used to create the disk images.
-
-!!! todo
-    Do we want to "link" to the `vmdb2` tool wherever in the intertubes?
+The [`vmdb2` utility](https://github.com/glattercj/vmdb2) is used to create the disk images.
 
 ```
 $> phenix image create <image name>
@@ -145,18 +142,14 @@ $> phenix cfg delete image/<image name>
 The `remove` command will allow you to remove any packages, overlays, and scripts from an existing image configuration.
 
 ```
-phenix image remove <configuration name> [flags]
+$> phenix image remove <configuration name> [flags]
 ```
 Flags are for the overlays, packages, and scripts that you need to remove.
 <br>
 
 ### Update
 
-This `update` command is used to update the script on an existing image configuration.
-
-!!! todo
-    Correct/confirm with the code
-    Explain how we are doing it???
+This `update` command is used to update the script on an existing image configuration. The path to a script is tracked in the code. The image configuration gets updated with the script in the path; if no changes were made no harm. If the path no longer exists, phenix will leave the configuration alone.
 
 ```
 $> phenix image update <configuration name>
