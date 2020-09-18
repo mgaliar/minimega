@@ -45,14 +45,16 @@ An administrator is able to click on the username on the table in the Users tab 
 
 `Global Admin` is the administrator level account and has access to all capabilities, to include user management. They also have access to all resources.
 
-| Role              | Limits | List | Get | Create | Update | Patch | Delete | Users |
-|-------------------|:-------|:----:|:---:|:------:|:------:|:-----:|:------:|:-----:|
-| Global Admin      | Can see and control absolutely anything/everything. | ✔︎ | ✔︎ | ✔︎ | ✔︎ | ✔︎ | ✔︎ | ✔︎ |
-| Global Viewer     | Can see absolutely anything/everything, but cannot make any changes. | ✔︎ | ✔︎ |  |  |  |  | ✔︎ |
-| Experiment Admin  | Can see and control anything/everything for assigned experiments, including VMs, but cannot create new experiments. | ✔︎ | ✔︎ |  | ✔︎ | ✔︎ | ✔︎ |  |
-| Experiment User   | Can see assigned experiments, and can control VMs within assigned experiments, but cannot modify experiments themselves. | ✔︎ | ✔︎ |  | ✔︎ | ✔︎ |  |  |
-| Experiment Viewer | Can see assigned experiments and VMs within assigned experiments, but cannot modify or control experiments or VMs. | ✔︎ | ✔︎ |  |  |  |  |  |
-| VM Viewer         | Can only see VM screenshots and access VM VNC, nothing else. |  | ✔︎ |  |  |  |  |  |
+Key: E - experiment resource, V - VM resource, U - user resource
+
+| Role              | Limits                                                                                                                   | List  |  Get  | Create | Update | Patch | Delete |
+|-------------------|:-------------------------------------------------------------------------------------------------------------------------|:-----:|:-----:|:------:|:------:|:-----:|:------:|
+| Global Admin      | Can see and control absolutely anything/everything.                                                                      | E V U | E V U | E V U  | E V U  | E V U | E V U  |
+| Global Viewer     | Can see absolutely anything/everything, but cannot make any changes.                                                     | E V U | E V U |        |        |       |        |
+| Experiment Admin  | Can see and control anything/everything for assigned experiments, including VMs, but cannot create new experiments.      | E V   | E V   |   V    | E V    |   V   |   V    |
+| Experiment User   | Can see assigned experiments, and can control VMs within assigned experiments, but cannot modify experiments themselves. | E V   | E V   |        |        |   V   |        |
+| Experiment Viewer | Can see assigned experiments and VMs within assigned experiments, but cannot modify or control experiments or VMs.       | E V   | E V   |        |        |       |        |
+| VM Viewer         | Can only see VM screenshots and access VM VNC, nothing else.                                                             |   V   |       |        |        |       |        |
 <br>
 
 ### Resource Name(s)

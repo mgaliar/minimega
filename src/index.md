@@ -47,7 +47,7 @@ Use "phenix [command] --help" for more information about a command.
 Further documentation on the above can be found at:
 
 * [config](configuration.md)
-* [experiment](experiment.md)
+* [experiment](experiments.md)
 * [image](image.md)
 * [vm](vms.md)
 

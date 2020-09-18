@@ -19,7 +19,7 @@
     
     
       
-        <title>YAML Configurations - phenix documentation</title>
+        <title>Virtual Disk Images Management - phenix documentation</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#yaml-configurations" class="md-skip">
+        <a href="#virtual-disk-images-management" class="md-skip">
           Skip to content
         </a>
       
@@ -87,7 +87,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              YAML Configurations
+              Virtual Disk Images Management
             
           </span>
         </div>
@@ -220,11 +220,115 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="../image/" title="Virtual Disk Images Management" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Virtual Disk Images Management
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,9H17V7H3V9M3,13H17V11H3V13M3,17H17V15H3V17M19,17H21V15H19V17M19,7V9H21V7H19M19,13H21V11H19V13Z" /></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Virtual Disk Images Management" class="md-nav__link md-nav__link--active">
       Virtual Disk Images Management
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#listing-disk-images" class="md-nav__link">
+    Listing disk images
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-disk-image" class="md-nav__link">
+    Creating a disk image
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-a-disk-image" class="md-nav__link">
+    Building a disk image
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous-commands" class="md-nav__link">
+    Miscellaneous Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Miscellaneous Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#append" class="md-nav__link">
+    Append
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-from-an-existing-configuration" class="md-nav__link">
+    Create From an Existing Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    Delete
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove" class="md-nav__link">
+    Remove
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update" class="md-nav__link">
+    Update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -280,20 +384,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="YAML Configurations" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../yaml/" title="YAML Configurations" class="md-nav__link">
       YAML Configurations
     </a>
-    
   </li>
 
     
@@ -314,6 +409,85 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#listing-disk-images" class="md-nav__link">
+    Listing disk images
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-disk-image" class="md-nav__link">
+    Creating a disk image
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-a-disk-image" class="md-nav__link">
+    Building a disk image
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous-commands" class="md-nav__link">
+    Miscellaneous Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Miscellaneous Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#append" class="md-nav__link">
+    Append
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-from-an-existing-configuration" class="md-nav__link">
+    Create From an Existing Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    Delete
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove" class="md-nav__link">
+    Remove
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update" class="md-nav__link">
+    Update
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -324,7 +498,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/edit/master/docs/yaml.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/edit/master/docs/image.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>
                   </a>
                 
@@ -332,13 +506,139 @@
                   
                 
                 
-                <h1 id="yaml-configurations">YAML Configurations<a class="headerlink" href="#yaml-configurations" title="Permanent link">&para;</a></h1>
-<p>This documentation is about v2 topology and scenario yaml files.</p>
-<div class="admonition todo">
-<p class="admonition-title">Todo</p>
-<p>Add some stuff on the yaml files (unless this conflict with the configs 
-page)</p>
-</div>
+                <h1 id="virtual-disk-images-management">Virtual Disk Images Management<a class="headerlink" href="#virtual-disk-images-management" title="Permanent link">&para;</a></h1>
+<p>This is only available from the command line binary at this time.</p>
+<h2 id="listing-disk-images">Listing disk images<a class="headerlink" href="#listing-disk-images" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image list
+</code></pre></div>
+
+
+<p><br></p>
+<h2 id="creating-a-disk-image">Creating a disk image<a class="headerlink" href="#creating-a-disk-image" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://github.com/glattercj/vmdb2"><code>vmdb2</code> utility</a> is used to create the disk images.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image create &lt;image name&gt;
+</code></pre></div>
+
+
+<p>The <code>phenix image create --help</code> will output:</p>
+<div class="codehilite"><pre><span></span><code>Create a disk image configuration
+
+  Used to create a virtual disk image configuration from which to build 
+  an image
+
+Usage:
+  phenix image create &lt;image name&gt; [flags]
+
+Examples:
+
+  phenix image create &lt;image name&gt;
+  phenix image create --size 2G --variant mingui --release xenial --format qcow2 --compress --overlays foobar --packages foo --scripts bar &lt;image name&gt;
+
+Flags:
+  -c, --compress                    Compress image after creation (does not apply to raw image)
+  -d, --debootstrap-append string   Additional arguments to debootstrap &quot;(default: --components=main,restricted,universe,multiverse)&quot;
+  -f, --format string               Format of disk image (default &quot;raw&quot;)
+  -h, --help                        help for create
+  -m, --mirror string               Debootstrap mirror (must match release) (default &quot;http://us.archive.ubuntu.com/ubuntu/&quot;)
+  -O, --overlays string             List of overlay names (include full path; separated by comma)
+  -P, --packages string             List of packages to include in addition to those provided by variant (separated by comma)
+  -R, --ramdisk                     Create a kernel/initrd pair in addition to a disk image
+  -r, --release string              OS release codename (default &quot;bionic&quot;)
+  -T, --scripts string              List of scripts to include in addition to the defaults (include full path; separated by comma)
+  -s, --size string                 Image size to use (default &quot;5G&quot;)
+  -v, --variant string              Image variant to use (default &quot;minbase&quot;)
+
+Global Flags:
+      --base-dir.minimega string   base minimega directory (default &quot;/tmp/minimega&quot;)
+      --base-dir.phenix string     base phenix directory (default &quot;/phenix&quot;)
+      --hostname-suffixes string   hostname suffixes to strip
+      --log.error-file string      log fatal errors to file (default &quot;/var/log/phenix/error.log&quot;)
+      --log.error-stderr           log fatal errors to STDERR
+      --store.endpoint string      endpoint for storage service (default &quot;bolt:///etc/phenix/store.bdb&quot;)
+</code></pre></div>
+
+
+<p>The <code>vmdb2</code> configuration file can be read by running the following command:</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix cfg get image/&lt;image name&gt;
+</code></pre></div>
+
+
+<p><br></p>
+<h2 id="building-a-disk-image">Building a disk image<a class="headerlink" href="#building-a-disk-image" title="Permanent link">&para;</a></h2>
+<p>Building a disk image requires an existing configuration in the store (i.e., the <code>create</code> command should be run first to create a configuration); the <code>phenix image build --help</code> will output:</p>
+<div class="codehilite"><pre><span></span><code>Build a virtual disk image
+
+  Used to build a new virtual disk using an exisitng configuration; vmdb2 must 
+  be in path.
+
+Usage:
+  phenix image build &lt;configuration name&gt; [flags]
+
+Examples:
+
+  phenix image build &lt;configuration name&gt;
+  phenix image build --very-very-verbose --output &lt;/path/to/dir/&gt;
+
+Flags:
+  -c, --cache               Cache rootfs as tar archive
+      --dry-run             Do everything but actually call out to vmdb2
+  -h, --help                help for build
+  -o, --output string       Specify the output directory for the disk image to be saved to
+  -v, --verbose             Enable verbose output
+  -w, --very-verbose        Enable very verbose output
+  -x, --very-very-verbose   Enable very verbose output plus additional verbose output from debootstrap
+
+Global Flags:
+      --base-dir.minimega string   base minimega directory (default &quot;/tmp/minimega&quot;)
+      --base-dir.phenix string     base phenix directory (default &quot;/phenix&quot;)
+      --hostname-suffixes string   hostname suffixes to strip
+      --log.error-file string      log fatal errors to file (default &quot;/var/log/phenix/error.log&quot;)
+      --log.error-stderr           log fatal errors to STDERR
+      --store.endpoint string      endpoint for storage service (default &quot;bolt:///etc/phenix/store.bdb&quot;)
+</code></pre></div>
+
+
+<p><br></p>
+<h2 id="miscellaneous-commands">Miscellaneous Commands<a class="headerlink" href="#miscellaneous-commands" title="Permanent link">&para;</a></h2>
+<h3 id="append">Append<a class="headerlink" href="#append" title="Permanent link">&para;</a></h3>
+<p>The disk image management tool will allow you to add packages, overlays, and scripts to exisitng configurations using the <code>append</code> command. Command usage is:</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image append &lt;configuration name&gt; [flags]
+</code></pre></div>
+
+
+<p>Flags are for the overlays, packages, and scripts that you need to append. 
+<br></p>
+<h3 id="create-from-an-existing-configuration">Create From an Existing Configuration<a class="headerlink" href="#create-from-an-existing-configuration" title="Permanent link">&para;</a></h3>
+<p>Run this command if you have an existing configuration that you would like to use as the base to create a new configuration from. The usage involves referencing the existing configuration, the new configuration name, and then additional packages, overlays, and scripts. </p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image create-from &lt;existing configuration&gt; &lt;new configuration&gt; [flags]
+</code></pre></div>
+
+
+<p>Flags are for the overlays, packages, and scripts that you need to add to the new configuration. 
+<br></p>
+<h3 id="delete">Delete<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image delete &lt;image name&gt;
+</code></pre></div>
+
+
+<p>An alternative could be to use the configuration management tool.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix cfg delete image/&lt;image name&gt;
+</code></pre></div>
+
+
+<p><br></p>
+<h3 id="remove">Remove<a class="headerlink" href="#remove" title="Permanent link">&para;</a></h3>
+<p>The <code>remove</code> command will allow you to remove any packages, overlays, and scripts from an existing image configuration.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image remove &lt;configuration name&gt; [flags]
+</code></pre></div>
+
+
+<p>Flags are for the overlays, packages, and scripts that you need to remove.
+<br></p>
+<h3 id="update">Update<a class="headerlink" href="#update" title="Permanent link">&para;</a></h3>
+<p>This <code>update</code> command is used to update the script on an existing image configuration. The path to a script is tracked in the code. The image configuration gets updated with the script in the path; if no changes were made no harm. If the path no longer exists, phenix will leave the configuration alone.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix image update &lt;configuration name&gt;
+</code></pre></div>
                 
               
               

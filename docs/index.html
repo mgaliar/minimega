@@ -242,6 +242,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#store" class="md-nav__link">
+    Store
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -281,6 +288,18 @@
   <li class="md-nav__item">
     <a href="experiments/" title="Experiments" class="md-nav__link">
       Experiments
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="image/" title="Virtual Disk Images Management" class="md-nav__link">
+      Virtual Disk Images Management
     </a>
   </li>
 
@@ -392,6 +411,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#store" class="md-nav__link">
+    Store
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -428,141 +454,66 @@
 <p>This is the documentation for minimega's phenix orchestration tool.</p>
 <h2 id="getting-started-with-phenix">Getting Started with phenix<a class="headerlink" href="#getting-started-with-phenix" title="Permanent link">&para;</a></h2>
 <h3 id="building">Building<a class="headerlink" href="#building" title="Permanent link">&para;</a></h3>
-<p>Simply run <code>make bin/phenix</code>.</p>
+<p>Simply run <code>make bin/phenix</code>.
+<br></p>
 <h3 id="using">Using<a class="headerlink" href="#using" title="Permanent link">&para;</a></h3>
-<p>The following output results from <code>bin/phenix --help</code>:</p>
-<div class="codehilite"><pre><span></span><code>minimega phenix
+<p>The following output results from <code>bin/phenix help</code>:</p>
+<div class="codehilite"><pre><span></span><code>A cli application for phēnix
 
-Global Options:
-  -help
-        show this help message
-  -level value
-        set log level: [debug, info, warn, error, fatal] [PHENIX_LEVEL] (default error)
-  -logfile string
-        specify file to log to [PHENIX_LOGFILE]
-  -minimega-base string
-        base path for minimega [PHENIX_MINIMEGA_BASE] (default &quot;/tmp/minimega&quot;)
-  -store string
-        path to Bolt store file [PHENIX_STORE] (default &quot;phenix.bdb&quot;)
-  -v    log on stderr [PHENIX_V] (default true)
-  -verbose
-        log on stderr [PHENIX_VERBOSE] (default true)
+Usage:
+  phenix [flags]
+  phenix [command]
 
-Subcommands:
-  list [all,topology,scenario,experiment] - get a list of configs
-  get &lt;kind/name&gt;                         - get an existing config
-  create &lt;path/to/config&gt;                 - create a new config
-  edit &lt;kind/name&gt;                        - edit an existing config
-  delete &lt;kind/name&gt;                      - delete a config
-  experiment &lt;start,stop&gt; &lt;name&gt;          - start an existing experiment
-  docs &lt;port&gt;                             - start documentation server on port (default 8000)
+Available Commands:
+  config      Configuration file management
+  experiment  Experiment management
+  help        Help about any command
+  image       Virtual disk image management
+  ui          Run the phenix UI
+  util        Utility commands
+  version     print version information
+  vlan        Used to manage VLANs
+  vm          Virtual machine management
+
+Flags:
+      --base-dir.minimega string   base minimega directory (default &quot;/tmp/minimega&quot;)
+      --base-dir.phenix string     base phenix directory (default &quot;/phenix&quot;)
+  -h, --help                       help for phenix
+      --hostname-suffixes string   hostname suffixes to strip
+      --log.error-file string      log fatal errors to file (default &quot;/var/log/phenix/error.log&quot;)
+      --log.error-stderr           log fatal errors to STDERR
+      --store.endpoint string      endpoint for storage service (default &quot;bolt:///etc/phenix/store.bdb&quot;)
+
+Use &quot;phenix [command] --help&quot; for more information about a command.
 </code></pre></div>
 
 
-<p>Right now, you can create configs and <strong>start</strong> an experiment (which will
-simply print out the minimega script).</p>
-<p>As an example:</p>
-<div class="codehilite"><pre><span></span><code>$&gt; bin/phenix create data/topology.yml data/scenario.yml data/experiment.yml
-Topology/foo-bar-topo config created
-Scenario/foo-bar-scenario config created
-experiment app sink not found
-host app protonuke not found
-host app wireguard not found
-Experiment/foobar config created
-</code></pre></div>
-
-
-<p>... or ...</p>
-<div class="codehilite"><pre><span></span><code>$&gt; bin/phenix list
-
-+------------+----------------------+------------------+---------------------------+
-|    KIND    |       VERSION        |       NAME       |          CREATED          |
-+------------+----------------------+------------------+---------------------------+
-| Topology   | phenix.sandia.gov/v1 | foo-bar-topo     | 2020-04-17T12:13:48-06:00 |
-| Scenario   | phenix.sandia.gov/v1 | foo-bar-scenario | 2020-04-17T12:13:48-06:00 |
-| Experiment | phenix.sandia.gov/v1 | foobar           | 2020-04-17T12:13:48-06:00 |
-+------------+----------------------+------------------+---------------------------+
-</code></pre></div>
-
-
-<p>... or ...</p>
-<div class="codehilite"><pre><span></span><code>$&gt; bin/phenix get scenario/foo-bar-scenario
-apiVersion: phenix.sandia.gov/v1
-kind: Scenario
-metadata:
-    name: foo-bar-scenario
-    created: &quot;2020-04-17T12:13:48-06:00&quot;
-    updated: &quot;2020-04-17T12:13:48-06:00&quot;
-    annotations:
-        topology: foo-bar-topo
-spec:
-    apps:
-        experiment:
-          - metadata: {}
-            name: sink
-        host:
-          - hosts:
-              - hostname: turbine-01
-                metadata:
-                    args: -logfile /var/log/protonuke.log -level debug -http -https
-                        -smtp -ssh 192.168.100.100
-            name: protonuke
-          - hosts:
-              - hostname: turbine-01
-                metadata:
-                    infrastructure:
-                        address: 10.255.255.1/24
-                        listen_port: 51820
-                        private_key: GLlxWJom8cQViGHojqOUShWIZG7IsSX8
-                    peers:
-                        allowed_ips: 10.255.255.10/32
-                        public_key: +joyya2F9g72qbKBtPDn00mIevG1j1OqeN76ylFLsiE=
-            name: wireguard
-</code></pre></div>
-
-
-<p>... or ...</p>
-<div class="codehilite"><pre><span></span><code>$&gt; bin/phenix experiment start foobar
-namespace foobar
-ns queueing true
-
-disk snapshot bennu.qc2 0b02f5d75d22_foobar_turbine-01_snapshot 
-clear vm config
-vm config vcpus 1
-vm config cpu Broadwell
-vm config memory 512
-vm config snapshot true
-vm config disk 0b02f5d75d22_foobar_turbine-01_snapshot
-vm config qemu-append -vga qxl
-vm config net ot MGMT
-vm launch kvm turbine-01
-
-disk snapshot bennu.qc2 0b02f5d75d22_foobar_turbine-02_snapshot 
-clear vm config
-vm config vcpus 1
-vm config cpu Broadwell
-vm config memory 512
-vm config snapshot true
-vm config disk 0b02f5d75d22_foobar_turbine-02_snapshot
-vm config qemu-append -vga qxl
-vm config net ot MGMT
-vm launch kvm turbine-02
-
-$&gt; bin/phenix experiment stop foobar
-</code></pre></div>
-
-
-<p>You can also edit configs in place via something like:</p>
-<div class="codehilite"><pre><span></span><code>$&gt; bin/phenix edit experiment/foobar
-</code></pre></div>
-
-
+<p><br></p>
+<p>Further documentation on the above can be found at:</p>
+<ul>
+<li><a href="configuration/">config</a></li>
+<li><a href="experiments/">experiment</a></li>
+<li><a href="image/">image</a></li>
+<li><a href="vms/">vm</a></li>
+</ul>
+<div class="admonition todo">
+<p class="admonition-title">Todo</p>
+<p>Do we need additional documentation for: ui, util, vlan?</p>
+</div>
+<h3 id="store">Store<a class="headerlink" href="#store" title="Permanent link">&para;</a></h3>
+<p>The phenix tool uses a data store as the storage service for all of data needed throughout the various capabilities. Some important considerations are worth understanding prior to working with phenix.</p>
+<ol>
+<li>If you are running as a standard user, the store is created in your home directory by default.</li>
+<li>If you are running as a root user, the default location will be <code>/etc/phenix/store.bdb</code>.</li>
+<li>It is possible to configure the store endpoint either by including the location as a flag with each command using <code>--store.endpoint &lt;string&gt;</code>.</li>
+<li>Finally, there are global values that can be set in a YAML file; see the <a href="configuration/">config documentation</a> for more information.</li>
+</ol>
 <h2 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h2>
 <div class="admonition todo">
 <p class="admonition-title">Todo</p>
 <p><code>-level</code> discussion on the different level of logs</p>
 <p><code>-store</code> discussion on Bolt store file</p>
-<p>Further discussion on the <a href="http://localhost:8000/configuration/">configuration</a> files</p>
+<p>Further discussion on the phenix app configuration file</p>
 </div>
                 
               

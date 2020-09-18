@@ -365,6 +365,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../image/" title="Virtual Disk Images Management" class="md-nav__link">
+      Virtual Disk Images Management
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../schema/" title="Topology Schema" class="md-nav__link">
       Topology Schema
     </a>
@@ -575,35 +587,35 @@
                 <h1 id="experiments">Experiments<a class="headerlink" href="#experiments" title="Permanent link">&para;</a></h1>
 <h2 id="listing-experiments">Listing Experiments<a class="headerlink" href="#listing-experiments" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui">From the Web-UI<a class="headerlink" href="#from-the-web-ui" title="Permanent link">&para;</a></h3>
-<p>Click on the <code>Experiments</code> tab.</p>
+<p>Click on the <code>Experiments</code> tab. This will display all available experiments that the user has access to view or edit.
+<br></p>
 <h3 id="from-the-command-line-binary">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span><code>~# phenix exp list
+<p>This will display a list of all available experiments: it is run as a <code>root</code> user.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix exp list
 </code></pre></div>
 
 
+<p><br></p>
 <h2 id="starting-stopping-experiments">Starting / Stopping Experiments<a class="headerlink" href="#starting-stopping-experiments" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_1">From the Web-UI<a class="headerlink" href="#from-the-web-ui_1" title="Permanent link">&para;</a></h3>
-<p>Clicking the <code>stopped</code> button will start the experiment; similarly the <code>started</code>
-button will stop the experiment. A progress bar is used to update the progress
-of starting an experiment. During the update to the experiment -- starting or
-stopping -- it will not be accessible or available to delete. </p>
+<p>Clicking the <code>stopped</code> button will start the experiment; similarly the <code>started</code> button will stop the experiment. A progress bar is used to update the progress of starting an experiment. During the update to the experiment -- starting or stopping -- it will not be accessible or available to delete. 
+<br></p>
 <h3 id="from-the-command-line-binary_1">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_1" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span><code>~# phenix exp start &lt;experiment name&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix exp start &lt;experiment name&gt;
 </code></pre></div>
 
 
 <p>Or ...</p>
-<div class="codehilite"><pre><span></span><code>~# phenix exp stop &lt;experiment name&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix exp stop &lt;experiment name&gt;
 </code></pre></div>
 
 
 <p>Or ...</p>
-<div class="codehilite"><pre><span></span><code>~# phenix exp restart &lt;experiment name&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix exp restart &lt;experiment name&gt;
 </code></pre></div>
 
 
-<p>Optionally, you can use the <code>--dry-run</code> flag to do everything expect call out to
-minimega.</p>
+<p>Optionally, you can use the <code>--dry-run</code> flag to do everything expect call out to minimega.</p>
 <p>The <code>phenix exp --help</code> command will output:</p>
 <div class="codehilite"><pre><span></span><code>Experiment management
 
@@ -643,17 +655,22 @@ Use &quot;phenix experiment [command] --help&quot; for more information about a 
 <p><br></p>
 <h2 id="create-a-new-experiment">Create a New Experiment<a class="headerlink" href="#create-a-new-experiment" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_2">From the Web-UI<a class="headerlink" href="#from-the-web-ui_2" title="Permanent link">&para;</a></h3>
-<p><img alt="screenshot" src="../images/create_exp.png" /></p>
+<p align="center">
+    <img width="800" src="/images/create_exp.png">
+</p>
+
 <p>Click the <code>+</code> button to the right of the filter field. </p>
-<p><strong>TODO</strong>: update image, replacing Applications with Scenarios.</p>
-<p><img alt="screenshot" src="../images/create_exp_dia.png" /></p>
-<p>Enter <code>Experiment Name</code> and <code>Experiment Topology</code>, the remaining selection are
-optional. </p>
+<p align="center">
+    <img width="400" src="/images/create_exp_dia.png">
+</p>
+
+<p>Enter <code>Experiment Name</code> and <code>Experiment Topology</code>, the remaining selection are optional. (In this example, <code>bennu</code> is an example Topology and is not included by default.)
+<br></p>
 <h3 id="from-the-command-line-binary_2">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_2" title="Permanent link">&para;</a></h3>
-<p>Three options are available from the command line.</p>
-<div class="codehilite"><pre><span></span><code>~# phenix experiment create &lt;experiment name&gt; -t &lt;topology name&gt;
-~# phenix experiment create &lt;experiment name&gt; -t &lt;topology name&gt; -s &lt;scenario name&gt;
-~# phenix experiment create &lt;experiment name&gt; -t &lt;topology name&gt; -s &lt;scenario name&gt; -d &lt;/path/to/dir/&gt;`
+<p>Three options are available from the command line. The only requiremnts are for an experiment and topology name; scenario and base directory are optional.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix experiment create &lt;experiment name&gt; -t &lt;topology name&gt;
+$&gt; phenix experiment create &lt;experiment name&gt; -t &lt;topology name&gt; -s &lt;scenario name&gt;
+$&gt; phenix experiment create &lt;experiment name&gt; -t &lt;topology name&gt; -s &lt;scenario name&gt; -d &lt;/path/to/dir/&gt;`
 </code></pre></div>
 
 
@@ -692,22 +709,21 @@ Global Flags:
 <p><br></p>
 <h2 id="scheduling-an-experiment">Scheduling an Experiment<a class="headerlink" href="#scheduling-an-experiment" title="Permanent link">&para;</a></h2>
 <h3 id="from-web-ui">From Web-UI<a class="headerlink" href="#from-web-ui" title="Permanent link">&para;</a></h3>
-<p>The experiment must be stopped; click on the experiment name to enter the
-Stopped Experiment component. Click on the hamburger menu to the right of the
-filter field and start button.</p>
-<p><img alt="screenshot" src="../images/schedule.png" /></p>
+<p>The experiment must be stopped; click on the experiment name to enter the Stopped Experiment component. Click on the hamburger menu to the right of the filter field and start button to select a desire schedule.</p>
+<p align="center">
+    <img width="450" src="/images/schedule.png">
+</p>
+
+<p><br></p>
 <h3 id="from-the-command-line-binary_3">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_3" title="Permanent link">&para;</a></h3>
 <p>The list of available scehedules can be found by running the folowing command.</p>
-<div class="codehilite"><pre><span></span><code>~# phenix exp schedulers
+<div class="codehilite"><pre><span></span><code>$&gt; phenix exp schedulers
 </code></pre></div>
 
 
 <p>Then apply the desired schedule with the following command.</p>
-<div class="codehilite"><pre><span></span><code>~# phenix experiment schedule &lt;experiment name&gt; &lt;algorithm&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix experiment schedule &lt;experiment name&gt; &lt;algorithm&gt;
 </code></pre></div>
-
-
-<p><br></p>
                 
               
               

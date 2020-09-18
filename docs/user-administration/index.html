@@ -222,6 +222,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../image/" title="Virtual Disk Images Management" class="md-nav__link">
+      Virtual Disk Images Management
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../schema/" title="Topology Schema" class="md-nav__link">
       Topology Schema
     </a>
@@ -456,38 +468,40 @@
 <h2 id="create-a-new-user">Create a new user<a class="headerlink" href="#create-a-new-user" title="Permanent link">&para;</a></h2>
 <p>There are two primary ways to create new users. </p>
 <ol>
-<li>Choose the <code>Create Account</code> link off the login page and complete all fields
-   one the <code>Create a New Account</code> dialogue. This will initiate a message to an
-   administrator's account who can then activate the account, setting the
-   role(s) and resource name(s).</li>
+<li>Choose the <code>Create Account</code> link off the login page and complete all fields one the <code>Create a New Account</code> dialogue. This will initiate a message to an administrator's account who can then activate the account, setting the role(s) and resource name(s).</li>
 </ol>
-<p><img alt="screenshot" src="../images/login_create.png" /></p>
-<p><img alt="screenshot" src="../images/create_new_account.png" /></p>
+<p align="center">
+    <img width="400" src="/images/login_create.png">
+</p>
+
+<p align="center">
+    <img width="300" src="/images/create_new_account.png">
+</p>
+
 <ol>
-<li>From the <code>Users</code> tab, click the <code>+</code> button to <code>create a new user</code>. Here the
-   administrator will add the role(s) and resource name(s). </li>
+<li>From the <code>Users</code> tab, click the <code>+</code> button to <code>create a new user</code>. Here the administrator will add the role(s) and resource name(s). </li>
 </ol>
-<p><img alt="screenshot" src="../images/create_a_new_user.png" /></p>
+<p align="center">
+    <img width="375" src="/images/create_a_new_user.png">
+</p>
+
+<p><br></p>
 <h2 id="login">Login<a class="headerlink" href="#login" title="Permanent link">&para;</a></h2>
-<p>The login page is self-descriptive. Using the <code>Remember me</code> checkbox will set a
-token to local storage so that you can remove the requirement to enter a
-<code>Username</code> and <code>Password</code> each time the page or site is reloaded. </p>
-<p>If an administrator starts the UI server with the following command,
-authentication is enabled:</p>
-<div class="codehilite"><pre><span></span><code>~# phenix ui -k &lt;some_string&gt;
+<p>The login page is self-descriptive. Using the <code>Remember me</code> checkbox will set a token to local storage so that you can remove the requirement to enter a <code>Username</code> and <code>Password</code> each time the page or site is reloaded. </p>
+<p>If an administrator starts the UI server with the following command, authentication is enabled:</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix ui -k &lt;some_string&gt;
 </code></pre></div>
 
 
-<p>Without the <code>-k</code> (or <code>--jwt-signing-key</code>), authentication is disabled.</p>
+<p>Without the <code>-k</code> (or <code>--jwt-signing-key</code>), authentication is disabled.
+<br></p>
 <h2 id="user-administration">User Administration<a class="headerlink" href="#user-administration" title="Permanent link">&para;</a></h2>
 <h3 id="updating-users">Updating users<a class="headerlink" href="#updating-users" title="Permanent link">&para;</a></h3>
-<p>An administrator is able to click on the username on the table in the Users tab
-to update a user. They can update <code>First Name</code> or <code>Last Name</code>, <code>Role</code>, or
-<code>Resource Name(s)</code>.</p>
+<p>An administrator is able to click on the username on the table in the Users tab to update a user. They can update <code>First Name</code> or <code>Last Name</code>, <code>Role</code>, or <code>Resource Name(s)</code>.
+<br></p>
 <h3 id="role">Role<a class="headerlink" href="#role" title="Permanent link">&para;</a></h3>
-<p><code>Global Admin</code> is the administrator level account and has access to all
-capabilities, to include user management. They also have access to all
-resources.</p>
+<p><code>Global Admin</code> is the administrator level account and has access to all capabilities, to include user management. They also have access to all resources.</p>
+<p>Key: E - experiment resource, V - VM resource, U - user resource</p>
 <table>
 <thead>
 <tr>
@@ -499,60 +513,54 @@ resources.</p>
 <th align="center">Update</th>
 <th align="center">Patch</th>
 <th align="center">Delete</th>
-<th align="center">Users</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Global Admin</td>
 <td align="left">Can see and control absolutely anything/everything.</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
+<td align="center">E V U</td>
+<td align="center">E V U</td>
+<td align="center">E V U</td>
+<td align="center">E V U</td>
+<td align="center">E V U</td>
+<td align="center">E V U</td>
 </tr>
 <tr>
 <td>Global Viewer</td>
 <td align="left">Can see absolutely anything/everything, but cannot make any changes.</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
+<td align="center">E V U</td>
+<td align="center">E V U</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
-<td align="center">✔︎</td>
 </tr>
 <tr>
 <td>Experiment Admin</td>
 <td align="left">Can see and control anything/everything for assigned experiments, including VMs, but cannot create new experiments.</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center"></td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center"></td>
+<td align="center">E V</td>
+<td align="center">E V</td>
+<td align="center">V</td>
+<td align="center">E V</td>
+<td align="center">V</td>
+<td align="center">V</td>
 </tr>
 <tr>
 <td>Experiment User</td>
 <td align="left">Can see assigned experiments, and can control VMs within assigned experiments, but cannot modify experiments themselves.</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
+<td align="center">E V</td>
+<td align="center">E V</td>
 <td align="center"></td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
 <td align="center"></td>
+<td align="center">V</td>
 <td align="center"></td>
 </tr>
 <tr>
 <td>Experiment Viewer</td>
 <td align="left">Can see assigned experiments and VMs within assigned experiments, but cannot modify or control experiments or VMs.</td>
-<td align="center">✔︎</td>
-<td align="center">✔︎</td>
-<td align="center"></td>
+<td align="center">E V</td>
+<td align="center">E V</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -561,8 +569,7 @@ resources.</p>
 <tr>
 <td>VM Viewer</td>
 <td align="left">Can only see VM screenshots and access VM VNC, nothing else.</td>
-<td align="center"></td>
-<td align="center">✔︎</td>
+<td align="center">V</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -578,15 +585,11 @@ resources.</p>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
-<td align="center"></td>
 </tr>
 </tbody>
 </table>
 <h3 id="resource-names">Resource Name(s)<a class="headerlink" href="#resource-names" title="Permanent link">&para;</a></h3>
-<div class="admonition todo">
-<p class="admonition-title">Todo</p>
-</div>
-<p>Describe what a resource is and how wildcards can be used.</p>
+<p><strong>TODO</strong>: describe what a resource is and how wildcards can be used.</p>
                 
               
               
