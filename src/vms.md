@@ -4,14 +4,14 @@
 
 ### From the Web-UI
 
-The experiment must be started; click on the experiment name to enter the Running Experiment component. Within that component, click on the VM name and you will be presented with a VM information modal.
+The experiment must be started; click on the experiment name to enter the
+Running Experiment component. Within that component, click on the VM name and
+you will be presented with a VM information modal.
 
-<p align="center">
-    <img width="400" src="/images/vm_diag.png">
-</p>
+![screenshot](images/vm_diag.png){: width=400 .center}
 <br>
 
- Available commands
+Available commands
 
 * `restore` a snapshot by clicking the play button next to the desired snapshot name.
 

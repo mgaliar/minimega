@@ -28,8 +28,12 @@ extra:
     - icon: 'fontawesome/brands/github'
       link: 'https://github.com/activeshadow/minimega/tree/phenix/phenix'
 
+extra_css:
+  - stylesheets/style.css
+
 markdown_extensions:
   - admonition
+  - attr_list
   - codehilite:
       guess_lang: false
   - footnotes
