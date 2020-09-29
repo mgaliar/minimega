@@ -16,15 +16,17 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    { path: '/',                name: 'home',             redirect: '/experiments' },
-    { path: '/experiments',     name: 'experiments',      component: Experiments },
-    { path: '/experiment/:id',  name: 'experiment',       component: Experiment },
-    { path: '/vmtiles',         name: 'vmtiles',          component: VMtiles },
-    { path: '/hosts',           name: 'hosts',            component: Hosts },
-    { path: '/users',           name: 'users',            component: Users },
-    { path: '/log',             name: 'log',              component: Log },
-    { path: '/signin',          name: 'signin',           component: SignIn },
-    { path: '*',                                          redirect: '/signin' }
+    { path: '/',                  name: 'home',             redirect: '/experiments' },
+    { path: '/experiments',       name: 'experiments',      component: Experiments },
+    { path: '/experiment/:id',    name: 'experiment',       component: Experiment },
+    { path: '/vmtiles',           name: 'vmtiles',          component: VMtiles },
+    { path: '/hosts',             name: 'hosts',            component: Hosts },
+    { path: '/users',             name: 'users',            component: Users },
+    { path: '/log',               name: 'log',              component: Log },
+    { path: '/signin',            name: 'signin',           component: SignIn },
+    { path: '/stateofhealth',     name: 'stateofhealth',    component: StateOfHealth},
+    { path: '/stateofhealth/:id', name: 'soh',              component: SoH},
+    { path: '*',                  redirect: '/signin' }
   ]
 })
 
