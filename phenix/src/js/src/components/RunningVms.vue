@@ -169,11 +169,12 @@ Users' options:
 
 <script>
 import Network from "./Network.vue";
+
 /*
 We need to import the images that we use
 throug the viewer.
 */
-import Switch from "@/assets/Switch.png";
+import Switch from "@/assets/switch.png";
 import Running from "@/assets/running.png";
 import NotRunning from "@/assets/notrunning.png";
 import NotBoot from "@/assets/notboot.png";
