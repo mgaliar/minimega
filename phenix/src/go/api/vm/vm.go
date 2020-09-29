@@ -89,6 +89,7 @@ func List(expName string) ([]mm.VM, error) {
 			vm.CPUs = details.CPUs
 			vm.RAM = details.RAM
 			vm.Disk = details.Disk
+			vm.State = details.State
 
 			// Reset slice of IPv4 addresses so we can be sure to align them correctly
 			// with minimega networks below.

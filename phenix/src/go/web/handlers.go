@@ -18,6 +18,7 @@ import (
 	"phenix/api/config"
 	"phenix/api/experiment"
 	"phenix/api/scenario"
+	"phenix/api/soh"
 	"phenix/api/vm"
 	"phenix/app"
 	"phenix/internal/mm"
@@ -720,6 +721,38 @@ func GetExperimentFile(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Disposition", "attachment; filename="+file)
 	http.ServeContent(w, r, "", time.Now(), bytes.NewReader(contents))
+}
+
+// GET /experiments/{exp}/soh
+func GetExperimentSoH(w http.ResponseWriter, r *http.Request) {
+	log.Debug("GetExperimentSoH HTTP handler called")
+
+	var (
+		ctx  = r.Context()
+		role = ctx.Value("role").(rbac.Role)
+		vars = mux.Vars(r)
+		exp  = vars["name"]
+	)
+
+	if !role.Allowed("vms", "list") {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	state, err := soh.Get(exp)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	marshalled, err := json.Marshal(state)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(marshalled)
 }
 
 // GET /experiments/{exp}/vms
