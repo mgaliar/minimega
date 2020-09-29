@@ -6,7 +6,13 @@ This is the documentation for minimega's phenix orchestration tool.
 
 ### Building
 
-Simply run `make bin/phenix`.
+To build locally, you will need Golang v1.14 and Node v14.2 installed. Once
+installed (if not already), simply run `make bin/phenix`.
+
+If you don't want to install Golang and/or Node locally, you can also use
+Docker to build phenix (assuming you have Docker installed). Simply run
+`./build-with-docker.sh` and once built, the phenix binary will be available
+at `bin/phenix`. See `./build-with-docker.sh -h` for usage details.
 <br>
 
 ### Using
@@ -42,6 +48,8 @@ Flags:
 
 Use "phenix [command] --help" for more information about a command.
 ```
+
+It is possible to specify values for all of the global flags listed above using a configuration file.
 <br>
 
 Further documentation on the above can be found at:
