@@ -7,6 +7,8 @@ import SignIn           from './components/SignIn.vue'
 import Users            from './components/Users.vue'
 import Log              from './components/Log.vue'
 import VMtiles          from './components/VMtiles.vue'
+import StateOfHealth    from './components/StateOfHealth.vue'
+import SoH              from './components/SoH.vue'
 
 import store            from './store'
 
