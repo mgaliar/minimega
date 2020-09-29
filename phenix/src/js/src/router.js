@@ -24,16 +24,16 @@ const router = new Router({
     { path: '/users',             name: 'users',            component: Users },
     { path: '/log',               name: 'log',              component: Log },
     { path: '/signin',            name: 'signin',           component: SignIn },
-    { path: '/stateofhealth',     name: 'stateofhealth',    component: StateOfHealth},
-    { path: '/stateofhealth/:id', name: 'soh',              component: SoH},
+    { path: '/stateofhealth',     name: 'stateofhealth',    component: StateOfHealth },
+    { path: '/stateofhealth/:id', name: 'soh',              component: SoH },
     { path: '*',                  redirect: '/signin' }
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  if (process.env.VUE_APP_AUTH === 'disabled') {
-    if (!store.getters.auth) {
-      store.commit( 'LOGIN', { 'user': { 'role': 'Global Admin' }, 'remember': false })
+router.beforeEach( ( to, from, next ) => {
+  if ( process.env.VUE_APP_AUTH === 'disabled' ) {
+    if ( !store.getters.auth ) {
+      store.commit( 'LOGIN', { 'user': { 'role': 'Global Admin' }, 'remember': false } )
     }
 
     next()
@@ -42,15 +42,15 @@ router.beforeEach((to, from, next) => {
 
   let pub = ['/signup', '/signin']
 
-  if (pub.includes(to.path)) {
+  if ( pub.includes( to.path ) ) {
     next()
     return
   }
 
-  if (store.state.auth) {
+  if ( store.state.auth ) {
     next()
   } else {
-    next('/signin')
+    next( '/signin' )
   }
 })
 

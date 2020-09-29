@@ -17,7 +17,7 @@ Users' options:
     <b-modal :active.sync="expModal.active" :on-cancel="resetExpModal" has-modal-card>
       <div class="modal-card" style="width:25em">
         <header class="modal-card-head">
-          <p class="modal-card-title"> {{expModal.vm.name ? expModal.vm.name : "unknown" }} </p>
+          <p class="modal-card-title"> {{ expModal.vm.name ? expModal.vm.name : "unknown" }} </p>
         </header>
         <section class="modal-card-body">
           <p>Host: {{ expModal.vm.host }} </p>
@@ -38,13 +38,13 @@ Users' options:
               -->
               <template v-if="!expModal.vm.running">
                 <b-tooltip label="start a vm" type="is-light">
-                  <b-button class="button is-success" icon-left="play" @click="startVm (expModal.vm.name )">
+                  <b-button class="button is-success" icon-left="play" @click="startVm ( expModal.vm.name )">
                   </b-button>
                 </b-tooltip>
               </template>
               <template v-else>
                 <b-tooltip label="pause a vm" type="is-light">
-                  <b-button class="button is-danger" icon-left="pause" @click="pauseVm (expModal.vm.name )">
+                  <b-button class="button is-danger" icon-left="pause" @click="pauseVm ( expModal.vm.name )">
                   </b-button>
                 </b-tooltip>
               </template>
@@ -52,7 +52,7 @@ Users' options:
             <div>
               &nbsp;
               <b-tooltip label="kill a vm" type="is-light">
-                <b-button class="button is-danger" icon-left="trash" @click="killVm (expModal.vm.name )">
+                <b-button class="button is-danger" icon-left="trash" @click="killVm ( expModal.vm.name )">
                 </b-button>
               </b-tooltip>
             </div>
@@ -103,7 +103,7 @@ Users' options:
       :nodes="network.nodes"
       :edges="network.edges"
       :options="network.options"
-      @select-node="getInfo($event)"
+      @select-node="getInfo( $event )"
     >
     </network>
     
@@ -211,12 +211,12 @@ export default {
     */
     async updateNetwork () {
       try {
-        let resp = await this.$http.get('experiments/' + this.$route.params.id + '/soh');
+        let resp = await this.$http.get( 'experiments/' + this.$route.params.id + '/soh' );
         let state = await resp.json();
         this.network = state;
-        this.onMemNetwork = JSON.parse(JSON.stringify (this.network) );
+        this.onMemNetwork = JSON.parse( JSON.stringify ( this.network ) );
 
-        resp = await this.$http.get('experiments/' + this.$route.params.id + '/vms');
+        resp = await this.$http.get( 'experiments/' + this.$route.params.id + '/vms' );
         state = await resp.json();
         this.experiment = state;
 
@@ -246,26 +246,26 @@ export default {
     the imports above.
     */
     updateImage () {
-      for (var node = 0; node < this.network.nodes.length; node++) {
-        if (this.network.nodes[node].image == 'interface') {
-          this.network.nodes[node].image = Switch;
-          this.onMemNetwork.nodes[node].image = Switch;
+      for ( var node = 0; node < this.network.nodes.length; node++ ) {
+        if ( this.network.nodes[ node ].image == 'interface' ) {
+          this.network.nodes[ node ].image = Switch;
+          this.onMemNetwork.nodes[ node ].image = Switch;
         }
-        else if (this.network.nodes[node].image == 'running') {
-          this.network.nodes[node].image = Running;
-          this.onMemNetwork.nodes[node].image = Running;
+        else if ( this.network.nodes[ node ].image == 'running' ) {
+          this.network.nodes[ node ].image = Running;
+          this.onMemNetwork.nodes[ node ].image = Running;
         }
-        else if (this.network.nodes[node].image == 'notrunning') {
-          this.network.nodes[node].image = NotRunning;
-          this.onMemNetwork.nodes[node].image = NotRunning;
+        else if ( this.network.nodes[ node ].image == 'notrunning' ) {
+          this.network.nodes[ node ].image = NotRunning;
+          this.onMemNetwork.nodes[ node ].image = NotRunning;
         }
-        else if (this.network.nodes[node].image == 'notboot') {
-          this.network.nodes[node].image = NotBoot;
-          this.onMemNetwork.nodes[node].image = NotBoot;
+        else if ( this.network.nodes[ node ].image == 'notboot' ) {
+          this.network.nodes[ node ].image = NotBoot;
+          this.onMemNetwork.nodes[ node ].image = NotBoot;
         }
-        else if (this.network.nodes[node].image == 'notdeploy') {
-          this.network.nodes[node].image = NotDeploy;
-          this.onMemNetwork.nodes[node].image = NotDeploy;
+        else if ( this.network.nodes[ node ].image == 'notdeploy' ) {
+          this.network.nodes[ node ].image = NotDeploy;
+          this.onMemNetwork.nodes[ node ].image = NotDeploy;
         }
       }
     },
@@ -278,11 +278,10 @@ export default {
     For each vm we get the overall information, host, ips, etc.
     After fetching the information we enable and populated the popup.
     */
-
-    getInfo(e) {
-       for (var vm = 0; vm < this.experiment.vms.length; vm++) {
-        if (this.experiment.vms[vm].id == e.nodes[0] ) {
-          this.expModal.vm = this.experiment.vms[vm]
+    getInfo( e ) {
+       for ( var vm = 0; vm < this.experiment.vms.length; vm++ ) {
+        if ( this.experiment.vms[ vm ].id == e.nodes[ 0 ] ) {
+          this.expModal.vm = this.experiment.vms[ vm ]
           this.expModal.active = true;
           break;
         }
@@ -292,10 +291,10 @@ export default {
     /*
     Start a VM in error state
     */
-    startVm (name) {
+    startVm ( name ) {
       this.$buefy.dialog.confirm({
         title: 'Start the VM',
-        message: 'This will start the ' + name + 'VM.',
+        message: 'This will start the ' + name + ' VM.',
         cancelText: 'Cancel',
         confirmText: 'Start',
         type: 'is-sucess',
@@ -319,6 +318,7 @@ export default {
           );
         }
       })
+
       this.expModal.active = false;
       this.resetExpModal();
     },
@@ -326,10 +326,10 @@ export default {
     /*
     Pause a running VM
     */
-    pauseVm (name) {
+    pauseVm ( name ) {
       this.$buefy.dialog.confirm({
         title: 'Pause the VM',
-        message: 'This will pause the ' + name + 'VM.',
+        message: 'This will pause the ' + name + ' VM.',
         cancelText: 'Cancel',
         confirmText: 'Pause',
         type: 'is-waiting',
@@ -353,6 +353,7 @@ export default {
           );
         }
       })
+      
       this.expModal.active = false;
       this.resetExpModal();
     },
@@ -360,7 +361,7 @@ export default {
     /*
     Kill a running VM
     */
-    killVm (name) {
+    killVm ( name ) {
       this.$buefy.dialog.confirm({
         title: 'Kill the VM',
         message: 'This will kill the '
@@ -391,6 +392,7 @@ export default {
          );
         }
       })
+      
       this.expModal.active = false;
       this.resetExpModal();
     },
@@ -421,22 +423,22 @@ export default {
     Paramms: user's filter
     Description: filter the main network to only show requested VMs
     */
-    filterNetwork (filter) {
-      console.log('filterNetwork ' + filter)
-      console.log(this.onMemNetwork)
+    filterNetwork ( filter ) {
       let nodes = [];
-      /*
+      
+      1/*
       traverse the network and select VMs that match user's filter
       include all interfaces
       */
-      this.onMemNetwork.nodes.forEach(function(node) {
-        if (node.status == filter) {
-          nodes.push(node);
+      this.onMemNetwork.nodes.forEach( function( node ) {
+        if ( node.status == filter ) {
+          nodes.push( node );
         }
-        if (node.status == "interface") {
-          nodes.push(node);
+        if ( node.status == "interface" ) {
+          nodes.push( node );
         }
       });
+      
       /*
       Reset nodes in the network and update with user's filter
       */

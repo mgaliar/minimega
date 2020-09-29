@@ -19,18 +19,18 @@ rendering based on whether the experiment is running or not
     component based on whether or not an experiment is running.
     */
     components: {
-      running: () => import('./RunningVms.vue'),
-      notrunning: () => import('./NotRunningVms.vue')
+      running: () => import( './RunningVms.vue' ),
+      notrunning: () => import( './NotRunningVms.vue' )
     },
 
-    async beforeRouteEnter (to, _, next) {
+    async beforeRouteEnter ( to, _, next ) {
       try {
         let resp = await Vue.http.get( 'experiments/' + to.params.id );
         let state = await resp.json();
 
-        next(vm => vm.running = state.running);
-      } catch (err) {
-        console.log(err);
+        next( vm => vm.running = state.running );
+      } catch ( err ) {
+        console.log( err );
 
         Vue.toast.open({
           message: 'Getting the ' + to.params.id + ' experiment failed.',
@@ -50,11 +50,11 @@ rendering based on whether the experiment is running or not
     */
     computed: {
       component: function () {
-        if (this.running == null) {
+        if ( this.running == null ) {
           return
         }
 
-        if (this.running == true) {
+        if ( this.running == true ) {
           return 'running';
         }
 

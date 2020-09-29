@@ -144,18 +144,18 @@ to view in more details its state.
         var data = [];
         
         for ( let i in experiments ) {
-          let exp = experiments[i];
+          let exp = experiments[ i ];
           let running_vms = 0;
 
-          if (this.soh_ready) {
+          if ( this.soh_ready ) {
             /*
             Get an overview of soh of each experiment
             */
-            exp.running_count = this.soh[i][1];
-            exp.total_count = this.soh[i][2];
-            exp.notboot = this.soh[i][3];
-            exp.notdeploy = this.soh[i][4];
-            exp.notrunning = this.soh[i][5];
+            exp.running_count = this.soh[ i ][ 1 ];
+            exp.total_count = this.soh[ i ][ 2 ];
+            exp.notboot = this.soh[ i ][ 3 ];
+            exp.notdeploy = this.soh[ i ][ 4 ];
+            exp.notrunning = this.soh[ i ][ 5 ];
           }
 
           if ( exp.name.match( name_re ) ) {
@@ -199,24 +199,24 @@ to view in more details its state.
       */
       async updateExperiments () {
         try {
-          let resp = await this.$http.get('experiments');
+          let resp = await this.$http.get( 'experiments' );
           let state = await resp.json();
           this.experiments = state.experiments;
 
-          for (let experiment in this.experiments) {
+          for ( let experiment in this.experiments ) {
             let exp_soh = [];
             let soh_tmp = [];
             console.log('Getting soh for: ' + this.experiments[experiment].name + '/soh');
-            resp = await this.$http.get('experiments/' + this.experiments[experiment].name + '/soh');
+            resp = await this.$http.get( 'experiments/' + this.experiments[experiment].name + '/soh' );
             state = await resp.json();
             soh_tmp = state;
-            exp_soh.push(this.experiments[experiment].name);
-            exp_soh.push(soh_tmp.running_count);
-            exp_soh.push(soh_tmp.total_count);
-            exp_soh.push(soh_tmp.notboot_count);
-            exp_soh.push(soh_tmp.notdeploy_count);
-            exp_soh.push(soh_tmp.notrunning_count);
-            this.soh.push(exp_soh);
+            exp_soh.push( this.experiments[ experiment ].name );
+            exp_soh.push( soh_tmp.running_count );
+            exp_soh.push( soh_tmp.total_count );
+            exp_soh.push( soh_tmp.notboot_count );
+            exp_soh.push( soh_tmp.notdeploy_count );
+            exp_soh.push( soh_tmp.notrunning_count );
+            this.soh.push( exp_soh );
           }
           this.soh_ready = true;
 
