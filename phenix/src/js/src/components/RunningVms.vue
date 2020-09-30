@@ -66,27 +66,29 @@ Users' options:
       </div>
     </b-modal>
     <hr>
-    <b-field position="is-left">
-      <p class="control">
-        <h3>State of Health Board</h3>
-      </p>
-    </b-field>
+    <div class="level is-vcentered">
+      <div class="level-item">
+        <span style="font-weight: bold; font-size: x-large;">State of Health Board for Experiment: {{ this.$route.params.id }}</span>&nbsp;
+      </div>
+    </div>
     <div class="columns is-vcentered">
+      <div class="column" />
       <div class="column">
-        <b-radio v-model="radioButton" native-value="running" type="is-light">Running Nodes</b-radio>
+        <b-radio v-model="radioButton" native-value="running" type="is-light">Running</b-radio>
       </div>
       <div class="column">
-        <b-radio v-model="radioButton" native-value="notrunning" type="is-light">Error Nodes</b-radio>
+        <b-radio v-model="radioButton" native-value="notdeploy" type="is-light">Not deployed</b-radio>
       </div>
       <div class="column">
-        <b-radio v-model="radioButton" native-value="notdeploy" type="is-light">Not Deployed Nodes</b-radio>
+        <b-radio v-model="radioButton" native-value="notrunning" type="is-light">In Error-state</b-radio>
       </div>
       <div class="column">
-        <b-radio v-model="radioButton" native-value="notboot" type="is-light">Not Booted Nodes</b-radio>
+        <b-radio v-model="radioButton" native-value="notboot" type="is-light">Not booted</b-radio>
       </div>
       <div class="column">
         <b-button @click="resetNetwork" type="is-light">Refresh Network</b-button>
       </div>
+      <div class="column" />
     </div>
 
     <!--
@@ -135,20 +137,20 @@ Users' options:
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <img :src="notRunningImg" style="width:25px;height:25px;" />
+            <img :src="notDeployImg" style="width:25px;height:25px;" />
           </div>
           <div class="column">
-            <span style="color: whitesmoke;">In Error-state</span>
+            <span style="color: whitesmoke;">Not deployed</span>
           </div>
         </div>
       </div>
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <img :src="notDeployImg" style="width:25px;height:25px;" />
+            <img :src="notRunningImg" style="width:25px;height:25px;" />
           </div>
           <div class="column">
-            <span style="color: whitesmoke;">Not deployed</span>
+            <span style="color: whitesmoke;">In Error-state</span>
           </div>
         </div>
       </div>
@@ -174,12 +176,46 @@ import Network from "./Network.vue";
 We need to import the images that we use
 throug the viewer.
 */
-import Switch from "@/assets/switch.png";
-import Running from "@/assets/running.png";
-import NotRunning from "@/assets/notrunning.png";
-import NotBoot from "@/assets/notboot.png";
-import NotDeploy from "@/assets/notdeploy.png";
-import Options from "@/assets/options.png"
+// import Switch from "@/assets/switch.png";
+// import NotBoot from "@/assets/notboot.png";
+// import NotDeploy from "@/assets/notdeploy.png";
+// import Options from "@/assets/options.png"
+
+import Running from "@/assets/running.svg";
+import NotRunning from "@/assets/running-mono.svg";
+
+import Error from "@/assets/error.svg";
+import Stop from "@/assets/stop.svg";
+import VLAN from "@/assets/vlan.svg";
+
+import CentOSError from "@/assets/centos-error.svg";
+import CentOSMono from "@/assets/centos-mono.svg";
+import CentOSStop from "@/assets/centos-stop.svg";
+import CentOS from "@/assets/centos.svg";
+
+import Firewall from "@/assets/firewall.svg";
+import FirewallMono from "@/assets/firewall-mono.svg";
+
+import LinuxError from "@/assets/linux-error.svg";
+import LinuxMono from "@/assets/linux-mono.svg";
+import LinuxStop from "@/assets/linux-stop.svg";
+import Linux from "@/assets/linux.svg";
+
+import Printer from "@/assets/printer.svg";
+import PrinterMono from "@/assets/printer-mono.svg";
+
+import RedHatError from "@/assets/redhat-error.svg";
+import RedHatMono from "@/assets/redhat-mono.svg";
+import RedHatStop from "@/assets/redhat-stop.svg";
+import RedHat from "@/assets/redhat.svg";
+
+import Router from "@/assets/router.svg";
+import RouterMono from "@/assets/router-mono.svg";
+
+import WindowsError from "@/assets/windows-error.svg";
+import WindowsMono from "@/assets/windows-mono.svg";
+import WindowsStop from "@/assets/windows-stop.svg";
+import Windows from "@/assets/windows.svg";
 
 export default {
   components: {
@@ -248,25 +284,28 @@ export default {
     */
     updateImage () {
       for ( var node = 0; node < this.network.nodes.length; node++ ) {
-        if ( this.network.nodes[ node ].image == 'interface' ) {
-          this.network.nodes[ node ].image = Switch;
-          this.onMemNetwork.nodes[ node ].image = Switch;
+        
+        console.log(this.network.nodes[ node ]);
+        
+        if ( this.network.nodes[ node ].status == 'interface' ) {
+          this.network.nodes[ node ].image = VLAN;
+          this.onMemNetwork.nodes[ node ].image = VLAN;
         }
-        else if ( this.network.nodes[ node ].image == 'running' ) {
-          this.network.nodes[ node ].image = Running;
-          this.onMemNetwork.nodes[ node ].image = Running;
+        else if ( this.network.nodes[ node ].status == 'running' ) {
+          this.network.nodes[ node ].image = Linux;
+          this.onMemNetwork.nodes[ node ].image = Linux;
         }
-        else if ( this.network.nodes[ node ].image == 'notrunning' ) {
-          this.network.nodes[ node ].image = NotRunning;
-          this.onMemNetwork.nodes[ node ].image = NotRunning;
+        else if ( this.network.nodes[ node ].status == 'notrunning' ) {
+          this.network.nodes[ node ].image = LinuxMono;
+          this.onMemNetwork.nodes[ node ].image = LinuxMono;
         }
-        else if ( this.network.nodes[ node ].image == 'notboot' ) {
-          this.network.nodes[ node ].image = NotBoot;
-          this.onMemNetwork.nodes[ node ].image = NotBoot;
+        else if ( this.network.nodes[ node ].status == 'notboot' ) {
+          this.network.nodes[ node ].image = LinuxStop;
+          this.onMemNetwork.nodes[ node ].image = LinuxStop;
         }
-        else if ( this.network.nodes[ node ].image == 'notdeploy' ) {
-          this.network.nodes[ node ].image = NotDeploy;
-          this.onMemNetwork.nodes[ node ].image = NotDeploy;
+        else if ( this.network.nodes[ node ].status == 'notdeploy' ) {
+          this.network.nodes[ node ].image = LinuxError;
+          this.onMemNetwork.nodes[ node ].image = LinuxError;
         }
       }
     },
@@ -469,12 +508,12 @@ export default {
       },
       isShow: false,
       radioButton: '',
-      optionsImg: Options,
-        switchImg: Switch,
-        runningImg: Running,
-        notRunningImg: NotRunning,
-        notDeployImg: NotDeploy,
-        notBootImg: NotBoot
+      // optionsImg: Options,
+      switchImg: VLAN,
+      runningImg: Running,
+      notRunningImg: Error,
+      notDeployImg: NotRunning,
+      notBootImg: Stop
     }
   }
 }
