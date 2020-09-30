@@ -135,7 +135,7 @@ Users' options:
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <img :src="nrunningImg" style="width:25px;height:25px;" />
+            <img :src="notRunningImg" style="width:25px;height:25px;" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">In Error-state</span>
@@ -145,7 +145,7 @@ Users' options:
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <img :src="notdeployImg" style="width:25px;height:25px;" />
+            <img :src="notDeployImg" style="width:25px;height:25px;" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">Not deployed</span>
@@ -155,7 +155,7 @@ Users' options:
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <img :src="notbootImg" style="width:25px;height:25px;" />
+            <img :src="notBootImg" style="width:25px;height:25px;" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">Not booted</span>
@@ -472,9 +472,9 @@ export default {
       optionsImg: Options,
         switchImg: Switch,
         runningImg: Running,
-        nrunningImg: NotRunning,
-        notdeployImg: NotDeploy,
-        notbootImg: NotBoot
+        notRunningImg: NotRunning,
+        notDeployImg: NotDeploy,
+        notBootImg: NotBoot
     }
   }
 }
