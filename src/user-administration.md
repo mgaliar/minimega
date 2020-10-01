@@ -17,31 +17,33 @@ There are two primary ways to create new users.
    administrator will add the role(s) and resource name(s). 
 
     ![screenshot](images/create_a_new_user.png){: width=400 .center}
-<br>
 
 ## Login
 
-The login page is self-descriptive. Using the `Remember me` checkbox will set a token to local storage so that you can remove the requirement to enter a `Username` and `Password` each time the page or site is reloaded. 
+The login page is self-descriptive. Using the `Remember me` checkbox will set a 
+token to local storage so that you can remove the requirement to enter a `Username` 
+and `Password` each time the page or site is reloaded. 
 
-If an administrator starts the UI server with the following command, authentication is enabled:
+If an administrator starts the UI server with the following command, authentication 
+is enabled:
 
 ```
 $> phenix ui -k <some_string>
 ```
 
 Without the `-k` (or `--jwt-signing-key`), authentication is disabled.
-<br>
 
 ## User Administration
 
 ### Updating users
 
-An administrator is able to click on the username on the table in the Users tab to update a user. They can update `First Name` or `Last Name`, `Role`, or `Resource Name(s)`.
-<br>
+An administrator is able to click on the username on the table in the Users tab to 
+update a user. They can update `First Name` or `Last Name`, `Role`, or `Resource Name(s)`.
 
 ### Role
 
-`Global Admin` is the administrator level account and has access to all capabilities, to include user management. They also have access to all resources.
+`Global Admin` is the administrator level account and has access to all capabilities, 
+to include user management. They also have access to all resources.
 
 Key: E - experiment resource, V - VM resource, U - user resource
 
@@ -53,7 +55,6 @@ Key: E - experiment resource, V - VM resource, U - user resource
 | Experiment User   | Can see assigned experiments, and can control VMs within assigned experiments, but cannot modify experiments themselves. | E V   | E V   |        |        |   V   |        |
 | Experiment Viewer | Can see assigned experiments and VMs within assigned experiments, but cannot modify or control experiments or VMs.       | E V   | E V   |        |        |       |        |
 | VM Viewer         | Can only see VM screenshots and access VM VNC, nothing else.                                                             |   V   |       |        |        |       |        |
-<br>
 
 ### Resources
 
