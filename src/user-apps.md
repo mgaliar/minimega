@@ -1,16 +1,16 @@
 # User Apps
 
-This is the documentation for phenix's user apps.
+This is the documentation for phenix user apps.
 
 ## Default User Apps
 
-- `app.go`: configures and starts user apps.
-- `ntp.go`: configures a NTP server into the experiment infrastructure.
-- `option.go`: ??? options in user apps ???
-- `serial.go`: configures a Serial interface on a VM image.
-- `startup.go`: configures minimega startup injections based on OS type.
-- `user.go`: used to shell out with JSON payload to customer user apps.
-- `vyatta.go`: the Vyatta user app is used to customize a vyatta router image. 
+- `app.go`: configures and starts user apps
+- `ntp.go`: configures a NTP server into the experiment infrastructure
+- `option.go`: TODO
+- `serial.go`: configures a Serial interface on a VM image
+- `startup.go`: configures minimega startup injections based on OS type
+- `user.go`: used to shell out with JSON payload to customer user apps
+- `vyatta.go`: the Vyatta user app is used to customize a vyatta router image --  
   This includes setting interfaces, ACL rules, IPSec VPN settings, etc.
 
 !!! todo
@@ -21,7 +21,6 @@ This is the documentation for phenix's user apps.
     
     `v2` of experiment data -- includes topology, experiment, and scenario YAML
     configuation files
-<br>
 
 ## Custom User Apps
 
