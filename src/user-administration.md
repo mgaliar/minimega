@@ -14,18 +14,19 @@ There are two primary ways to create new users.
     ![screenshot](images/create_new_account.png){: width=400 .center}
 
 2. From the `Users` tab, click the `+` button to create a new user. Here the
-   administrator will add the [role(s) and resource name(s)](#user-administration). 
+   administrator will add the [role(s) and resource
+   name(s)](#user-administration). 
 
     ![screenshot](images/create_a_new_user.png){: width=400 .center}
 
 ## Login
 
-The login page is self-descriptive. Using the `Remember me` checkbox will set a 
-token to local storage so that you can remove the requirement to enter a `Username` 
-and `Password` each time the page or site is reloaded. 
+The login page is self-descriptive. Using the `Remember me` checkbox will set a
+token to local storage so that you can remove the requirement to enter a
+`Username` and `Password` each time the page or site is reloaded. 
 
-If an administrator starts the UI server with the following command, authentication 
-is enabled:
+If an administrator starts the UI server with the following command,
+authentication is enabled:
 
 ```
 $> phenix ui -k <some_string>
@@ -35,17 +36,18 @@ Without the `-k` (or `--jwt-signing-key`), authentication is disabled.
 
 ## User Administration
 
-### Updating users
+### Updating Users
 
-An administrator is able to click on the username on the table in the Users tab to 
-update a user. They can update `First Name` or `Last Name`, `Role`, or `Resource Name(s)`.
+An administrator is able to click on the username on the table in the Users tab
+to update a user. They can update `First Name` or `Last Name`, `Role`,
+`Experiment Names`, and `Resource Name(s)`.
 
-### Role
+### Roles
 
-`Global Admin` is the administrator level account and has access to all capabilities, 
-to include user management. They also have access to all resources.
-
-Key: E - experiment resource, V - VM resource, U - user resource
+`Global Admin` is the administrator level account and has access to all
+capabilities, to include user management. Global Admins also have access to all
+resources. The following table provides a high-level overview of all the
+available roles and their access rights.
 
 | Role              | Limits                                                                                                                   | List  |  Get  | Create | Update | Patch | Delete |
 |-------------------|:-------------------------------------------------------------------------------------------------------------------------|:-----:|:-----:|:------:|:------:|:-----:|:------:|
@@ -55,6 +57,8 @@ Key: E - experiment resource, V - VM resource, U - user resource
 | Experiment User   | Can see assigned experiments, and can control VMs within assigned experiments, but cannot modify experiments themselves. | E V   | E V   |        |        |   V   |        |
 | Experiment Viewer | Can see assigned experiments and VMs within assigned experiments, but cannot modify or control experiments or VMs.       | E V   | E V   |        |        |       |        |
 | VM Viewer         | Can only see VM screenshots and access VM VNC, nothing else.                                                             |   V   |       |        |        |       |        |
+
+Key: E - experiment resource, V - VM resource, U - user resource
 
 ### Resources
 
@@ -350,7 +354,7 @@ Key: E - experiment resource, V - VM resource, U - user resource
 | Exp. Scoped | no
 | Res. Scoped | yes
 
-### Default Roles
+### Built-In Roles
 
 See the [previous](#resources) section for policy resource and verb
 descriptions.
