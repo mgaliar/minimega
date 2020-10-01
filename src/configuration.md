@@ -68,7 +68,7 @@ spaces. In addition, each node in the topology must:
 - have a specified type (available types are defined in the
   [schema](/schema/#node-schema)
 - have a unique hostname
-- have an OS type of linux or windows
+- have an OS type of `linux` or `windows`
 - have a disk image assigned
 
 ### Optional Values
@@ -223,9 +223,8 @@ The `Scenario` configuration is used to define and configure one or more
 topology can have one or more scenarios associated with it, but a scenario can
 only be associated with a single topology.
 
-There are two categories of `phenix` apps that can be configured in a scenario:
-1) experiment, and 2) host. A scenario can contain zero or more experiment
-and/or host apps.
+There are two categories of `phenix` apps that can be configured in a scenario: 1) experiment, 
+and 2) host. A scenario can contain zero or more experiment and/or host apps.
 
 ### Experiment Apps
 
