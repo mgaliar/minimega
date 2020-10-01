@@ -92,7 +92,7 @@ Click the `+` button to the right of the filter field.
 
 Enter `Experiment Name` and `Experiment Topology`, the remaining selection are
 optional. (In this example, `bennu` is an example topology and is not included
-by default.)
+by default. You will need to [create](/configuration.md) your own topology(ies).)
 
 ### From the Command Line Binary
 
@@ -144,13 +144,13 @@ Global Flags:
 
 The experiment must be stopped; click on the experiment name to enter the
 Stopped Experiment component. Click on the hamburger menu to the right of the
-filter field and start button to select a desire schedule.
+filter field and start button to select a desired schedule.
 
 ![screenshot](images/schedule.png){: width=400 .center}
 
 ### From the Command Line Binary
 
-The list of available scehedules can be found by running the folowing command.
+The list of available schedules can be found by running the folowing command.
 
 ```
 $> phenix exp schedulers
