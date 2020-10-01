@@ -6,7 +6,6 @@
 
 Click on the `Experiments` tab. This will display all available experiments that
 the user has access to view or edit.
-<br>
 
 ### From the Command Line Binary
 
@@ -26,7 +25,6 @@ Clicking the `stopped` button will start the experiment; similarly the `started`
 button will stop the experiment. A progress bar is used to update the progress
 of starting an experiment. During the update to the experiment -- starting or
 stopping -- it will not be accessible or available to delete. 
-<br>
 
 ### From the Command Line Binary
 
@@ -81,7 +79,6 @@ Global Flags:
 
 Use "phenix experiment [command] --help" for more information about a command.
 ```
-<br>
 
 ## Create a New Experiment
 
@@ -94,13 +91,12 @@ Click the `+` button to the right of the filter field.
 ![screenshot](images/create_exp_dia.png){: width=400 .center}
 
 Enter `Experiment Name` and `Experiment Topology`, the remaining selection are
-optional. (In this example, `bennu` is an example Topology and is not included
+optional. (In this example, `bennu` is an example topology and is not included
 by default.)
-<br>
 
 ### From the Command Line Binary
 
-Three options are available from the command line. The only requiremnts are for
+Three options are available from the command line. The only requirements are for
 an experiment and topology name; scenario and base directory are optional.
 
 ```
@@ -141,7 +137,6 @@ Global Flags:
       --log.error-stderr           log fatal errors to STDERR
       --store.endpoint string      endpoint for storage service (default "bolt:///root/.phenix.bdb")
 ```
-<br>
 
 ## Scheduling an Experiment
 
@@ -152,7 +147,6 @@ Stopped Experiment component. Click on the hamburger menu to the right of the
 filter field and start button to select a desire schedule.
 
 ![screenshot](images/schedule.png){: width=400 .center}
-<br>
 
 ### From the Command Line Binary
 
