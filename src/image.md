@@ -11,7 +11,7 @@ $> phenix image list
 ## Creating a disk image
 
 The [`vmdb2` utility](https://github.com/glattercj/vmdb2) is required 
-in path to create the disk images.
+-- in path -- to create the disk images.
 
 ```
 $> phenix image create <image name>
@@ -148,7 +148,7 @@ and scripts from an existing image configuration.
 ```
 $> phenix image remove <configuration name> [flags]
 ```
-Flags are for the overlays, packages, and scripts that you need to remove.
+Flags are for the overlays, packages, and scripts that you want to remove.
 
 ### Update
 
