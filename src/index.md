@@ -57,14 +57,14 @@ locations.
 When run as root (not including sudo):
 
 ```
-* /etc/phenix/config.[yaml|json|toml]
+/etc/phenix/config.[yaml|json|toml]
 ```
 
 When run as regular user (including sudo):
 
 ```
-* $HOME/.config/phenix/config.[yaml|json|toml]
-* /etc/phenix/config.[yaml|json|toml]
+$HOME/.config/phenix/config.[yaml|json|toml]
+/etc/phenix/config.[yaml|json|toml]
 ```
 
 An example configuration file might look like the following:
