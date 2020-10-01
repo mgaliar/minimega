@@ -31,7 +31,7 @@ $> phenix vm info <experiment name>
 ```
 Or, run the following to see the information for a specific VM in an experiment.
 ```
-$> phenix vm info <experiment name> <VM name>
+$> phenix vm info <experiment name> <vm name>
 ```
 
 ## Packet Capture
@@ -111,11 +111,11 @@ click it to start.
 To pause a VM, run the following command.
 
 ```
-$> phenix vm pause <experiment name> <VM name>
+$> phenix vm pause <experiment name> <vm name>
 ```
 To resume a paused VM, run the following command.
 ```
-$> phenix vm resume <experiment name> <VM name>
+$> phenix vm resume <experiment name> <vm name>
 ```
 
 ## Redeploy a VM
@@ -132,7 +132,7 @@ to replicate original injections before you redeploy the VM.
 To redploy a VM, run the following command.
 
 ```
-$> phenix vm redeploy <experiment name> <VM name>
+$> phenix vm redeploy <experiment name> <vm name>
 ```
 
 ## Resume a VM
