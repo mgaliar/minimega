@@ -66,7 +66,7 @@ Each topology must have a unique name, which should be lowercase and not include
 spaces. In addition, each node in the topology must:
 
 - have a specified type (available types are defined in the
-  [schema](/schema/#node-schema)
+  [schema](schema.md#node-schema)
 - have a unique hostname
 - have an OS type of `linux` or `windows`
 - have a disk image assigned
@@ -86,7 +86,7 @@ Optional values for a node in the topology configuration can include:
 ### Example
 
 A contrived, four node example -- three VMs and a router -- is given below, and is
-driven by the [topology schema described here](/schema/#topology-schema).
+driven by the [topology schema described here](schema.md#topology-schema).
 
 ```
 apiVersion: phenix.sandia.gov/v1
@@ -218,8 +218,8 @@ spec:
 ## Scenario
 
 The `Scenario` configuration is used to define and configure one or more
-`phenix` apps ([default](/apps/#default-apps) or 
-[user](/apps/#user-apps)) for use on a topology. In this sense, a
+`phenix` apps ([default](apps.md#default-apps) or 
+[user](apps.md#user-apps)) for use on a topology. In this sense, a
 topology can have one or more scenarios associated with it, but a scenario can
 only be associated with a single topology.
 
@@ -315,7 +315,7 @@ spec:
 to form an experiment (though experiments do not require a scenario).
 
 Typically experiment configurations are [created
-automatically](/experiments/#create-a-new-experiment), but it is possible to
+automatically](experiments.md#create-a-new-experiment), but it is possible to
 create them manually using a configuration file similar to the one shown below.
 In this case, an experiment named `foobar` would be created based on an existing
 topology named `foobar` and an existing scenario named `foobar` (note that none
@@ -347,7 +347,7 @@ built in different clusters without having to actually move large disk image
 files.
 
 Typically image configurations are [created
-automatically](/image/#creating-a-disk-image), but users can also create them
+automatically](image.md#creating-a-disk-image), but users can also create them
 manually using a configuration file similar to the one shown below.
 
 ```
@@ -374,7 +374,7 @@ RBAC permissions are copied from the role configuration into the user
 configuration.
 
 There are six (6) default role configurations that get created automatically,
-and are described [here](/user-administration/#role). An example role
+and are described [here](user-administration.md#role). An example role
 configuration is shown below for completeness.
 
 ```

@@ -5,7 +5,7 @@ networking, hardware-in-the-loop devices, etc. in a layered, scripted, and
 codified manner. `phenix` itself includes four (4) default apps that get applied
 to every experiment by default. In addition to the default apps, it is possible
 to apply _user apps_ to an experiment using a
-[scenario](/configuration/#scenario) configuration.
+[scenario](configuration.md#scenario) configuration.
 
 ## Default Apps
 
@@ -31,7 +31,7 @@ and providing the experiment `metadata, spec, and status` as a JSON string over
     There will be three (3) top-level keys available in the JSON passed to a
     user app over `STDIN`: `metadata, spec, and status`. For the `configure and
     pre-start` stages, the `status` value will be null or otherwise ignored. The
-    `spec` value will be [experiment schema](/schema/#experiment-schema).
+    `spec` value will be [experiment schema](schema.md#experiment-schema).
 
 !!! tip
     You can run `phenix util app-json <exp name>` to see an example of what the

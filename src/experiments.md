@@ -91,8 +91,8 @@ Click the `+` button to the right of the filter field.
 ![screenshot](images/create_exp_dia.png){: width=400 .center}
 
 Enter `Experiment Name` and `Experiment Topology`, the remaining selection are
-optional. (In this example, `bennu` is an example topology and is not included
-by default. You will need to [create](/configuration.md) your own topology(ies).)
+optional. In this example, `bennu` is an example topology and is not included
+by default. You will need to [create](configuration.md) your own topology(ies).
 
 ### From the Command Line Binary
 
