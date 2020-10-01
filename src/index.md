@@ -9,7 +9,7 @@ This is the documentation for minimega's phenix orchestration tool.
 To build locally, you will need Golang v1.14 and Node v14.2 installed. Once
 installed (if not already), simply run `make bin/phenix`.
  
-If you don't want to install Golang and/or Node locally, you can also use Docker
+If you do not want to install Golang and/or Node locally, you can also use Docker
 to build phenix (assuming you have Docker installed). Simply run
 `./build-with-docker.sh` and once built, the phenix binary will be available at
 `bin/phenix`. See `./build-with-docker.sh -h` for usage details.
@@ -50,16 +50,16 @@ Use "phenix [command] --help" for more information about a command.
 
 Thanks to [viper](https://github.com/spf13/viper), it is possible to specify
 values for all of the global and `ui` command flags listed above using a
-configuration file. phenix looks for a configuration in the following locations.
-Global flags set at the command line will override settings in the configuration
-file.
+configuration file. Global flags set at the command line will override settings 
+in the configuration file. phenix looks for a configuration in the following 
+locations.
 
 ```
-Run as root (not including sudo):
+When run as root (not including sudo):
 
 * /etc/phenix/config.[yaml|json|toml]
 
-Run as regular user (including sudo):
+When run as regular user (including sudo):
 
 * $HOME/.config/phenix/config.[yaml|json|toml]
 * /etc/phenix/config.[yaml|json|toml]
