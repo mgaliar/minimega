@@ -85,7 +85,7 @@ Optional values for a node in the topology configuration can include:
 
 ### Example
 
-A contrived, four node example (three VMs and a router) is given below, and is
+A contrived, four node example -- three VMs and a router -- is given below, and is
 driven by the [topology schema described here](/schema/#topology-schema).
 
 ```
