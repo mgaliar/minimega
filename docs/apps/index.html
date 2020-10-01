@@ -17,7 +17,7 @@
     
     
       
-        <title>User Apps - phenix documentation</title>
+        <title>Apps - phenix documentation</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#user-apps" class="md-skip">
+        <a href="#apps" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              User Apps
+              Apps
             
           </span>
         </div>
@@ -200,6 +200,76 @@
       
       
 
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Apps
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="Apps" class="md-nav__link md-nav__link--active">
+      Apps
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#default-apps" class="md-nav__link">
+    Default Apps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-apps" class="md-nav__link">
+    User Apps
+  </a>
+  
+    <nav class="md-nav" aria-label="User Apps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
 
   <li class="md-nav__item">
     <a href="../configuration/" title="Configuration Files" class="md-nav__link">
@@ -260,63 +330,6 @@
       
       
 
-  
-
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        User Apps
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="./" title="User Apps" class="md-nav__link md-nav__link--active">
-      User Apps
-    </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#default-user-apps" class="md-nav__link">
-    Default User Apps
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#custom-user-apps" class="md-nav__link">
-    Custom User Apps
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
-  </li>
-
-    
-      
-      
-      
-
 
   <li class="md-nav__item">
     <a href="../vms/" title="VMs" class="md-nav__link">
@@ -349,16 +362,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#default-user-apps" class="md-nav__link">
-    Default User Apps
+  <a href="#default-apps" class="md-nav__link">
+    Default Apps
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#custom-user-apps" class="md-nav__link">
-    Custom User Apps
+  <a href="#user-apps" class="md-nav__link">
+    User Apps
   </a>
+  
+    <nav class="md-nav" aria-label="User Apps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -374,46 +400,84 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/edit/master/docs/user-apps.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/edit/master/docs/apps.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="user-apps">User Apps<a class="headerlink" href="#user-apps" title="Permanent link">&para;</a></h1>
-<p>This is the documentation for phenix's user apps.</p>
-<h2 id="default-user-apps">Default User Apps<a class="headerlink" href="#default-user-apps" title="Permanent link">&para;</a></h2>
-<ul>
-<li><code>app.go</code>: configures and starts user apps.</li>
-<li><code>ntp.go</code>: configures a NTP server into the experiment infrastructure.</li>
-<li><code>option.go</code>: ??? options in user apps ???</li>
-<li><code>serial.go</code>: configures a Serial interface on a VM image.</li>
-<li><code>startup.go</code>: configures minimega startup injections based on OS type.</li>
-<li><code>user.go</code>: used to shell out with JSON payload to customer user apps.</li>
-<li><code>vyatta.go</code>: the Vyatta user app is used to customize a vyatta router image. 
-  This includes setting interfaces, ACL rules, IPSec VPN settings, etc.</li>
-</ul>
-<div class="admonition todo">
-<p class="admonition-title">Todo</p>
-<p>Add something more </p>
-<p><code>v1</code> of experiment data -- includes all experiment data in a single JSON or 
-YAML configuration file</p>
-<p><code>v2</code> of experiment data -- includes topology, experiment, and scenario YAML
-configuation files</p>
+                <h1 id="apps">Apps<a class="headerlink" href="#apps" title="Permanent link">&para;</a></h1>
+<p><code>phenix</code> apps provide a means of modifying an experiment topology, cluster
+networking, hardware-in-the-loop devices, etc. in a layered, scripted, and
+codified manner. <code>phenix</code> itself includes four (4) default apps that get applied
+to every experiment by default. In addition to the default apps, it is possible
+to apply <em>user apps</em> to an experiment using a
+<a href="/configuration/#scenario">scenario</a> configuration.</p>
+<h2 id="default-apps">Default Apps<a class="headerlink" href="#default-apps" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ntp</td>
+<td>provides/configures NTP service for experiment</td>
+</tr>
+<tr>
+<td>serial</td>
+<td>configures serial interfaces in VM images</td>
+</tr>
+<tr>
+<td>startup</td>
+<td>configures minimega startup injections based on OS type</td>
+</tr>
+<tr>
+<td>vyatta</td>
+<td>customizes Vyatta routers, including setting interfaces, ACL rules, etc.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-apps">User Apps<a class="headerlink" href="#user-apps" title="Permanent link">&para;</a></h2>
+<p><code>phenix</code> <em>user apps</em> are stand-alone executables that <code>phenix</code> shells out to at
+different stages of the experiment lifecycle (<code>configure, pre-start, post-start,
+and cleanup</code>). When <code>phenix</code> encounters an app in an experiment scenario that
+isn't a default app, it checks to see if an executable exists in its current
+<code>PATH</code> in the form of <code>phenix-app-&lt;app name&gt;</code>. If the executable exists,
+<code>phenix</code> shells out to it, providing the current lifecycle stage as an argument
+and providing the experiment <code>metadata, spec, and status</code> as a JSON string over
+<code>STDIN</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There will be three (3) top-level keys available in the JSON passed to a
+user app over <code>STDIN</code>: <code>metadata, spec, and status</code>. For the <code>configure and
+pre-start</code> stages, the <code>status</code> value will be null or otherwise ignored. The
+<code>spec</code> value will be <a href="/schema/#experiment-schema">experiment schema</a>.</p>
 </div>
-<p><br></p>
-<h2 id="custom-user-apps">Custom User Apps<a class="headerlink" href="#custom-user-apps" title="Permanent link">&para;</a></h2>
-<p>Customer user apps are interacted with through <code>stdin</code> and <code>stdout</code>. The phenix
-<code>user.app</code> will pass a JSON package through <code>stdin</code>. This JSON package will 
-contain the experiment data based on the schema published at <strong>{{FIXME}}</strong>. The
-phenix will block further actions and wait for <code>stdout</code> return of a JSON package
-from your custom user app. In addition to the JSON package, you should return
-an exit code of <code>0</code>. If you are returning log(s) or any error messages, those
-should be passed via a different <strong>{{WHAT_IS_BEST_TERM?}}</strong>.</p>
-<div class="admonition todo">
-<p class="admonition-title">Todo</p>
-<p>Examples; maybe the simple test app?</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can run <code>phenix util app-json &lt;exp name&gt;</code> to see an example of what the
+JSON that's passed to a user app looks like.</p>
 </div>
-<p>Example:</p>
+<p>The user app can modify the experiment at will, then return the updated
+JSON over <code>STDOUT</code> and exit with a <code>0</code> status. If the user app encounters an
+error, it can print any error messages to <code>STDERR</code> and exit with a non-zero
+status to signal to <code>phenix</code> that an error occurred.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>phenix</code> will only process updates to the <code>spec</code> value for the <code>configure
+and pre-start</code> stages, and will only process updates to the <code>status</code> value
+for the <code>post-start and cleanup</code> stages. More specifically, it will only
+process updates to <code>status.apps.&lt;app name&gt;</code>, which can be anything the app
+wants it to be (e.g. a simple string, an array, or a map/dictionary).</p>
+</div>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Below is a very contrived example of a simple <em>user app</em> that changes the disk
+image used for every node in the experiment topology. Assuming the name of the
+executable for this app as <code>phenix-app-image-changer</code>, it could be applied to a
+topology by including a scenario in an experiment that includes an experiment
+app named <code>image-changer</code>.</p>
 <div class="codehilite"><pre><span></span><code>import json, sys
 
 
@@ -426,13 +490,23 @@ def main() :
         eprint(&quot;must pass exactly one argument on the command line&quot;)
         sys.exit(1)
 
-    spec = json.loads(sys.stdin.read())
+
+    raw = sys.stdin.read()
+
+    if sys.argv[1] != &#39;pre-start&#39;:
+        print(raw)
+        sys.exit(0)
+
+
+    exp = json.loads(raw)
+    spec = exp[&#39;spec&#39;]
 
     for n in spec[&#39;topology&#39;][&#39;nodes&#39;]:
         for d in n[&#39;hardware&#39;][&#39;drives&#39;]:
             d[&#39;image&#39;] = &#39;m$.qc2&#39;
 
-    print(json.dumps(spec))
+
+    print(json.dumps(exp))
 </code></pre></div>
                 
               

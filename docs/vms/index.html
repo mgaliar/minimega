@@ -202,6 +202,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../apps/" title="Apps" class="md-nav__link">
+      Apps
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../configuration/" title="Configuration Files" class="md-nav__link">
       Configuration Files
     </a>
@@ -252,18 +264,6 @@
   <li class="md-nav__item">
     <a href="../user-administration/" title="User Administration in phēnix" class="md-nav__link">
       User Administration in phēnix
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../user-apps/" title="User Apps" class="md-nav__link">
-      User Apps
     </a>
   </li>
 
@@ -387,10 +387,10 @@
       
         <li class="md-nav__item">
   <a href="#modify-the-network-connectivity" class="md-nav__link">
-    Modify the network connectivity
+    Modify the Network Connectivity
   </a>
   
-    <nav class="md-nav" aria-label="Modify the network connectivity">
+    <nav class="md-nav" aria-label="Modify the Network Connectivity">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -633,10 +633,10 @@
       
         <li class="md-nav__item">
   <a href="#modify-the-network-connectivity" class="md-nav__link">
-    Modify the network connectivity
+    Modify the Network Connectivity
   </a>
   
-    <nav class="md-nav" aria-label="Modify the network connectivity">
+    <nav class="md-nav" aria-label="Modify the Network Connectivity">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -789,8 +789,7 @@
 <p>The experiment must be started; click on the experiment name to enter the
 Running Experiment component. Within that component, click on the VM name and
 you will be presented with a VM information modal.</p>
-<p><img alt="screenshot" class="center" src="../images/vm_diag.png" width="400" />
-<br></p>
+<p><img alt="screenshot" class="center" src="../images/vm_diag.png" width="400" /></p>
 <p>Available commands</p>
 <ul>
 <li><code>restore</code> a snapshot by clicking the play button next to the desired snapshot name.</li>
@@ -802,20 +801,23 @@ you will be presented with a VM information modal.</p>
 * <code>redeploy</code> a running VM with the yellow power button
 * <code>kill</code> a running VM with the trash can </p>
 <h3 id="from-the-command-line-binary">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary" title="Permanent link">&para;</a></h3>
-<p>There are two options for displaying the information for VMs in an experiment. First run the following command to see information for all VMs in a given experiment.</p>
+<p>There are two options for displaying the information for VMs in an experiment. First run 
+the following command to see information for all VMs in a given experiment.</p>
 <div class="codehilite"><pre><span></span><code>$&gt; phenix vm info &lt;experiment name&gt;
 </code></pre></div>
 
 
-<p>Or ... run the following to see the information for a specific VM in an experiment.</p>
-<div class="codehilite"><pre><span></span><code>$&gt; phenix vm info &lt;experiment name&gt;/&lt;VM name&gt;
+<p>Or, run the following to see the information for a specific VM in an experiment.</p>
+<div class="codehilite"><pre><span></span><code>$&gt; phenix vm info &lt;experiment name&gt; &lt;vm name&gt;
 </code></pre></div>
 
 
-<p><br></p>
 <h2 id="packet-capture">Packet Capture<a class="headerlink" href="#packet-capture" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_1">From the Web-UI<a class="headerlink" href="#from-the-web-ui_1" title="Permanent link">&para;</a></h3>
-<p>Click on the name of the network tap on a running VM in a started experiment to start a packet capture. The name of the network tap will turn green once a packet capture has started. It is possible to start captures on multiple network taps. However, we you stop packet capture, it will stop captures on all network taps.</p>
+<p>Click on the name of the network tap on a running VM in a started experiment to 
+start a packet capture. The name of the network tap will turn green once a packet 
+capture has started. It is possible to start captures on multiple network taps. 
+However, when you stop packet capture, it will stop captures on all network taps.</p>
 <h3 id="from-the-command-line-binary_1">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_1" title="Permanent link">&para;</a></h3>
 <p>To start a packet capture, run the following command.</p>
 <div class="codehilite"><pre><span></span><code>$&gt; phenix vm capture start &lt;experiment name&gt; &lt;vm name&gt; &lt;iface index&gt; &lt;/path/to/out file&gt;
@@ -827,20 +829,24 @@ you will be presented with a VM information modal.</p>
 </code></pre></div>
 
 
-<p><br></p>
 <h2 id="kill-a-vm">Kill a VM<a class="headerlink" href="#kill-a-vm" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_2">From the Web-UI<a class="headerlink" href="#from-the-web-ui_2" title="Permanent link">&para;</a></h3>
-<p>Click on a running VM in a started experiment to access the VM information modal. The red trash can icon to the far right of the modal footer will kill that VM. <em>Note</em>: if you stop and then start the experiment again, that VM will run again per the experiment configuration.</p>
+<p>Click on a running VM in a started experiment to access the VM information modal. 
+The red trash can icon to the far right of the modal footer will kill that VM. 
+<em>Note</em>: if you stop and then start the experiment again, that VM will run again 
+per the experiment configuration.</p>
 <h3 id="from-the-command-line-binary_2">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_2" title="Permanent link">&para;</a></h3>
 <p>To kill a VM, run the following command.</p>
 <div class="codehilite"><pre><span></span><code>$&gt; phenix vm kill &lt;experiment name&gt; &lt;vm name&gt;
 </code></pre></div>
 
 
-<p><br></p>
-<h2 id="modify-the-network-connectivity">Modify the network connectivity<a class="headerlink" href="#modify-the-network-connectivity" title="Permanent link">&para;</a></h2>
+<h2 id="modify-the-network-connectivity">Modify the Network Connectivity<a class="headerlink" href="#modify-the-network-connectivity" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_3">From the Web-UI<a class="headerlink" href="#from-the-web-ui_3" title="Permanent link">&para;</a></h3>
-<p>Click on the network for the desired VM in the Running Component to modify the settings. Select from a pull down what network you want to switch the VM interface you clicked on to. To revert back to previous setting, simply repeat selecting the network interface you wish to change, and select the previous network setting.</p>
+<p>Click on the network for the desired VM in the Running Component to modify the 
+settings. Select from a pull down what network you want to switch the VM interface 
+you clicked on to. To revert back to previous setting, simply repeat selecting the 
+network interface you wish to change, and select the previous network setting.</p>
 <h3 id="from-the-command-line-binary_3">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_3" title="Permanent link">&para;</a></h3>
 <p>To connect a VM network interface to a different network, run the following command.</p>
 <div class="codehilite"><pre><span></span><code>$&gt; phenix vm net connect &lt;experiment name&gt; &lt;vm name&gt; &lt;iface index&gt; &lt;vlan id&gt;
@@ -852,35 +858,40 @@ you will be presented with a VM information modal.</p>
 </code></pre></div>
 
 
-<p><br></p>
 <h2 id="pause-a-vm">Pause a VM<a class="headerlink" href="#pause-a-vm" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_4">From the Web-UI<a class="headerlink" href="#from-the-web-ui_4" title="Permanent link">&para;</a></h3>
-<p>Click on the name of a running VM in a started experiment to access the VM information modal. To pause a VM, click on the pause button (pause button, furthest button to the left). To start a paused VM, that same button will become a green play button; simply click it to start.</p>
+<p>Click on the name of a running VM in a started experiment to access the VM information 
+modal. To pause a VM, click on the pause button (pause button, furthest button to the 
+left). To start a paused VM, that same button will become a green play button; simply 
+click it to start.</p>
 <h3 id="from-the-command-line-binary_4">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_4" title="Permanent link">&para;</a></h3>
 <p>To pause a VM, run the following command.</p>
-<div class="codehilite"><pre><span></span><code>$&gt; phenix vm pause &lt;experiment name&gt; &lt;VM name&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix vm pause &lt;experiment name&gt; &lt;vm name&gt;
 </code></pre></div>
 
 
 <p>To resume a paused VM, run the following command.</p>
-<div class="codehilite"><pre><span></span><code>$&gt; phenix vm resume &lt;experiment name&gt; &lt;VM name&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix vm resume &lt;experiment name&gt; &lt;vm name&gt;
 </code></pre></div>
 
 
-<p><br></p>
 <h2 id="redeploy-a-vm">Redeploy a VM<a class="headerlink" href="#redeploy-a-vm" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_5">From the Web-UI<a class="headerlink" href="#from-the-web-ui_5" title="Permanent link">&para;</a></h3>
-<p>Click on the name of a running VM in a started experiment to access the VM information modal. To redeploy a VM, click on the redeploy button (yellow power button, second from the right). You will be able to modify the settings for CPU, Memory, Disk, and whether to replicate original injections before you redeploy the VM.</p>
+<p>Click on the name of a running VM in a started experiment to access the VM information 
+modal. To redeploy a VM, click on the redeploy button (yellow power button, second from 
+the right). You will be able to modify the settings for CPU, Memory, Disk, and whether 
+to replicate original injections before you redeploy the VM.</p>
 <h3 id="from-the-command-line-binary_5">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_5" title="Permanent link">&para;</a></h3>
 <p>To redploy a VM, run the following command.</p>
-<div class="codehilite"><pre><span></span><code>$&gt; phenix vm redeploy &lt;experiment name&gt; &lt;VM name&gt;
+<div class="codehilite"><pre><span></span><code>$&gt; phenix vm redeploy &lt;experiment name&gt; &lt;vm name&gt;
 </code></pre></div>
 
 
-<p><br></p>
 <h2 id="resume-a-vm">Resume a VM<a class="headerlink" href="#resume-a-vm" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_6">From the Web-UI<a class="headerlink" href="#from-the-web-ui_6" title="Permanent link">&para;</a></h3>
-<p>Click on the name of the paused VM in a started experiment to access the VM information modal. Click the green play button (previously the pause button, furthest button to the left).</p>
+<p>Click on the name of the paused VM in a started experiment to access the VM information 
+modal. Click the green play button (previously the pause button, furthest button to the 
+left).</p>
 <h3 id="from-the-command-line-binary_6">From the Command Line Binary<a class="headerlink" href="#from-the-command-line-binary_6" title="Permanent link">&para;</a></h3>
 <p>To resume a paused VM, run the following command.</p>
 <div class="codehilite"><pre><span></span><code>$&gt; phenix vm resume &lt;experiment name&gt; &lt;vm name&gt;
@@ -891,13 +902,15 @@ you will be presented with a VM information modal.</p>
 <h2 id="modify-vm-settings">Modify VM Settings<a class="headerlink" href="#modify-vm-settings" title="Permanent link">&para;</a></h2>
 <h3 id="from-the-web-ui_7">From the Web-UI<a class="headerlink" href="#from-the-web-ui_7" title="Permanent link">&para;</a></h3>
 <p>There are two ways to modify VM settings:
-1. Click on a stopped experiment to access the Stopped Component. You are able to edit the following:
+1. Click on a stopped experiment to access the Stopped Component. You are able to edit the 
+following:
     * Host name
     * CPUs
     * Memory
     * Disk
     * Do not boot flag
-2. From a running experiment, click on the VM name and then the redeploy button (yellow power button, second from the right on the modal footer). You are able to edit the following:
+2. From a running experiment, click on the VM name and then the redeploy button (yellow 
+power button, second from the right on the modal footer). You are able to edit the following:
     * CPU
     * Memory
     * Disk

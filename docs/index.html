@@ -267,6 +267,18 @@
 
 
   <li class="md-nav__item">
+    <a href="apps/" title="Apps" class="md-nav__link">
+      Apps
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="configuration/" title="Configuration Files" class="md-nav__link">
       Configuration Files
     </a>
@@ -317,18 +329,6 @@
   <li class="md-nav__item">
     <a href="user-administration/" title="User Administration in phēnix" class="md-nav__link">
       User Administration in phēnix
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="user-apps/" title="User Apps" class="md-nav__link">
-      User Apps
     </a>
   </li>
 
@@ -420,12 +420,12 @@
                 
                 
                 <h1 id="welcome">Welcome<a class="headerlink" href="#welcome" title="Permanent link">&para;</a></h1>
-<p>This is the documentation for minimega's phenix orchestration tool.</p>
+<p>This is the documentation for the minimega phenix orchestration tool.</p>
 <h2 id="getting-started-with-phenix">Getting Started with phenix<a class="headerlink" href="#getting-started-with-phenix" title="Permanent link">&para;</a></h2>
 <h3 id="building">Building<a class="headerlink" href="#building" title="Permanent link">&para;</a></h3>
 <p>To build locally, you will need Golang v1.14 and Node v14.2 installed. Once
-installed (if not already), simply run <code>make bin/phenix</code>.</p>
-<p>If you don't want to install Golang and/or Node locally, you can also use Docker
+those are installed (if not already), simply run <code>make bin/phenix</code>.</p>
+<p>If you do not want to install Golang and/or Node locally, you can also use Docker
 to build phenix (assuming you have Docker installed). Simply run
 <code>./build-with-docker.sh</code> and once built, the phenix binary will be available at
 <code>bin/phenix</code>. See <code>./build-with-docker.sh -h</code> for usage details.</p>
@@ -463,17 +463,17 @@ Use &quot;phenix [command] --help&quot; for more information about a command.
 
 <p>Thanks to <a href="https://github.com/spf13/viper">viper</a>, it is possible to specify
 values for all of the global and <code>ui</code> command flags listed above using a
-configuration file. phenix looks for a configuration in the following locations.
-Global flags set at the command line will override settings in the configuration
-file.</p>
-<div class="codehilite"><pre><span></span><code>Run as root (not including sudo):
+configuration file. Global flags set at the command line will override settings 
+in the configuration file. phenix looks for a configuration in the following 
+locations.</p>
+<p>When run as root (not including sudo):</p>
+<div class="codehilite"><pre><span></span><code>/etc/phenix/config.[yaml|json|toml]
+</code></pre></div>
 
-* /etc/phenix/config.[yaml|json|toml]
 
-Run as regular user (including sudo):
-
-* $HOME/.config/phenix/config.[yaml|json|toml]
-* /etc/phenix/config.[yaml|json|toml]
+<p>When run as regular user (including sudo):</p>
+<div class="codehilite"><pre><span></span><code>$HOME/.config/phenix/config.[yaml|json|toml]
+/etc/phenix/config.[yaml|json|toml]
 </code></pre></div>
 
 

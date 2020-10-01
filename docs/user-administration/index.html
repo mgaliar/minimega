@@ -202,6 +202,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../apps/" title="Apps" class="md-nav__link">
+      Apps
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../configuration/" title="Configuration Files" class="md-nav__link">
       Configuration Files
     </a>
@@ -304,14 +316,14 @@
         
           <li class="md-nav__item">
   <a href="#updating-users" class="md-nav__link">
-    Updating users
+    Updating Users
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#role" class="md-nav__link">
-    Role
+  <a href="#roles" class="md-nav__link">
+    Roles
   </a>
   
 </li>
@@ -470,8 +482,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#default-roles" class="md-nav__link">
-    Default Roles
+  <a href="#built-in-roles" class="md-nav__link">
+    Built-In Roles
   </a>
   
 </li>
@@ -485,18 +497,6 @@
   
 </nav>
     
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../user-apps/" title="User Apps" class="md-nav__link">
-      User Apps
-    </a>
   </li>
 
     
@@ -559,14 +559,14 @@
         
           <li class="md-nav__item">
   <a href="#updating-users" class="md-nav__link">
-    Updating users
+    Updating Users
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#role" class="md-nav__link">
-    Role
+  <a href="#roles" class="md-nav__link">
+    Roles
   </a>
   
 </li>
@@ -725,8 +725,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#default-roles" class="md-nav__link">
-    Default Roles
+  <a href="#built-in-roles" class="md-nav__link">
+    Built-In Roles
   </a>
   
 </li>
@@ -766,28 +766,33 @@
 <p><img alt="screenshot" class="center" src="../images/create_new_account.png" width="400" /></p>
 </li>
 <li>
-<p>From the <code>Users</code> tab, click the <code>+</code> button to <code>create a new user</code>. Here the
-   administrator will add the role(s) and resource name(s). </p>
-<p><img alt="screenshot" class="center" src="../images/create_a_new_user.png" width="400" />
-<br></p>
+<p>From the <code>Users</code> tab, click the <code>+</code> button to create a new user. Here the
+   administrator will add the <a href="#user-administration">role(s) and resource
+   name(s)</a>. </p>
+<p><img alt="screenshot" class="center" src="../images/create_a_new_user.png" width="400" /></p>
 </li>
 </ol>
 <h2 id="login">Login<a class="headerlink" href="#login" title="Permanent link">&para;</a></h2>
-<p>The login page is self-descriptive. Using the <code>Remember me</code> checkbox will set a token to local storage so that you can remove the requirement to enter a <code>Username</code> and <code>Password</code> each time the page or site is reloaded. </p>
-<p>If an administrator starts the UI server with the following command, authentication is enabled:</p>
+<p>The login page is self-descriptive. Using the <code>Remember me</code> checkbox will set a
+token to local storage so that you can remove the requirement to enter a
+<code>Username</code> and <code>Password</code> each time the page or site is reloaded. </p>
+<p>If an administrator starts the UI server with the following command,
+authentication is enabled:</p>
 <div class="codehilite"><pre><span></span><code>$&gt; phenix ui -k &lt;some_string&gt;
 </code></pre></div>
 
 
-<p>Without the <code>-k</code> (or <code>--jwt-signing-key</code>), authentication is disabled.
-<br></p>
+<p>Without the <code>-k</code> (or <code>--jwt-signing-key</code>), authentication is disabled.</p>
 <h2 id="user-administration">User Administration<a class="headerlink" href="#user-administration" title="Permanent link">&para;</a></h2>
-<h3 id="updating-users">Updating users<a class="headerlink" href="#updating-users" title="Permanent link">&para;</a></h3>
-<p>An administrator is able to click on the username on the table in the Users tab to update a user. They can update <code>First Name</code> or <code>Last Name</code>, <code>Role</code>, or <code>Resource Name(s)</code>.
-<br></p>
-<h3 id="role">Role<a class="headerlink" href="#role" title="Permanent link">&para;</a></h3>
-<p><code>Global Admin</code> is the administrator level account and has access to all capabilities, to include user management. They also have access to all resources.</p>
-<p>Key: E - experiment resource, V - VM resource, U - user resource</p>
+<h3 id="updating-users">Updating Users<a class="headerlink" href="#updating-users" title="Permanent link">&para;</a></h3>
+<p>An administrator is able to click on the username on the table in the Users tab
+to update a user. They can update <code>First Name</code> or <code>Last Name</code>, <code>Role</code>,
+<code>Experiment Names</code>, and <code>Resource Name(s)</code>.</p>
+<h3 id="roles">Roles<a class="headerlink" href="#roles" title="Permanent link">&para;</a></h3>
+<p><code>Global Admin</code> is the administrator level account and has access to all
+capabilities, to include user management. Global Admins also have access to all
+resources. The following table provides a high-level overview of all the
+available roles and their access rights.</p>
 <table>
 <thead>
 <tr>
@@ -862,18 +867,9 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr>
-<td><br></td>
-<td align="left"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
 </tbody>
 </table>
+<p>Key: E - experiment resource, V - VM resource, U - user resource</p>
 <h3 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h3>
 <h4 id="resource-experiments">Resource: <code>experiments</code><a class="headerlink" href="#resource-experiments" title="Permanent link">&para;</a></h4>
 <table>
@@ -1831,7 +1827,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="default-roles">Default Roles<a class="headerlink" href="#default-roles" title="Permanent link">&para;</a></h3>
+<h3 id="built-in-roles">Built-In Roles<a class="headerlink" href="#built-in-roles" title="Permanent link">&para;</a></h3>
 <p>See the <a href="#resources">previous</a> section for policy resource and verb
 descriptions.</p>
 <div class="codehilite"><pre><span></span><code>case GLOBAL_ADMIN:

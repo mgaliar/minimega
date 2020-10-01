@@ -218,8 +218,8 @@ spec:
 ## Scenario
 
 The `Scenario` configuration is used to define and configure one or more
-`phenix` apps ([default](/apps.md#default-user-apps) or 
-[user](/apps.md#custom-user-apps)) for use on a topology. In this sense, a
+`phenix` apps ([default](/apps/#default-apps) or 
+[user](/apps/#user-apps)) for use on a topology. In this sense, a
 topology can have one or more scenarios associated with it, but a scenario can
 only be associated with a single topology.
 
