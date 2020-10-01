@@ -616,7 +616,7 @@ node:
 spaces. In addition, each node in the topology must:</p>
 <ul>
 <li>have a specified type (available types are defined in the
-  <a href="/schema/#node-schema">schema</a></li>
+  <a href="../schema/#node-schema">schema</a></li>
 <li>have a unique hostname</li>
 <li>have an OS type of <code>linux</code> or <code>windows</code></li>
 <li>have a disk image assigned</li>
@@ -634,7 +634,7 @@ spaces. In addition, each node in the topology must:</p>
 </ul>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>A contrived, four node example -- three VMs and a router -- is given below, and is
-driven by the <a href="/schema/#topology-schema">topology schema described here</a>.</p>
+driven by the <a href="../schema/#topology-schema">topology schema described here</a>.</p>
 <div class="codehilite"><pre><span></span><code>apiVersion: phenix.sandia.gov/v1
 kind: Topology
 metadata:
@@ -764,8 +764,8 @@ spec:
 
 <h2 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h2>
 <p>The <code>Scenario</code> configuration is used to define and configure one or more
-<code>phenix</code> apps (<a href="/apps/#default-apps">default</a> or 
-<a href="/apps/#user-apps">user</a>) for use on a topology. In this sense, a
+<code>phenix</code> apps (<a href="../apps/#default-apps">default</a> or 
+<a href="../apps/#user-apps">user</a>) for use on a topology. In this sense, a
 topology can have one or more scenarios associated with it, but a scenario can
 only be associated with a single topology.</p>
 <p>There are two categories of <code>phenix</code> apps that can be configured in a scenario: 1) experiment, 
@@ -851,7 +851,7 @@ scenario configuration, not just user apps.</p>
 <h2 id="experiment">Experiment<a class="headerlink" href="#experiment" title="Permanent link">&para;</a></h2>
 <p><code>Experiment</code> configurations represent the combination of topologies and scenarios
 to form an experiment (though experiments do not require a scenario).</p>
-<p>Typically experiment configurations are <a href="/experiments/#create-a-new-experiment">created
+<p>Typically experiment configurations are <a href="../experiments/#create-a-new-experiment">created
 automatically</a>, but it is possible to
 create them manually using a configuration file similar to the one shown below.
 In this case, an experiment named <code>foobar</code> would be created based on an existing
@@ -879,10 +879,44 @@ version of <a href="https://github.com/glattercj/vmdb2">vmdb2</a>. Representing 
 image in a configuration like this allows for the same disk image to easily be
 built in different clusters without having to actually move large disk image
 files.</p>
-<p>Typically image configurations are <a href="/image/#creating-a-disk-image">created
+<p>Typically image configurations are <a href="../image/#creating-a-disk-image">created
 automatically</a>, but users can also create them
 manually using a configuration file similar to the one shown below.</p>
-<div class="codehilite"><pre><span></span><code>TODO
+<div class="codehilite"><pre><span></span><code>apiVersion: phenix.sandia.gov/v1
+kind: Image
+metadata:
+  name: foobar
+spec:
+  format: qcow2
+  mirror: http://us.archive.ubuntu.com/ubuntu/
+  packages:
+  - initramfs-tools
+  - net-tools
+  - isc-dhcp-client
+  - openssh-server
+  - init
+  - iputils-ping
+  - vim
+  - less
+  - netbase
+  - curl
+  - ifupdown
+  - dbus
+  - linux-image-generic
+  - linux-headers-generic
+  release: bionic
+  size: 5G
+  variant: minbase
+  scripts:
+    POSTBUILD_APT_CLEANUP: |
+      apt clean || apt-get clean || echo &quot;unable to clean apt cache&quot;
+    POSTBUILD_NO_ROOT_PASSWD: |
+      sed -i &#39;s/nullok_secure/nullok/&#39; /etc/pam.d/common-auth
+      sed -i &#39;s/#PermitRootLogin prohibit-password/PermitRootLogin yes/&#39; /etc/ssh/sshd_config
+      sed -i &#39;s/#PermitEmptyPasswords no/PermitEmptyPasswords yes/&#39; /etc/ssh/sshd_config
+      sed -i &#39;s/PermitRootLogin prohibit-password/PermitRootLogin yes/&#39; /etc/ssh/sshd_config
+      sed -i &#39;s/PermitEmptyPasswords no/PermitEmptyPasswords yes/&#39; /etc/ssh/sshd_config
+      passwd -d root
 </code></pre></div>
 
 
@@ -891,7 +925,31 @@ manually using a configuration file similar to the one shown below.</p>
 password, and RBAC permissions). Typically user configurations are created
 automatically when a UI admin creates a new user via the UI, but they can also
 be created manually using a configuration file similar to the one shown below.</p>
-<div class="codehilite"><pre><span></span><code>TODO
+<div class="codehilite"><pre><span></span><code>apiVersion: phenix.sandia.gov/v1
+kind: User
+metadata:
+  name: admin@foo.com
+spec:
+  username: admin@foo.com
+  first_name: Admin
+  last_name: Istrator
+  password: ****************
+  rbac:
+    roleName: Global Admin
+    policies:
+    - resourceNames:
+      - &#39;*&#39;
+      resources:
+      - &#39;*&#39;
+      - &#39;*/*&#39;
+      verbs:
+      - &#39;*&#39;
+    - resourceNames:
+      - admin@foo.com
+      resources:
+      - users
+      verbs:
+      - get
 </code></pre></div>
 
 
@@ -902,9 +960,22 @@ that user should have is specified, and using that role name the appropriate
 RBAC permissions are copied from the role configuration into the user
 configuration.</p>
 <p>There are six (6) default role configurations that get created automatically,
-and are described <a href="/user-administration/#role">here</a>. An example role
+and are described <a href="../user-administration/#roles">here</a>. An example role
 configuration is shown below for completeness.</p>
-<div class="codehilite"><pre><span></span><code>TODO
+<div class="codehilite"><pre><span></span><code>apiVersion: phenix.sandia.gov/v1
+kind: Role
+metadata:
+  name: global-admin
+spec:
+  roleName: Global Admin
+  policies:
+  - resourceNames:
+    - &#39;*&#39;
+    resources:
+    - &#39;*&#39;
+    - &#39;*/*&#39;
+    verbs:
+    - &#39;*&#39;
 </code></pre></div>
                 
               

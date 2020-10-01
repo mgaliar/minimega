@@ -351,7 +351,41 @@ automatically](image.md#creating-a-disk-image), but users can also create them
 manually using a configuration file similar to the one shown below.
 
 ```
-TODO
+apiVersion: phenix.sandia.gov/v1
+kind: Image
+metadata:
+  name: foobar
+spec:
+  format: qcow2
+  mirror: http://us.archive.ubuntu.com/ubuntu/
+  packages:
+  - initramfs-tools
+  - net-tools
+  - isc-dhcp-client
+  - openssh-server
+  - init
+  - iputils-ping
+  - vim
+  - less
+  - netbase
+  - curl
+  - ifupdown
+  - dbus
+  - linux-image-generic
+  - linux-headers-generic
+  release: bionic
+  size: 5G
+  variant: minbase
+  scripts:
+    POSTBUILD_APT_CLEANUP: |
+      apt clean || apt-get clean || echo "unable to clean apt cache"
+    POSTBUILD_NO_ROOT_PASSWD: |
+      sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
+      sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+      sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
+      sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+      sed -i 's/PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
+      passwd -d root
 ```
 
 ## User
@@ -362,7 +396,31 @@ automatically when a UI admin creates a new user via the UI, but they can also
 be created manually using a configuration file similar to the one shown below.
 
 ```
-TODO
+apiVersion: phenix.sandia.gov/v1
+kind: User
+metadata:
+  name: admin@foo.com
+spec:
+  username: admin@foo.com
+  first_name: Admin
+  last_name: Istrator
+  password: ****************
+  rbac:
+    roleName: Global Admin
+    policies:
+    - resourceNames:
+      - '*'
+      resources:
+      - '*'
+      - '*/*'
+      verbs:
+      - '*'
+    - resourceNames:
+      - admin@foo.com
+      resources:
+      - users
+      verbs:
+      - get
 ```
 
 ## Role
@@ -374,9 +432,22 @@ RBAC permissions are copied from the role configuration into the user
 configuration.
 
 There are six (6) default role configurations that get created automatically,
-and are described [here](user-administration.md#role). An example role
+and are described [here](user-administration.md#roles). An example role
 configuration is shown below for completeness.
 
 ```
-TODO
+apiVersion: phenix.sandia.gov/v1
+kind: Role
+metadata:
+  name: global-admin
+spec:
+  roleName: Global Admin
+  policies:
+  - resourceNames:
+    - '*'
+    resources:
+    - '*'
+    - '*/*'
+    verbs:
+    - '*'
 ```
