@@ -13,8 +13,8 @@ There are two primary ways to create new users.
 
     ![screenshot](images/create_new_account.png){: width=400 .center}
 
-2. From the `Users` tab, click the `+` button to `create a new user`. Here the
-   administrator will add the role(s) and resource name(s). 
+2. From the `Users` tab, click the `+` button to create a new user. Here the
+   administrator will add the [role(s) and resource name(s)](#user-administration). 
 
     ![screenshot](images/create_a_new_user.png){: width=400 .center}
 
