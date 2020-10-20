@@ -183,7 +183,6 @@ throug the viewer.
 
 import Running from "@/assets/running.svg";
 import NotRunning from "@/assets/running-mono.svg";
-
 import Error from "@/assets/error.svg";
 import Stop from "@/assets/stop.svg";
 import VLAN from "@/assets/vlan.svg";
@@ -193,24 +192,30 @@ import CentOSMono from "@/assets/centos-mono.svg";
 import CentOSStop from "@/assets/centos-stop.svg";
 import CentOS from "@/assets/centos.svg";
 
-import Firewall from "@/assets/firewall.svg";
+import FirewallError from "@/assets/firewall-error.svg"; 
 import FirewallMono from "@/assets/firewall-mono.svg";
+import FirewallStop from "@/assets/firewall-stop.svg";
+import Firewall from "@/assets/firewall.svg";
 
 import LinuxError from "@/assets/linux-error.svg";
 import LinuxMono from "@/assets/linux-mono.svg";
 import LinuxStop from "@/assets/linux-stop.svg";
 import Linux from "@/assets/linux.svg";
 
-import Printer from "@/assets/printer.svg";
+import PrinterError from "@/assets/printer-error.svg";
 import PrinterMono from "@/assets/printer-mono.svg";
+import PrinterStop from "@/assets/printer-stop.svg";
+import Printer from "@/assets/printer.svg";
 
 import RedHatError from "@/assets/redhat-error.svg";
 import RedHatMono from "@/assets/redhat-mono.svg";
 import RedHatStop from "@/assets/redhat-stop.svg";
 import RedHat from "@/assets/redhat.svg";
 
-import Router from "@/assets/router.svg";
+import RouterError from "@/assets/router-error.svg";
 import RouterMono from "@/assets/router-mono.svg";
+import RouterStop from "@/assets/router-stop.svg";
+import Router from "@/assets/router.svg";
 
 import WindowsError from "@/assets/windows-error.svg";
 import WindowsMono from "@/assets/windows-mono.svg";
@@ -283,31 +288,59 @@ export default {
     the imports above.
     */
     updateImage () {
-      for ( var node = 0; node < this.network.nodes.length; node++ ) {
-        
-        console.log(this.network.nodes[ node ]);
-        
-        if ( this.network.nodes[ node ].status == 'interface' ) {
-          this.network.nodes[ node ].image = VLAN;
-          this.onMemNetwork.nodes[ node ].image = VLAN;
+      const mapper = {
+        'linux': {
+          'running':    Linux,
+          'notrunning': LinuxMono,
+          'notboot':    LinuxStop,
+          'notdeploy':  LinuxError,
+        },
+        'centos': {
+          'running':    CentOS,
+          'notrunning': CentOSMono,
+          'notboot':    CentOSStop,
+          'notdeploy':  CentOSError,
+        },
+        'rhel': {
+          'running':    RedHat,
+          'notrunning': RedHatMono,
+          'notboot':    RedHatStop,
+          'notdeploy':  RedHatError,
+        },
+        'windows': {
+          'running':    Windows,
+          'notrunning': WindowsMono,
+          'notboot':    WindowsStop,
+          'notdeploy':  WindowsError,
+        },
+        'router': {
+          'running':    Router,
+          'notrunning': RouterMono,
+          'notboot':    RouterStop,
+          'notdeploy':  RouterError,
+        },
+        'firewall': {
+          'running':    Firewall,
+          'notrunning': FirewallMono,
+          'notboot':    FirewallStop,
+          'notdeploy':  FirewallError,
+        },
+        'printer': {
+          'running':    Printer,
+          'notrunning': PrinterMono,
+          'notboot':    PrinterStop,
+          'notdeploy':  PrinterError,
         }
-        else if ( this.network.nodes[ node ].status == 'running' ) {
-          this.network.nodes[ node ].image = Linux;
-          this.onMemNetwork.nodes[ node ].image = Linux;
+      };
+
+      this.network.nodes.forEach(node => {
+        if ( node.image == 'interface' ) {
+          node.image = VLAN;
+          return;
         }
-        else if ( this.network.nodes[ node ].status == 'notrunning' ) {
-          this.network.nodes[ node ].image = LinuxMono;
-          this.onMemNetwork.nodes[ node ].image = LinuxMono;
-        }
-        else if ( this.network.nodes[ node ].status == 'notboot' ) {
-          this.network.nodes[ node ].image = LinuxStop;
-          this.onMemNetwork.nodes[ node ].image = LinuxStop;
-        }
-        else if ( this.network.nodes[ node ].status == 'notdeploy' ) {
-          this.network.nodes[ node ].image = LinuxError;
-          this.onMemNetwork.nodes[ node ].image = LinuxError;
-        }
-      }
+
+        node.image = mapper[node.image][node.status];
+      });
     },
 
     /*
