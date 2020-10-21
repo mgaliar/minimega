@@ -177,7 +177,7 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 	for _, err := range wg.Errors {
 		host := err.Meta["host"].(string)
-		printer.Printf("  [✗] failed to confirm networking on %s: %v\n", host, err.Error)
+		printer.Printf("  [✗] failed to confirm networking on %s: %v\n", host, err)
 	}
 
 	rand.Seed(time.Now().Unix())
