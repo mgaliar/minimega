@@ -76,7 +76,7 @@ func ScheduleC2ParallelCommand(cmd *C2ParallelCommand) {
 			if err != nil {
 				if errors.Is(err, ErrC2ClientNotActive) {
 					if time.Now().After(retryUntil) {
-						cmd.Wait.AddError(fmt.Errorf("C2 client took too long to activate"), cmd.Meta)
+						cmd.Wait.AddError(err, cmd.Meta)
 						return
 					}
 

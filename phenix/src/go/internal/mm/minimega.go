@@ -669,22 +669,36 @@ func (Minimega) WaitForC2Response(opts ...C2Option) (string, error) {
 	cmd.Columns = []string{"id", "responses"}
 	cmd.Filters = []string{"id=" + o.commandID}
 
-	for {
-		rows := mmcli.RunTabular(cmd)
+	// Multiple rows will come back for each command ID, one row per cluster host.
+	// Because the `ExecC2Command` sets the filter to a specific VM, only one of
+	// the rows will have a response since a VM can only run on a single cluster
+	// host.
 
-		if len(rows) == 0 {
-			return "", fmt.Errorf("no commands returned for ID %s", o.commandID)
+	err := func() error {
+		// FIXME: this for loop could run forever if a response never comes back...
+		for {
+			rows := mmcli.RunTabular(cmd)
+
+			if len(rows) == 0 {
+				return fmt.Errorf("no commands returned for ID %s", o.commandID)
+			}
+
+			if rid := rows[0]["id"]; rid != o.commandID {
+				return fmt.Errorf("wrong command returned: %s", rid)
+			}
+
+			for _, row := range rows {
+				if row["responses"] != "0" {
+					return nil
+				}
+			}
+
+			time.Sleep(1 * time.Second)
 		}
+	}()
 
-		if rid := rows[0]["id"]; rid != o.commandID {
-			return "", fmt.Errorf("wrong command returned: %s", rid)
-		}
-
-		if rows[0]["responses"] != "0" {
-			break
-		}
-
-		time.Sleep(1 * time.Second)
+	if err != nil {
+		return "", err
 	}
 
 	cmd.Command = fmt.Sprintf("cc response %s raw", o.commandID)

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"path/filepath"
@@ -124,9 +125,11 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 	var (
 		ns = exp.Spec.ExperimentName
-		// VMs to execute commands on (IP -> hostname mapping)
-		hosts = make(map[string]string)
-		// VLAN to IPs mapping
+		// Track hosts with active C2
+		c2Hosts = make(map[string]struct{})
+		// Track IP -> Hostname mapping
+		addrHosts = make(map[string]string)
+		// Track VLAN -> IPs mapping
 		vlans = make(map[string][]string)
 	)
 
@@ -148,6 +151,10 @@ func (SOH) PostStart(exp *types.Experiment) error {
 			continue
 		}
 
+		// Assume C2 is working in this host. The host will get removed from this
+		// mapping the first time C2 is proven to not be working.
+		c2Hosts[host] = struct{}{}
+
 		for _, iface := range node.Network.Interfaces {
 			if strings.EqualFold(iface.VLAN, "MGMT") {
 				continue
@@ -163,7 +170,7 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 			isNetworkingConfigured(wg, ns, host, cidr, iface.Gateway)
 
-			hosts[iface.Address] = node.General.Hostname
+			addrHosts[iface.Address] = host
 
 			vlans[iface.VLAN] = append(vlans[iface.VLAN], iface.Address)
 		}
@@ -173,11 +180,20 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	// as wait for each gateway to be reachable.
 	wg.Wait()
 
+	failedNetwork := make(map[string]struct{})
+
 	printer = color.New(color.FgRed)
 
 	for _, err := range wg.Errors {
 		host := err.Meta["host"].(string)
+
 		printer.Printf("  [✗] failed to confirm networking on %s: %v\n", host, err)
+
+		if errors.Is(err, mm.ErrC2ClientNotActive) {
+			delete(c2Hosts, host)
+		} else {
+			failedNetwork[host] = struct{}{}
+		}
 	}
 
 	rand.Seed(time.Now().Unix())
@@ -191,21 +207,81 @@ func (SOH) PostStart(exp *types.Experiment) error {
 		wg := new(mm.ErrGroup)
 		printer := color.New(color.FgBlue)
 
-		for _, host := range hosts {
+		for host := range c2Hosts {
+			if _, ok := failedNetwork[host]; ok {
+				// This host failed the network config test, so don't try to do any
+				// reachability from it.
+				// TODO: track as ErrGroup error so it can be logged in experiment
+				// status.
+				continue
+			}
+
 			for _, ips := range vlans {
 				// Each host should try to ping a single random host in each VLAN.
 				if strings.EqualFold(md.Reachability, "sample") {
-					idx := rand.Intn(len(ips))
-					target := ips[idx]
+					var targeted bool
 
-					printer.Printf("  Pinging %s from host %s\n", target, host)
+					// Range over IPs to prevent this for-loop from going on forever if
+					// all IPs in VLAN failed network connectivity test.
+					for range ips {
+						idx := rand.Intn(len(ips))
+						target := ips[idx]
 
-					pingTest(wg, ns, host, target)
+						targetHost := addrHosts[target]
+
+						if _, ok := failedNetwork[targetHost]; ok {
+							// This target host failed the network config test, so don't try
+							// to do any reachability to it.
+							var (
+								err  = fmt.Errorf("networking not configured on target")
+								meta = map[string]interface{}{"host": host, "target": target}
+							)
+
+							wg.AddError(err, meta)
+							continue
+						}
+
+						printer.Printf("  Pinging %s from host %s\n", target, host)
+
+						pingTest(wg, ns, host, target)
+
+						targeted = true
+						break
+					}
+
+					if !targeted {
+						// Choose random host in VLAN to create error for.
+						idx := rand.Intn(len(ips))
+						target := ips[idx]
+
+						// This target host failed the network config test, so don't try
+						// to do any reachability to it.
+						var (
+							err  = fmt.Errorf("networking not configured on target")
+							meta = map[string]interface{}{"host": host, "target": target}
+						)
+
+						wg.AddError(err, meta)
+					}
 				}
 
 				// Each host should try to ping every host in each VLAN.
 				if strings.EqualFold(md.Reachability, "full") {
 					for _, ip := range ips {
+						targetHost := addrHosts[ip]
+
+						if _, ok := failedNetwork[targetHost]; ok {
+							// This target host failed the network config test, so don't try
+							// to do any reachability to it.
+							var (
+								err  = fmt.Errorf("networking not configured on target")
+								meta = map[string]interface{}{"host": host, "target": ip}
+							)
+
+							wg.AddError(err, meta)
+							continue
+						}
+
 						printer.Printf("  Pinging %s from host %s\n", ip, host)
 
 						pingTest(wg, ns, host, ip)
@@ -225,13 +301,17 @@ func (SOH) PostStart(exp *types.Experiment) error {
 				target = err.Meta["target"].(string)
 			)
 
+			if errors.Is(err, mm.ErrC2ClientNotActive) {
+				delete(c2Hosts, host)
+			}
+
 			// Convert target IP to hostname.
-			target = hosts[target]
+			target = addrHosts[target]
 
 			r := reachability{
 				Hostname:  target,
 				Timestamp: time.Now().Format(time.RFC3339),
-				Error:     "ping failed",
+				Error:     err.Error(),
 			}
 
 			state, ok := status[host]
@@ -250,9 +330,9 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	printer = color.New(color.FgBlue)
 
 	for _, p := range md.HostProcesses {
-		// If the host isn't in the hosts map, then don't operate on it since it was
-		// likely skipped for a reason.
-		if _, ok := hosts[p.Hostname]; !ok {
+		// If the host isn't in the C2 hosts map, then don't operate on it since it
+		// was likely skipped for a reason.
+		if _, ok := c2Hosts[p.Hostname]; !ok {
 			printer.Printf("  Skipping host %s per config\n", p.Hostname)
 			continue
 		}
@@ -274,10 +354,14 @@ func (SOH) PostStart(exp *types.Experiment) error {
 			proc = err.Meta["proc"].(string)
 		)
 
+		if errors.Is(err, mm.ErrC2ClientNotActive) {
+			delete(c2Hosts, host)
+		}
+
 		p := process{
 			Process:   proc,
 			Timestamp: time.Now().Format(time.RFC3339),
-			Error:     "process not found",
+			Error:     err.Error(),
 		}
 
 		state, ok := status[host]
@@ -295,9 +379,9 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	printer = color.New(color.FgBlue)
 
 	for _, p := range md.HostListeners {
-		// If the host isn't in the hosts map, then don't operate on it since it was
-		// likely skipped for a reason.
-		if _, ok := hosts[p.Hostname]; !ok {
+		// If the host isn't in the C2 hosts map, then don't operate on it since it
+		// was likely skipped for a reason.
+		if _, ok := c2Hosts[p.Hostname]; !ok {
 			printer.Printf("  Skipping host %s per config\n", p.Hostname)
 			continue
 		}
@@ -319,10 +403,14 @@ func (SOH) PostStart(exp *types.Experiment) error {
 			port = err.Meta["port"].(string)
 		)
 
+		if errors.Is(err, mm.ErrC2ClientNotActive) {
+			delete(c2Hosts, host)
+		}
+
 		l := listener{
 			Listener:  port,
 			Timestamp: time.Now().Format(time.RFC3339),
-			Error:     "listener not found",
+			Error:     err.Error(),
 		}
 
 		state, ok := status[host]

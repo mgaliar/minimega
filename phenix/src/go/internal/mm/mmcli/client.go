@@ -66,36 +66,42 @@ func ErrorResponse(responses chan *miniclient.Response) error {
 }
 
 // SingleReponse is used when only a single response (or error) is expected to
-// be returned from a call to minimega.
+// be returned from a call to minimega. It returns the first non-error response
+// and the last error encountered (if no non-error responses were encountered).
 func SingleResponse(responses chan *miniclient.Response) (string, error) {
 	var (
-		resp string
+		resp *string
 		err  error
 	)
 
 	for response := range responses {
-		if resp != "" || err != nil {
-			// We got our first response (or error), so just drain the responses
-			// channel.
+		// If we've encountered a non-error response (even if it's empty), then
+		// continue on to drain the responses channel.
+		if resp != nil {
 			continue
 		}
 
-		r := response.Resp[0]
+		for _, r := range response.Resp {
+			if r.Error != "" {
+				err = errors.New(r.Error)
+				continue
+			}
 
-		if r.Error != "" {
-			err = errors.New(r.Error)
-			continue
+			resp = &r.Response
+
+			// Clear any error previously encountered since we've encountered a
+			// non-error response (even if it's empty).
+			err = nil
 		}
-
-		resp = r.Response
 	}
 
-	return resp, err
+	return *resp, err
 }
 
 // SingleDataReponse is used when only a single response (or error) is expected
 // to be returned from a call to minimega, and the response just includes user
-// data.
+// data. It returns the first non-error data response and the last error
+// encountered (if no non-error responses were encountered).
 func SingleDataResponse(responses chan *miniclient.Response) (interface{}, error) {
 	var (
 		data interface{}
@@ -103,20 +109,24 @@ func SingleDataResponse(responses chan *miniclient.Response) (interface{}, error
 	)
 
 	for response := range responses {
-		if data != nil || err != nil {
-			// We got our first response (or error), so just drain the responses
-			// channel.
+		// If we've encountered a non-error response (even if it's empty), then
+		// continue on to drain the responses channel.
+		if data != nil {
 			continue
 		}
 
-		r := response.Resp[0]
+		for _, r := range response.Resp {
+			if r.Error != "" {
+				err = errors.New(r.Error)
+				continue
+			}
 
-		if r.Error != "" {
-			err = errors.New(r.Error)
-			continue
+			data = r.Data
+
+			// Clear any error previously encountered since we've encountered a
+			// non-error response (even if it's empty).
+			err = nil
 		}
-
-		data = r.Data
 	}
 
 	return data, err
