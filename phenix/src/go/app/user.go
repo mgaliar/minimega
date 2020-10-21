@@ -72,13 +72,6 @@ func (this UserApp) shellOut(action Action, exp *types.Experiment) error {
 		return fmt.Errorf("external user app %s does not exist in your path: %w", cmdName, ErrUserAppNotFound)
 	}
 
-	if action == ACTIONPOSTSTART || action == ACTIONCLEANUP {
-		// Ensure status.apps exists for use in user apps.
-		if exp.Status.Apps == nil {
-			exp.Status.Apps = make(map[string]interface{})
-		}
-	}
-
 	data, err := json.Marshal(exp)
 	if err != nil {
 		return fmt.Errorf("marshaling experiment to JSON: %w", err)

@@ -93,6 +93,35 @@ func SingleResponse(responses chan *miniclient.Response) (string, error) {
 	return resp, err
 }
 
+// SingleDataReponse is used when only a single response (or error) is expected
+// to be returned from a call to minimega, and the response just includes user
+// data.
+func SingleDataResponse(responses chan *miniclient.Response) (interface{}, error) {
+	var (
+		data interface{}
+		err  error
+	)
+
+	for response := range responses {
+		if data != nil || err != nil {
+			// We got our first response (or error), so just drain the responses
+			// channel.
+			continue
+		}
+
+		r := response.Resp[0]
+
+		if r.Error != "" {
+			err = errors.New(r.Error)
+			continue
+		}
+
+		data = r.Data
+	}
+
+	return data, err
+}
+
 // Run dials the minimega Unix socket and runs the given command, automatically
 // redialing if disconnected. Any errors encountered will be returned as part of
 // the response channel.

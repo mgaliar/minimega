@@ -19,6 +19,8 @@ type options struct {
 	captureFile  string
 
 	screenshotSize string
+	c2Command      string
+	c2CommandID    string
 }
 
 func NewOptions(opts ...Option) options {
@@ -106,5 +108,48 @@ func CaptureFile(f string) Option {
 func ScreenshotSize(s string) Option {
 	return func(o *options) {
 		o.screenshotSize = s
+	}
+}
+
+type C2Option func(*c2Options)
+
+type c2Options struct {
+	ns        string
+	vm        string
+	command   string
+	commandID string
+}
+
+func NewC2Options(opts ...C2Option) c2Options {
+	var o c2Options
+
+	for _, opt := range opts {
+		opt(&o)
+	}
+
+	return o
+}
+
+func C2NS(n string) C2Option {
+	return func(o *c2Options) {
+		o.ns = n
+	}
+}
+
+func C2VM(v string) C2Option {
+	return func(o *c2Options) {
+		o.vm = v
+	}
+}
+
+func C2Command(c string) C2Option {
+	return func(o *c2Options) {
+		o.command = c
+	}
+}
+
+func C2CommandID(i string) C2Option {
+	return func(o *c2Options) {
+		o.commandID = i
 	}
 }

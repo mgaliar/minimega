@@ -11,11 +11,17 @@ import (
 )
 
 func init() {
+	// Default apps (always run)
 	apps["ntp"] = new(NTP)
 	apps["serial"] = new(Serial)
 	apps["startup"] = new(Startup)
-	apps["user-shell"] = new(UserApp)
 	apps["vyatta"] = new(Vyatta)
+
+	// Built-in user apps
+	apps["soh"] = new(SOH)
+
+	// External user apps
+	apps["user-shell"] = new(UserApp)
 }
 
 // Action represents the different experiment lifecycle hooks.
@@ -32,10 +38,10 @@ var (
 	apps = make(map[string]App)
 
 	defaultApps = map[string]struct{}{
-		"ntp":     struct{}{},
-		"serial":  struct{}{},
-		"startup": struct{}{},
-		"vyatta":  struct{}{},
+		"ntp":     {},
+		"serial":  {},
+		"startup": {},
+		"vyatta":  {},
 	}
 )
 
@@ -121,6 +127,13 @@ type App interface {
 // the given experiment for the given lifecycle phase. It returns any errors
 // encountered while applying the apps.
 func ApplyApps(action Action, exp *types.Experiment) error {
+	if action == ACTIONPOSTSTART || action == ACTIONCLEANUP {
+		// Ensure status.apps exists for use in user apps.
+		if exp.Status.Apps == nil {
+			exp.Status.Apps = make(map[string]interface{})
+		}
+	}
+
 	var err error
 
 	for _, a := range DefaultApps() {
