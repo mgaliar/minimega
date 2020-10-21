@@ -9,11 +9,22 @@ import (
 
 type GroupError struct {
 	Err  error
-	Args []interface{}
+	Args map[string]interface{}
 }
 
 func NewGroupError(err error, args ...interface{}) GroupError {
-	return GroupError{Err: err, Args: args}
+	a := make(map[string]interface{})
+
+	for i := 0; i < len(args); i += 2 {
+		k, ok := args[i].(string)
+		if !ok {
+			continue
+		}
+
+		a[k] = args[i+1]
+	}
+
+	return GroupError{Err: err, Args: a}
 }
 
 func (this GroupError) Error() string {
@@ -31,7 +42,7 @@ func (this *ErrGroup) AddError(err error, args ...interface{}) {
 	this.Lock()
 	defer this.Unlock()
 
-	this.Errors = append(this.Errors, GroupError{Err: err, Args: args})
+	this.Errors = append(this.Errors, NewGroupError(err, args...))
 }
 
 func (this *ErrGroup) AddGroupError(err GroupError) {
@@ -64,6 +75,8 @@ func ScheduleC2ParallelCommand(cmd *C2ParallelCommand) {
 		var (
 			o  = NewC2Options(cmd.Options...)
 			id string
+
+			retryUntil = time.Now().Add(5 * time.Minute)
 		)
 
 		for {
@@ -72,18 +85,16 @@ func ScheduleC2ParallelCommand(cmd *C2ParallelCommand) {
 			id, err = ExecC2Command(cmd.Options...)
 			if err != nil {
 				if errors.Is(err, ErrC2ClientNotActive) {
-					time.Sleep(1 * time.Second)
+					if time.Now().After(retryUntil) {
+						cmd.Wait.AddError(fmt.Errorf("C2 client took too long to activate"), "vm", o.vm)
+						return
+					}
+
+					time.Sleep(5 * time.Second)
 					continue
 				}
 
-				var groupError GroupError
-
-				if errors.As(err, &groupError) {
-					cmd.Wait.AddGroupError(groupError)
-				} else {
-					cmd.Wait.AddError(fmt.Errorf("executing command '%s': %w", o.command, err))
-				}
-
+				cmd.Wait.AddError(fmt.Errorf("executing command '%s': %w", o.command, err), "vm", o.vm)
 				return
 			}
 
@@ -94,14 +105,7 @@ func ScheduleC2ParallelCommand(cmd *C2ParallelCommand) {
 
 		resp, err := WaitForC2Response(opts...)
 		if err != nil {
-			var groupError GroupError
-
-			if errors.As(err, &groupError) {
-				cmd.Wait.AddGroupError(groupError)
-			} else {
-				cmd.Wait.AddError(fmt.Errorf("getting response for command '%s': %w", o.command, err))
-			}
-
+			cmd.Wait.AddError(fmt.Errorf("getting response for command '%s': %w", o.command, err), "vm", o.vm)
 			return
 		}
 
@@ -117,7 +121,7 @@ func ScheduleC2ParallelCommand(cmd *C2ParallelCommand) {
 			} else if errors.As(err, &groupError) {
 				cmd.Wait.AddGroupError(groupError)
 			} else {
-				cmd.Wait.AddError(fmt.Errorf("unexpected value: %w", err))
+				cmd.Wait.AddError(fmt.Errorf("unexpected value: %w", err), "vm", o.vm)
 			}
 		}
 	}()

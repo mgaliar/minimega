@@ -176,7 +176,7 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	printer = color.New(color.FgRed)
 
 	for _, err := range wg.Errors {
-		host := err.Args[0].(string)
+		host := err.Args["vm"].(string)
 		printer.Printf("  [✗] failed to confirm networking on %s: %v\n", host, err.Error)
 	}
 
@@ -221,8 +221,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 		for _, err := range wg.Errors {
 			var (
-				host   = err.Args[0].(string)
-				target = err.Args[1].(string)
+				host   = err.Args["vm"].(string)
+				target = err.Args["target"].(string)
 			)
 
 			// Convert target IP to hostname.
@@ -270,8 +270,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 	for _, err := range wg.Errors {
 		var (
-			host = err.Args[0].(string)
-			proc = err.Args[1].(string)
+			host = err.Args["vm"].(string)
+			proc = err.Args["proc"].(string)
 		)
 
 		p := process{
@@ -315,8 +315,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 	for _, err := range wg.Errors {
 		var (
-			host = err.Args[0].(string)
-			port = err.Args[1].(string)
+			host = err.Args["vm"].(string)
+			port = err.Args["port"].(string)
 		)
 
 		l := listener{
@@ -367,7 +367,7 @@ func portTest(wg *mm.ErrGroup, ns, host, port string) {
 			lines := trim(resp)
 
 			if len(lines) <= 1 {
-				return mm.NewGroupError(fmt.Errorf("not listening on port"), host, port)
+				return mm.NewGroupError(fmt.Errorf("not listening on port"), "vm", host, "port", port)
 			}
 
 			return nil
@@ -385,7 +385,7 @@ func procTest(wg *mm.ErrGroup, ns, host, proc string) {
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 		Expected: func(resp string) error {
 			if resp == "" {
-				return mm.NewGroupError(fmt.Errorf("process not running"), host, proc)
+				return mm.NewGroupError(fmt.Errorf("process not running"), "vm", host, "proc", proc)
 			}
 
 			return nil
@@ -403,7 +403,7 @@ func pingTest(wg *mm.ErrGroup, ns, host, target string) {
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 		Expected: func(resp string) error {
 			if strings.Contains(resp, "0 received") {
-				return mm.NewGroupError(fmt.Errorf("no successful pings"), host, target)
+				return mm.NewGroupError(fmt.Errorf("no successful pings"), "vm", host, "target", target)
 			}
 
 			return nil
