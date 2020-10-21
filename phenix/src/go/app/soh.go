@@ -3,12 +3,14 @@ package app
 import (
 	"fmt"
 	"math/rand"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
 
 	"phenix/internal/mm"
 	"phenix/types"
+	v1 "phenix/types/version/v1"
 
 	"github.com/activeshadow/structs"
 	"github.com/fatih/color"
@@ -116,13 +118,6 @@ func (SOH) PostStart(exp *types.Experiment) error {
 		md.Reachability = "off"
 	}
 
-	/*
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-
-		mm.StartC2Processor(ctx)
-	*/
-
 	printer := color.New(color.FgBlue)
 
 	printer.Println("  Starting SoH checks...")
@@ -147,16 +142,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 		}
 
 		host := node.General.Hostname
-		var skip bool
 
-		for _, skipHost := range md.SkipHosts {
-			if host == skipHost {
-				skip = true
-				break
-			}
-		}
-
-		if skip {
+		if skip(node, md.SkipHosts) {
 			printer.Printf("  Skipping host %s per config\n", host)
 			continue
 		}
@@ -263,16 +250,9 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	printer = color.New(color.FgBlue)
 
 	for _, p := range md.HostProcesses {
-		var skip bool
-
-		for _, skipHost := range md.SkipHosts {
-			if p.Hostname == skipHost {
-				skip = true
-				break
-			}
-		}
-
-		if skip {
+		// If the host isn't in the hosts map, then don't operate on it since it was
+		// likely skipped for a reason.
+		if _, ok := hosts[p.Hostname]; !ok {
 			printer.Printf("  Skipping host %s per config\n", p.Hostname)
 			continue
 		}
@@ -315,16 +295,9 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	printer = color.New(color.FgBlue)
 
 	for _, p := range md.HostListeners {
-		var skip bool
-
-		for _, skipHost := range md.SkipHosts {
-			if p.Hostname == skipHost {
-				skip = true
-				break
-			}
-		}
-
-		if skip {
+		// If the host isn't in the hosts map, then don't operate on it since it was
+		// likely skipped for a reason.
+		if _, ok := hosts[p.Hostname]; !ok {
 			printer.Printf("  Skipping host %s per config\n", p.Hostname)
 			continue
 		}
@@ -508,6 +481,25 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 	}
 
 	mm.ScheduleC2ParallelCommand(cmd)
+}
+
+func skip(node *v1.Node, toSkip []string) bool {
+	for _, skipHost := range toSkip {
+		// Check to see if this is a reference to an image. If so, skip this host if
+		// it's using the referenced image.
+		if ext := filepath.Ext(skipHost); ext == ".qc2" || ext == ".qcow2" {
+			if filepath.Base(node.Hardware.Drives[0].Image) == skipHost {
+				return true
+			}
+		}
+
+		// Check to see if this node's hostname matches one to be skipped.
+		if node.General.Hostname == skipHost {
+			return true
+		}
+	}
+
+	return false
 }
 
 func trim(str string) []string {
