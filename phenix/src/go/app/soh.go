@@ -176,7 +176,7 @@ func (SOH) PostStart(exp *types.Experiment) error {
 	printer = color.New(color.FgRed)
 
 	for _, err := range wg.Errors {
-		host := err.Args["vm"].(string)
+		host := err.Meta["host"].(string)
 		printer.Printf("  [✗] failed to confirm networking on %s: %v\n", host, err.Error)
 	}
 
@@ -221,8 +221,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 		for _, err := range wg.Errors {
 			var (
-				host   = err.Args["vm"].(string)
-				target = err.Args["target"].(string)
+				host   = err.Meta["host"].(string)
+				target = err.Meta["target"].(string)
 			)
 
 			// Convert target IP to hostname.
@@ -270,8 +270,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 	for _, err := range wg.Errors {
 		var (
-			host = err.Args["vm"].(string)
-			proc = err.Args["proc"].(string)
+			host = err.Meta["host"].(string)
+			proc = err.Meta["proc"].(string)
 		)
 
 		p := process{
@@ -315,8 +315,8 @@ func (SOH) PostStart(exp *types.Experiment) error {
 
 	for _, err := range wg.Errors {
 		var (
-			host = err.Args["vm"].(string)
-			port = err.Args["port"].(string)
+			host = err.Meta["host"].(string)
+			port = err.Meta["port"].(string)
 		)
 
 		l := listener{
@@ -363,11 +363,12 @@ func portTest(wg *mm.ErrGroup, ns, host, port string) {
 	cmd := &mm.C2ParallelCommand{
 		Wait:    wg,
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
+		Meta:    map[string]interface{}{"host": host, "port": port},
 		Expected: func(resp string) error {
 			lines := trim(resp)
 
 			if len(lines) <= 1 {
-				return mm.NewGroupError(fmt.Errorf("not listening on port"), "vm", host, "port", port)
+				return fmt.Errorf("not listening on port")
 			}
 
 			return nil
@@ -383,9 +384,10 @@ func procTest(wg *mm.ErrGroup, ns, host, proc string) {
 	cmd := &mm.C2ParallelCommand{
 		Wait:    wg,
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
+		Meta:    map[string]interface{}{"host": host, "proc": proc},
 		Expected: func(resp string) error {
 			if resp == "" {
-				return mm.NewGroupError(fmt.Errorf("process not running"), "vm", host, "proc", proc)
+				return fmt.Errorf("process not running")
 			}
 
 			return nil
@@ -401,9 +403,10 @@ func pingTest(wg *mm.ErrGroup, ns, host, target string) {
 	cmd := &mm.C2ParallelCommand{
 		Wait:    wg,
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
+		Meta:    map[string]interface{}{"host": host, "target": target},
 		Expected: func(resp string) error {
 			if strings.Contains(resp, "0 received") {
-				return mm.NewGroupError(fmt.Errorf("no successful pings"), "vm", host, "target", target)
+				return fmt.Errorf("no successful pings")
 			}
 
 			return nil
@@ -454,6 +457,7 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 				cmd := &mm.C2ParallelCommand{
 					Wait:     wg,
 					Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
+					Meta:     map[string]interface{}{"host": host},
 					Expected: gwPingExpected,
 				}
 
@@ -465,6 +469,7 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 			cmd := &mm.C2ParallelCommand{
 				Wait:     wg,
 				Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command("ip route")},
+				Meta:     map[string]interface{}{"host": host},
 				Expected: gwExpected,
 			}
 
@@ -477,6 +482,7 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 	cmd := &mm.C2ParallelCommand{
 		Wait:     wg,
 		Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command("ip addr")},
+		Meta:     map[string]interface{}{"host": host},
 		Expected: ipExpected,
 	}
 
