@@ -65,30 +65,31 @@ func ScheduleC2ParallelCommand(cmd *C2ParallelCommand) {
 		var (
 			o  = NewC2Options(cmd.Options...)
 			id string
-
-			retryUntil = time.Now().Add(5 * time.Minute)
 		)
 
 		for {
-			var err error
+			select {
+			case <-time.After(o.timeout):
+				cmd.Wait.AddError(fmt.Errorf("timeout waiting for C2 to be active: %w", ErrC2ClientNotActive), cmd.Meta)
+				return
+			default:
+				var err error
 
-			id, err = ExecC2Command(cmd.Options...)
-			if err != nil {
-				if errors.Is(err, ErrC2ClientNotActive) {
-					if time.Now().After(retryUntil) {
-						cmd.Wait.AddError(err, cmd.Meta)
-						return
+				id, err = ExecC2Command(cmd.Options...)
+				if err != nil {
+					if errors.Is(err, ErrC2ClientNotActive) {
+						time.Sleep(5 * time.Second)
+						continue
 					}
 
-					time.Sleep(5 * time.Second)
-					continue
+					cmd.Wait.AddError(fmt.Errorf("executing command '%s': %w", o.command, err), cmd.Meta)
+					return
 				}
-
-				cmd.Wait.AddError(fmt.Errorf("executing command '%s': %w", o.command, err), cmd.Meta)
-				return
 			}
 
-			break
+			if id != "" {
+				break
+			}
 		}
 
 		opts := []C2Option{C2NS(o.ns), C2CommandID(id)}

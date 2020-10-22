@@ -675,25 +675,29 @@ func (Minimega) WaitForC2Response(opts ...C2Option) (string, error) {
 	// host.
 
 	err := func() error {
-		// FIXME: this for loop could run forever if a response never comes back...
 		for {
-			rows := mmcli.RunTabular(cmd)
+			select {
+			case <-time.After(o.timeout):
+				return fmt.Errorf("timeout waiting for response for command %s", o.commandID)
+			default:
+				rows := mmcli.RunTabular(cmd)
 
-			if len(rows) == 0 {
-				return fmt.Errorf("no commands returned for ID %s", o.commandID)
-			}
-
-			if rid := rows[0]["id"]; rid != o.commandID {
-				return fmt.Errorf("wrong command returned: %s", rid)
-			}
-
-			for _, row := range rows {
-				if row["responses"] != "0" {
-					return nil
+				if len(rows) == 0 {
+					return fmt.Errorf("no commands returned for ID %s", o.commandID)
 				}
-			}
 
-			time.Sleep(1 * time.Second)
+				if rid := rows[0]["id"]; rid != o.commandID {
+					return fmt.Errorf("wrong command returned: %s", rid)
+				}
+
+				for _, row := range rows {
+					if row["responses"] != "0" {
+						return nil
+					}
+				}
+
+				time.Sleep(1 * time.Second)
+			}
 		}
 	}()
 
