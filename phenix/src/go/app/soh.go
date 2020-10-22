@@ -104,7 +104,7 @@ type SOH struct {
 	status map[string]hostState
 }
 
-func NewSOH() *SOH {
+func newSOH() *SOH {
 	return &SOH{
 		c2Hosts:           make(map[string]struct{}),
 		reachabilityHosts: make(map[string]struct{}),

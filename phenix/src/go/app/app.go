@@ -18,7 +18,7 @@ func init() {
 	apps["vyatta"] = new(Vyatta)
 
 	// Built-in user apps
-	apps["soh"] = new(SOH)
+	apps["soh"] = newSOH()
 
 	// External user apps
 	apps["user-shell"] = new(UserApp)
