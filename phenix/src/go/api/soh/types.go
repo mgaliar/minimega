@@ -21,8 +21,8 @@ type Node struct {
 
 type Edge struct {
 	ID     int `json:"id"`
-	From   int `json:"from"`
-	To     int `json:"to"`
+	From   int `json:"source"`
+	To     int `json:"target"`
 	Length int `json:"length"`
 }
 
