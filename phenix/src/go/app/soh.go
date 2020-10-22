@@ -306,10 +306,10 @@ func (SOH) PostStart(exp *types.Experiment) error {
 			}
 
 			// Convert target IP to hostname.
-			target = addrHosts[target]
+			hostname := addrHosts[target]
 
 			r := reachability{
-				Hostname:  target,
+				Hostname:  fmt.Sprintf("%s (%s)", hostname, target),
 				Timestamp: time.Now().Format(time.RFC3339),
 				Error:     err.Error(),
 			}
