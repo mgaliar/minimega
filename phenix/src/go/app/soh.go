@@ -28,17 +28,25 @@ type hostListeners struct {
 }
 
 type sohMetadata struct {
-	C2Timeout     string          `mapstructure:"c2Timeout"`
-	Reachability  string          `mapstructure:"testReachability"`
-	SkipHosts     []string        `mapstructure:"skipHosts"`
-	HostProcesses []hostProcesses `mapstructure:"hostProcesses"`
-	HostListeners []hostListeners `mapstructure:"hostListeners"`
+	C2Timeout         string          `mapstructure:"c2Timeout"`
+	Reachability      string          `mapstructure:"testReachability"`
+	SkipNetworkConfig bool            `mapstructure:"skipInitialNetworkConfigTests"`
+	SkipHosts         []string        `mapstructure:"skipHosts"`
+	HostProcesses     []hostProcesses `mapstructure:"hostProcesses"`
+	HostListeners     []hostListeners `mapstructure:"hostListeners"`
+	AppProfileKey     string          `mapstructure:"appMetadataProfileKey"`
 
 	// set after parsing
 	c2Timeout time.Duration
 }
 
 func (this *sohMetadata) init() error {
+	if this.SkipNetworkConfig {
+		// Default reachability test to off if skipping initial network config
+		// tests.
+		this.Reachability = "off"
+	}
+
 	if this.Reachability == "" {
 		// Default to reachability test being disabled if not specified in the
 		// scenario app config.
@@ -54,6 +62,10 @@ func (this *sohMetadata) init() error {
 		if this.c2Timeout, err = time.ParseDuration(this.C2Timeout); err != nil {
 			return fmt.Errorf("parsing C2 timeout setting '%s': %w", this.C2Timeout, err)
 		}
+	}
+
+	if this.AppProfileKey == "" {
+		this.AppProfileKey = "sohProfile"
 	}
 
 	return nil
@@ -102,6 +114,9 @@ type SOH struct {
 
 	// Track app status for Experiment Config status
 	status map[string]hostState
+
+	// List of host apps that should be checked for a SoH profile
+	hostApps []v1.HostApp
 }
 
 func newSOH() *SOH {
@@ -156,6 +171,10 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 		return fmt.Errorf("initializing app metadata: %w", err)
 	}
 
+	// Used by the process and listener tests to see if host metadata includes an
+	// SoH profile.
+	this.hostApps = exp.Spec.Scenario.Apps.Host
+
 	printer := color.New(color.FgBlue)
 
 	printer.Println("  Starting SoH checks...")
@@ -198,17 +217,27 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 			this.addrHosts[iface.Address] = host
 			this.vlans[iface.VLAN] = append(this.vlans[iface.VLAN], iface.Address)
 
-			cidr := fmt.Sprintf("%s/%d", iface.Address, iface.Mask)
+			if !this.md.SkipNetworkConfig {
+				cidr := fmt.Sprintf("%s/%d", iface.Address, iface.Mask)
 
-			printer.Printf("  Waiting for IP %s on host %s to be set...\n", cidr, host)
+				printer.Printf("  Waiting for IP %s on host %s to be set...\n", cidr, host)
 
-			isNetworkingConfigured(wg, ns, host, cidr, iface.Gateway)
+				isNetworkingConfigured(wg, ns, host, cidr, iface.Gateway)
+			}
 		}
 	}
+
+	if this.md.SkipNetworkConfig {
+		printer = color.New(color.FgYellow)
+		printer.Println("  Skipping initial network configuration tests per config")
+	}
+
+	notifier := periodicallyNotify("waiting for initial network configurations to be validated...", 5*time.Second)
 
 	// Wait for IP address / gateway configuration to be set for each VM, as well
 	// as wait for each gateway to be reachable.
 	wg.Wait()
+	close(notifier)
 
 	printer = color.New(color.FgRed)
 
@@ -355,8 +384,11 @@ func (this *SOH) waitForReachabilityTest(ns string) {
 		}
 	}
 
+	notifier := periodicallyNotify("waiting for reachability tests to complete...", 5*time.Second)
+
 	// Wait for hosts to test reachability to other hosts.
 	wg.Wait()
+	close(notifier)
 
 	printer = color.New(color.FgRed)
 
@@ -410,7 +442,36 @@ func (this *SOH) waitForProcTest(ns string) {
 		}
 	}
 
+	// Check to see if any of the host apps have hosts with metadata that include an SoH profile.
+	for _, app := range this.hostApps {
+		for _, host := range app.Hosts {
+			if ms, ok := host.Metadata[this.md.AppProfileKey]; ok {
+				if _, ok := this.c2Hosts[host.Hostname]; !ok {
+					printer.Printf("  Skipping host %s per config\n", host.Hostname)
+					continue
+				}
+
+				var md sohMetadata
+
+				if err := mapstructure.Decode(ms, &md); err != nil {
+					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname, app.Name)
+					continue
+				}
+
+				for _, p := range md.HostProcesses {
+					for _, proc := range p.Processes {
+						printer.Printf("  Checking for process %s on host %s\n", proc, host.Hostname)
+						procTest(wg, ns, host.Hostname, proc)
+					}
+				}
+			}
+		}
+	}
+
+	notifier := periodicallyNotify("waiting for process tests to complete...", 5*time.Second)
+
 	wg.Wait()
+	close(notifier)
 
 	printer = color.New(color.FgRed)
 
@@ -446,22 +507,51 @@ func (this *SOH) waitForPortTest(ns string) {
 	wg := new(mm.ErrGroup)
 	printer := color.New(color.FgBlue)
 
-	for _, p := range this.md.HostListeners {
+	for _, l := range this.md.HostListeners {
 		// If the host isn't in the C2 hosts map, then don't operate on it since it
 		// was likely skipped for a reason.
-		if _, ok := this.c2Hosts[p.Hostname]; !ok {
-			printer.Printf("  Skipping host %s per config\n", p.Hostname)
+		if _, ok := this.c2Hosts[l.Hostname]; !ok {
+			printer.Printf("  Skipping host %s per config\n", l.Hostname)
 			continue
 		}
 
-		for _, port := range p.Listeners {
-			printer.Printf("  Checking for listener %s on host %s\n", port, p.Hostname)
+		for _, port := range l.Listeners {
+			printer.Printf("  Checking for listener %s on host %s\n", port, l.Hostname)
 
-			portTest(wg, ns, p.Hostname, port)
+			portTest(wg, ns, l.Hostname, port)
 		}
 	}
 
+	// Check to see if any of the host apps have hosts with metadata that include an SoH profile.
+	for _, app := range this.hostApps {
+		for _, host := range app.Hosts {
+			if ms, ok := host.Metadata[this.md.AppProfileKey]; ok {
+				if _, ok := this.c2Hosts[host.Hostname]; !ok {
+					printer.Printf("  Skipping host %s per config\n", host.Hostname)
+					continue
+				}
+
+				var md sohMetadata
+
+				if err := mapstructure.Decode(ms, &md); err != nil {
+					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname, app.Name)
+					continue
+				}
+
+				for _, l := range md.HostListeners {
+					for _, port := range l.Listeners {
+						printer.Printf("  Checking for listener %s on host %s\n", port, host.Hostname)
+						portTest(wg, ns, host.Hostname, port)
+					}
+				}
+			}
+		}
+	}
+
+	notifier := periodicallyNotify("waiting for listener tests to complete...", 5*time.Second)
+
 	wg.Wait()
+	close(notifier)
 
 	printer = color.New(color.FgRed)
 
@@ -662,4 +752,26 @@ func trim(str string) []string {
 	}
 
 	return trimmed
+}
+
+func periodicallyNotify(msg string, d time.Duration) chan struct{} {
+	var (
+		done   = make(chan struct{})
+		ticker = time.NewTicker(d)
+	)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				ticker.Stop()
+				return
+			case t := <-ticker.C:
+				printer := color.New(color.FgYellow)
+				printer.Printf("  [%s] %s\n", t.Format(time.RFC3339), msg)
+			}
+		}
+	}()
+
+	return done
 }
