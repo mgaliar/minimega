@@ -370,6 +370,3 @@ export default {
   }
 }
 </script>
-
-// TODO: add button to experiment table; add button to running/stopped experiment component;
-// move code to RunningVms and rename component; use StateOfHealth.vue with this content.

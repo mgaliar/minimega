@@ -8,9 +8,9 @@ import Users            from './components/Users.vue'
 import Log              from './components/Log.vue'
 import VMtiles          from './components/VMtiles.vue'
 import StateOfHealth    from './components/StateOfHealth.vue'
-import SoH              from './components/SoH.vue'
+// import SoH              from './components/SoH.vue'
 
-import NetworkExample from './components/NetworkExample.vue'
+// import NetworkExample from './components/NetworkExample.vue'
 
 import store            from './store'
 
@@ -29,8 +29,8 @@ const router = new Router({
     { path: '/log',               name: 'log',              component: Log },
     { path: '/signin',            name: 'signin',           component: SignIn },
     // { path: '/stateofhealth',     name: 'stateofhealth',    component: StateOfHealth },
-    { path: '/stateofhealth/:id', name: 'soh',              component: SoH },
-    { path: '/example',           name: 'networkExample',   component: NetworkExample },
+    { path: '/stateofhealth/:id', name: 'soh',              component: StateOfHealth },
+    // { path: '/example',           name: 'networkExample',   component: NetworkExample },
     { path: '*',                  redirect: '/signin' }
   ]
 })
