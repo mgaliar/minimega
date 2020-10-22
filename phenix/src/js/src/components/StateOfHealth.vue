@@ -1,313 +1,375 @@
-<!--
-File: StateOfHealth.vue
-This component will display and overview of the state of health
-of each experiment. The component will display a list of all
-experiments (running/not running), and an overview of the number
-of vms running and not running. The user can select an experiment
-to view in more details its state.
- -->
-
 <template>
-  <div class="content">
-    <template v-if="experiments.length == 0">
-      <section class="hero is-light is-bold is-large">
-        <div class="hero-body">
-          <div class="container" style="text-align: center">
-            <h1 class="title">
-              There are no experiments!
-            </h1>
+  <div>
+    <hr>
+    <div class="level is-vcentered">
+      <div class="level-item">
+        <span style="font-weight: bold; font-size: x-large;">State of Health Board for Experiment: {{ this.$route.params.id }}</span>&nbsp;
+      </div>
+    </div>
+    <!-- <div class="columns is-vcentered">
+      <div class="column" />
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="running" type="is-light">Running</b-radio>
+      </div>
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="notdeploy" type="is-light">Not deployed</b-radio>
+      </div>
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="notrunning" type="is-light">In Error-state</b-radio>
+      </div>
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="notboot" type="is-light">Not booted</b-radio>
+      </div>
+      <div class="column">
+        <b-button @click="resetNetwork" type="is-light">Refresh Network</b-button>
+      </div>
+      <div class="column" />
+    </div> -->
+    <div id="graph" style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;"></div>
+    <div class="columns is-vcentered">
+      <div class="column" />
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <img :src="vlan" style="width:25px;height:25px;" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">VLAN Segment</span>
           </div>
         </div>
-      </section>
-    </template>
-    <!-- If there are experiment display them in a table -->
-    <template v-else>
-      <hr>
-      <b-field position="is-right">
-        <b-autocomplete v-model="searchName"
-                        placeholder="Find an Experiment"
-                        icon="search"
-                        :data="filteredData"
-                        @select="option => filtered = option">
-          <template slot="empty">
-            No results found
-          </template>
-        </b-autocomplete>
-        <p class='control'>
-          <button class='button' style="color:#686868" @click="searchName = ''">
-            <b-icon icon="window-close"></b-icon>
-          </button>
-        </p>
-      </b-field>
-      <div>
-        <b-table
-          :data="filteredExperiments"
-          :paginated="table.isPaginated && paginationNeeded"
-          :per-page="table.perPage"
-          :current-page.sync="table.currentPage"
-          :pagination-simple="table.isPaginationSimple"
-          :pagination-size="table.paginationSize"
-          :default-sort-direction="table.defaultSortDirection"
-          default-sort="name">
-          <template slot="empty">
-            <section class="section">
-              <div class="content has-text-white has-text-centered">
-                Your search turned up empty!
-              </div>
-            </section>
-          </template>
-          <template slot-scope="props">
-            <b-table-column field="name" label="Name" width="200" sortable>
-              <template v-if="updating( props.row.status )">
-                {{ props.row.name }}
-              </template>
-              <template v-else>
-                <router-link class="navbar-item" :to="{ name: 'soh', params: { id: props.row.name }}">
-                  {{ props.row.name }}
-                </router-link>
-              </template>
-            </b-table-column>
-            <b-table-column field="status" label="Status" width="100" sortable centered>
-              <template v-if="props.row.status == 'starting'">
-                <section>
-                  <b-progress size="is-medium" type="is-warning" show-value :value=props.row.percent format="percent"></b-progress>
-                </section>
-              </template>
-              <template v-else-if="adminUser()">
-                <span class="tag is-medium" :class="decorator( props.row.status )">
-                  <div class="field">
-                    <div class="field" @click="( props.row.running ) ? stop( props.row.name, props.row.status ) : start( props.row.name, props.row.status )">
-                      {{ props.row.status }}
-                    </div>
-                  </div>
-                </span>
-              </template>
-              <template v-else>
-                <span class="tag is-medium" :class="decorator( props.row.status )">
-                  {{ props.row.status }}
-                </span>
-              </template>
-            </b-table-column>
-            <b-table-column field="topology" label="Topology" width="200">
-              {{ props.row.topology | lowercase }}
-            </b-table-column>
-            <b-table-column field="apps" label="Applications" width="200">
-              {{ props.row.apps | stringify | lowercase }}
-            </b-table-column>
-            <b-table-column field="start_time" label="Start Time" width="250" sortable>
-              {{ props.row.start_time }}
-            </b-table-column>
-            <b-table-column field="vm_count" label="# of Running VMs" width="100" centered>
-              {{ props.row.running_count }} / {{ props.row.total_count }}
-            </b-table-column>
-            <b-table-column field="vm_count" label="# of Not Running VMs" width="100" centered>
-              {{ props.row.notrunning }}
-            </b-table-column>
-            <b-table-column field="vm_count" label="# of Not Deployed VMs" width="100" centered>
-              {{ props.row.notdeploy }}
-            </b-table-column>
-            <b-table-column field="vm_count" label="# of Not Booted VMs" width="100" centered>
-              {{ props.row.notboot }}
-            </b-table-column>
-          </template>
-        </b-table>
-        <br>
-        <b-field v-if="paginationNeeded" grouped position="is-right">
-          <div class="control is-flex">
-            <b-switch v-model="table.isPaginated" size="is-small" type="is-light">Pagenate</b-switch>
-          </div>
-        </b-field>
       </div>
-    </template>
-    <b-loading :is-full-page="true" :active.sync="isWaiting" :can-cancel="false"></b-loading>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: green" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Running</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: red" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Not running</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: blue" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Not booted</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: yellow" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Not deployed</span>
+          </div>
+        </div>
+      </div>
+      <div class="column" />
+    </div>
   </div>
 </template>
 
 <script>
-  export default {
-    async beforeDestroy () {
-      this.$options.sockets.onmessage = null;
-    },
+import * as d3 from "d3";
 
-    async created () {
-      this.updateExperiments();
-    },
+import Linux    from "@/assets/linux.svg";
+import CentOS   from "@/assets/centos.svg";
+import RedHat   from "@/assets/redhat.svg";
+import Windows  from "@/assets/windows.svg";
+import Router   from "@/assets/router.svg";
+import Firewall from "@/assets/firewall.svg";
+import Printer  from "@/assets/printer.svg";
+import VLAN     from "@/assets/vlan.svg";
 
-    computed: {
-      /*
-      Sort and parse the experiment(s) information to display them in the table.
-      */
-      filteredExperiments: function() {
-        let experiments = this.experiments;
-        
-        var name_re = new RegExp( this.searchName, 'i' );
-        var data = [];
-        
-        for ( let i in experiments ) {
-          let exp = experiments[ i ];
-          let running_vms = 0;
+export default {
+  async created () {
+    await this.updateNetwork();
+    this.generateGraph();
+  },
 
-          if ( this.soh_ready ) {
-            /*
-            Get an overview of soh of each experiment
-            */
-            exp.running_count = this.soh[ i ][ 1 ];
-            exp.total_count = this.soh[ i ][ 2 ];
-            exp.notboot = this.soh[ i ][ 3 ];
-            exp.notdeploy = this.soh[ i ][ 4 ];
-            exp.notrunning = this.soh[ i ][ 5 ];
-          }
+  methods: {
+    async updateNetwork () {
+      try {
+        let resp = await this.$http.get( 'experiments/' + this.$route.params.id + '/soh' );
+        console.log(this.$route.params.id);
+        // let resp = await this.$http.get( 'experiments/test-01/soh' );
+        let state = await resp.json();
+        console.log(state);
+        this.nodes = state.nodes;
+        this.edges = state.edges;
 
-          if ( exp.name.match( name_re ) ) {
-            exp.start_time = exp.start_time == '' ? 'N/A' : exp.start_time;
-            data.push( exp );
-          }
-        }
-
-        return data;
-      },
-    
-      filteredData () {
-        let names = this.experiments.map( exp => { return exp.name; } );
-
-        return names.filter(
-          option => {
-            return option
-              .toString()
-              .toLowerCase()
-              .indexOf( this.searchName.toLowerCase() ) >= 0
-          }
-        )
-      },
-
-      /*
-      Enable pagination at the table
-      */
-      paginationNeeded () {
-        var experiments = this.experiments;
-        if ( experiments.length <= 10 ) {
-          return false;
-        } else {
-          return true;
-        }
-      }
-    },
-    
-    methods: { 
-      /*
-      Get all experiments
-      */
-      async updateExperiments () {
-        try {
-          let resp = await this.$http.get( 'experiments' );
-          let state = await resp.json();
-          this.experiments = state.experiments;
-
-          for ( let experiment in this.experiments ) {
-            let exp_soh = [];
-            let soh_tmp = [];
-            console.log('Getting soh for: ' + this.experiments[experiment].name + '/soh');
-            resp = await this.$http.get( 'experiments/' + this.experiments[experiment].name + '/soh' );
-            state = await resp.json();
-            soh_tmp = state;
-            exp_soh.push( this.experiments[ experiment ].name );
-            exp_soh.push( soh_tmp.running_count );
-            exp_soh.push( soh_tmp.total_count );
-            exp_soh.push( soh_tmp.notboot_count );
-            exp_soh.push( soh_tmp.notdeploy_count );
-            exp_soh.push( soh_tmp.notrunning_count );
-            this.soh.push( exp_soh );
-          }
-          this.soh_ready = true;
-
-          this.isWaiting = false;
-        } catch {
-          this.$buefy.toast.open ({
-            message: 'Getting the Experiments Failed',
-            type: 'is-danger',
-            duration: 40000
-          });
-        } finally {
-          this.isWaiting = false;
-        }
-      },
-      
-      /*
-      Base on the role of the current user, enable options.  
-      */
-      globalUser () {
-        return [ 'Global Admin' ].includes( this.$store.getters.role );
-      },
-      
-      adminUser () {
-        return [ 'Global Admin', 'Experiment Admin' ].includes( this.$store.getters.role );
-      },
-      
-      experimentUser () {
-        return [ 'Global Admin', 'Experiment Admin', 'Experiment User' ].includes( this.$store.getters.role );
-      },
-
-      update: function ( value ) {
-        this.isMenuActive = true;
-      },
-
-      updating: function( status ) {
-        return status === "starting" || status === "stopping";
-      },
-      
-      decorator ( status ) {
-        switch ( status ) {
-          case 'started':
-            return 'is-success';
-          case 'starting':
-          case 'stopping':
-            return 'is-warning';
-          case 'stopped':
-            return 'is-danger';
-        }
-      }
-    },
-    
-    directives: {
-      focus: {
-        inserted ( el ) {
-          if ( el.tagName == 'INPUT' ) {
-            el.focus()
-          } else {
-            el.querySelector( 'input' ).focus()
-          }
-        }
+        // TODO: remove this once server-side is updated.
+        this.edges.forEach(e => {
+          e.source = e.from;
+          e.target = e.to;
+        });
+      } catch {
+        this.$buefy.toast.open ({
+          message: 'Getting Network Failed',
+          type: 'is-danger',
+          duration: 4000
+        });
+      } finally {
+        this.isWaiting = false;
       }
     },
 
-    data () {
-      return {
-        table: {
-          isPaginated: true,
-          perPage: 10,
-          currentPage: 1,
-          isPaginationSimple: true,
-          paginationSize: 'is-small',
-          defaultSortDirection: 'asc'
-        },
-        soh: [],
-        soh_ready: false,
-        experiments: [],
-        topologies: [],
-        applications: [],
-        searchName: '',
-        filtered: null,
-        isMenuActive: false,
-        action: null,
-        rowName: null,
-        isWaiting: true
+    updateNodeImage(node) {
+      if ( node.image == 'interface' ) {
+        return "url(#" + node.image + ")";
       }
+
+      // TODO: remove this once server-side is updated.
+      return "url(#linux)";
+    },
+
+    updateNodeColor(node) {
+      if (!this.running) {
+        return
+      }
+
+      const colors = {
+        "running":    "green",
+        "notrunning": "red",
+        "notboot":    "blue",
+        "notdeploy":  "yellow",
+      }
+
+      return colors[node.status];
+    },
+
+    generateGraph() {
+      const links = this.edges.map(d => Object.create(d));
+      const nodes = this.nodes.map(d => Object.create(d));
+      const width = 600;
+      const height = 300;
+
+      const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id))
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width / 2, height / 2));
+
+      const svg = d3.select("#graph").append("svg")
+        .attr("viewBox", [0, 0, width, height]);
+
+      const link = svg.append("g")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("stroke-width", d => Math.sqrt(d.value));
+
+      const defs = svg.append("svg:defs");
+
+      defs.append("svg:pattern")
+        .attr("id", "linux")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", Linux)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "centos")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", CentOS)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "rhel")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", RedHat)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "windows")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", Windows)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "router")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", Router)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "firewall")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", Firewall)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "printer")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", Printer)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      defs.append("svg:pattern")
+        .attr("id", "interface")
+        .attr("width", 50)
+        .attr("height", 50)
+        .append("svg:image")
+        .attr("xlink:href", VLAN)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", 0)
+        .attr("y", 0);
+
+      const node = svg.append("g")
+        .selectAll("circle")
+        .data(nodes)
+        .join("circle")
+        .attr("class", "circle")
+        .attr("stroke", this.updateNodeColor)
+        .attr("stroke-width", 1.5)
+        .attr("r", 10)
+        .attr("fill", this.updateNodeImage)
+        .call(this.drag(simulation));
+
+      node.append("title").text(d => d.label);
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        node
+          .attr("cx", d => d.x)
+          .attr("cy", d => d.y);
+      });
+    },
+
+    color(d) {
+      const scale = d3.scaleOrdinal(d3.schemeCategory10);
+      return d => scale(d.group);
+    },
+
+    drag(simulation) {
+      function dragstarted(event) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+      }
+      
+      function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+      }
+      
+      function dragended(event) {
+        if (!event.active) simulation.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
+      }
+      
+      return d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
     }
+  },
+
+//     resetNetwork () {
+//       this.radioButton = '';
+//       this.network = [];
+//       this.onMemNetwork = [];
+//       this.updateNetwork();
+//     },
+
+//     filterNetwork ( filter ) {
+//       let nodes = [];
+      
+//       /*
+//       traverse the network and select VMs that match user's filter
+//       include all interfaces
+//       */
+//       this.onMemNetwork.nodes.forEach( function( node ) {
+//         if ( node.status == filter ) {
+//           nodes.push( node );
+//         }
+//         if ( node.status == "interface" ) {
+//           nodes.push( node );
+//         }
+//       });
+      
+//       /*
+//       Reset nodes in the network and update with user's filter
+//       */
+//       this.network.nodes = [];
+//       this.network.nodes = nodes;
+//     }
+//   },
+
+//   watch: {
+//     radioButton: function ( val ) {
+//       if ( val != '' ) {
+//         this.filterNetwork( val )  
+//       }
+//     }
+//   },
+
+  data() {
+    return {
+      running: false,
+      nodes: [],
+      edges: [],
+      radioButton: '',
+      vlan: VLAN
+    };
   }
+}
 </script>
 
-<style scoped>
-  div.autocomplete >>> a.dropdown-item {
-    color: #383838 !important;
-  }
-</style>
+// TODO: add button to experiment table; add button to running/stopped experiment component;
+// move code to RunningVms and rename component; use StateOfHealth.vue with this content.
