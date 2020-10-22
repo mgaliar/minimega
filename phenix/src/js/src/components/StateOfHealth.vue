@@ -26,6 +26,7 @@
       <div class="column" />
     </div> -->
     <div id="graph" style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;"></div>
+    <br>
     <div class="columns is-vcentered">
       <div class="column" />
       <div class="column">
