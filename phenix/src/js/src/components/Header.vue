@@ -27,8 +27,8 @@ are only available to Global Administrator or Global Viewer.
                        to="/log" 
                        class="navbar-item">Log</router-link>
           <router-link v-if="auth && experimentUser()"
-                       to="/stateofhealth"
-                       class="navbar-item">State Of Health</router-link>
+                       to="/example"
+                       class="navbar-item">Example</router-link>
         </div>
       </div>
       <div class="navbar-end">

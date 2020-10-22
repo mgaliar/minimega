@@ -162,6 +162,13 @@
                 <b-icon icon="trash"></b-icon>
               </button>
             </b-table-column>
+            <b-table-column v-if="globalUser()" label="SoH" width="50" centered>
+              <router-link class="navbar-item" :to="{ name: 'soh', params: { id: props.row.name }}">
+                <button class="button is-light is-small">
+                  <b-icon icon="heartbeat"></b-icon>
+                </button>
+              </router-link>
+            </b-table-column>
           </template>
         </b-table>
         <br>
