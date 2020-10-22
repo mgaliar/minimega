@@ -28,10 +28,35 @@ type hostListeners struct {
 }
 
 type sohMetadata struct {
+	C2Timeout     string          `mapstructure:"c2Timeout"`
 	Reachability  string          `mapstructure:"testReachability"`
 	SkipHosts     []string        `mapstructure:"skipHosts"`
 	HostProcesses []hostProcesses `mapstructure:"hostProcesses"`
 	HostListeners []hostListeners `mapstructure:"hostListeners"`
+
+	// set after parsing
+	c2Timeout time.Duration
+}
+
+func (this *sohMetadata) init() error {
+	if this.Reachability == "" {
+		// Default to reachability test being disabled if not specified in the
+		// scenario app config.
+		this.Reachability = "off"
+	}
+
+	if this.C2Timeout == "" {
+		// Default C2 timeout to 5m if not specified in the scenario app config.
+		this.c2Timeout = 5 * time.Minute
+	} else {
+		var err error
+
+		if this.c2Timeout, err = time.ParseDuration(this.C2Timeout); err != nil {
+			return fmt.Errorf("parsing C2 timeout setting '%s': %w", this.C2Timeout, err)
+		}
+	}
+
+	return nil
 }
 
 type reachability struct {
@@ -124,13 +149,11 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 	}
 
 	if err := mapstructure.Decode(ms, &this.md); err != nil {
-		return fmt.Errorf("decoding metadata: %w", err)
+		return fmt.Errorf("decoding app metadata: %w", err)
 	}
 
-	if this.md.Reachability == "" {
-		// Default to reachability test being disabled if not specified in the
-		// scenario app config metadata.
-		this.md.Reachability = "off"
+	if err := this.md.init(); err != nil {
+		return fmt.Errorf("initializing app metadata: %w", err)
 	}
 
 	printer := color.New(color.FgBlue)
