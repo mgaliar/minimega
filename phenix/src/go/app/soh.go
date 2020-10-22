@@ -505,6 +505,8 @@ func pingTest(wg *mm.ErrGroup, ns, host, target string) {
 }
 
 func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
+	retryUntil := time.Now().Add(5 * time.Minute)
+
 	// First, we wait for the IP address to be set on the interface. Then, we wait
 	// for the default gateway to be set. Last, we wait for the default gateway to
 	// be up (pingable). This is all done via nested commands streamed to the C2
@@ -534,6 +536,10 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 					// If `resp` contains `0 received`, the default gateway isn't up
 					// (pingable) yet, so keep retrying the C2 command.
 					if strings.Contains(resp, "0 received") {
+						if time.Now().After(retryUntil) {
+							return fmt.Errorf("retry time expired waiting for gateway to be up")
+						}
+
 						return mm.C2RetryError{Delay: 5 * time.Second}
 					}
 

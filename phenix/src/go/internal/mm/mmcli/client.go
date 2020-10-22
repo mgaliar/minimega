@@ -89,9 +89,12 @@ func SingleResponse(responses chan *miniclient.Response) (string, error) {
 
 			resp = &r.Response
 
-			// Clear any error previously encountered since we've encountered a
-			// non-error response (even if it's empty).
+			// Clear any error previously encountered and break out of this inner
+			// for-loop since we've encountered a non-error response (even if it's
+			// empty).
 			err = nil
+
+			break
 		}
 	}
 
@@ -123,9 +126,12 @@ func SingleDataResponse(responses chan *miniclient.Response) (interface{}, error
 
 			data = r.Data
 
-			// Clear any error previously encountered since we've encountered a
-			// non-error response (even if it's empty).
+			// Clear any error previously encountered and break out of this inner
+			// for-loop since we've encountered a non-error response (even if it's
+			// empty).
 			err = nil
+
+			break
 		}
 	}
 
