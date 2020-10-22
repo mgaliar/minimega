@@ -1,7 +1,85 @@
 <template>
   <div>
+    <hr>
+    <div class="level is-vcentered">
+      <div class="level-item">
+        <span style="font-weight: bold; font-size: x-large;">State of Health Board for Experiment: {{ this.$route.params.id }}</span>&nbsp;
+      </div>
+    </div>
+    <!-- <div class="columns is-vcentered">
+      <div class="column" />
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="running" type="is-light">Running</b-radio>
+      </div>
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="notdeploy" type="is-light">Not deployed</b-radio>
+      </div>
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="notrunning" type="is-light">In Error-state</b-radio>
+      </div>
+      <div class="column">
+        <b-radio v-model="radioButton" native-value="notboot" type="is-light">Not booted</b-radio>
+      </div>
+      <div class="column">
+        <b-button @click="resetNetwork" type="is-light">Refresh Network</b-button>
+      </div>
+      <div class="column" />
+    </div> -->
     <div id="graph" style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;"></div>
-    <div>This is the key!!!</div>
+    <div class="columns is-vcentered">
+      <div class="column" />
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <img :src="vlan" style="width:25px;height:25px;" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">VLAN Segment</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: green" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Running</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: red" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Not running</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: blue" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Not booted</span>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns is-variable is-1">
+          <div class="column is-one-fifth has-text-right">
+            <b-icon icon="circle" style="color: yellow" />
+          </div>
+          <div class="column">
+            <span style="color: whitesmoke;">Not deployed</span>
+          </div>
+        </div>
+      </div>
+      <div class="column" />
+    </div>
   </div>
 </template>
 
@@ -238,19 +316,57 @@ export default {
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended);
-    },
+    }
   },
 
-name: "App",
+//     resetNetwork () {
+//       this.radioButton = '';
+//       this.network = [];
+//       this.onMemNetwork = [];
+//       this.updateNetwork();
+//     },
 
-data() {
-  return {
-    running: false,
-    nodes: [],
-    edges: [],
-  };
-}
+//     filterNetwork ( filter ) {
+//       let nodes = [];
+      
+//       /*
+//       traverse the network and select VMs that match user's filter
+//       include all interfaces
+//       */
+//       this.onMemNetwork.nodes.forEach( function( node ) {
+//         if ( node.status == filter ) {
+//           nodes.push( node );
+//         }
+//         if ( node.status == "interface" ) {
+//           nodes.push( node );
+//         }
+//       });
+      
+//       /*
+//       Reset nodes in the network and update with user's filter
+//       */
+//       this.network.nodes = [];
+//       this.network.nodes = nodes;
+//     }
+//   },
 
+//   watch: {
+//     radioButton: function ( val ) {
+//       if ( val != '' ) {
+//         this.filterNetwork( val )  
+//       }
+//     }
+//   },
+
+  data() {
+    return {
+      running: false,
+      nodes: [],
+      edges: [],
+      radioButton: '',
+      vlan: VLAN
+    };
+  }
 }
 </script>
 
