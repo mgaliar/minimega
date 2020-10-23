@@ -183,7 +183,7 @@ export default {
       const links = this.edges.map(d => Object.create(d));
 
       const width = 600;
-      const height = 300;
+      const height = 400;
 
       const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).id(d => d.id))
@@ -195,7 +195,17 @@ export default {
       const svg = d3.select("#graph").append("svg")
         .attr("viewBox", [0, 0, width, height]);
 
-      const link = svg.append("g")
+      const g = svg.append("g");
+
+      svg.call(d3.zoom()
+        .extent([[0, 0], [width, height]])
+        .scaleExtent([-5, 5])
+        .on("zoom", function ({transform}) {
+          g.attr("transform", transform);
+        })
+      );
+
+      const link = g.append("g")
         .attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
         .selectAll("line")
@@ -293,15 +303,13 @@ export default {
         .attr("x", 0)
         .attr("y", 0);
 
-      const node = svg.append("g")
+      const node = g.append("g")
         .selectAll("circle")
         .data(nodes)
         .join("circle")
         .attr("class", "circle")
         .attr("stroke", this.updateNodeColor)
         .attr("stroke-width", 1.5)
-        // .attr("r", 10)
-        // .attr("fill", this.updateNodeImage)
         .attr("r", 5)
         .attr("fill", this.updateNodeColor)
         .on( 'mouseenter', this.entered)

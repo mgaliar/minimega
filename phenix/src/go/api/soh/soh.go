@@ -7,6 +7,8 @@ import (
 
 	"phenix/api/experiment"
 	"phenix/api/vm"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 var vlanAliasRegex = regexp.MustCompile(`(.*) \(\d*\)`)
@@ -27,8 +29,29 @@ func Get(exp, statusFilter string) (*Network, error) {
 		return nil, fmt.Errorf("getting experiment %s VMs: %w", exp, err)
 	}
 
-	if experiment.Running(exp) {
+	expStatus, err := experiment.Status(exp)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get experiment status: %w", err)
+	}
+
+	status := make(map[string]*HostState)
+
+	if expStatus.Running() {
 		network.Started = true
+
+		if apps := expStatus.Apps; apps != nil {
+			if soh, ok := apps["soh"]; ok {
+				var statuses []*HostState
+
+				if err := mapstructure.Decode(soh, &statuses); err != nil {
+					return nil, fmt.Errorf("unable to decode state of health details: %w", err)
+				}
+
+				for _, s := range statuses {
+					status[s.Hostname] = s
+				}
+			}
+		}
 	}
 
 	// Internally use to track connections, VM's state, and whether or not the
@@ -80,6 +103,10 @@ func Get(exp, statusFilter string) (*Network, error) {
 			Image:  vm.OSType,
 			Fonts:  font,
 			Status: vmState,
+		}
+
+		if soh, ok := status[vm.Name]; ok {
+			node.SOH = soh
 		}
 
 		network.Nodes = append(network.Nodes, node)

@@ -441,6 +441,22 @@ func Stop(name string) error {
 	return nil
 }
 
+func Status(name string) (*v1.ExperimentStatus, error) {
+	c, _ := types.NewConfig("experiment/" + name)
+
+	if err := store.Get(c); err != nil {
+		return nil, fmt.Errorf("unable to get experiment status from store: %w", err)
+	}
+
+	var status *v1.ExperimentStatus
+
+	if err := mapstructure.Decode(c.Status, status); err != nil {
+		return nil, fmt.Errorf("unable to decode experiment status: %w", err)
+	}
+
+	return status, nil
+}
+
 func Running(name string) bool {
 	c, _ := types.NewConfig("experiment/" + name)
 
