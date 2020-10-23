@@ -117,7 +117,7 @@ type hostState struct {
 	Hostname     string         `structs:"hostname"`
 	Reachability []reachability `structs:"reachability,omitempty"`
 	Processes    []process      `structs:"processes,omitempty"`
-	Listeners    []listener     `structs:"listener,omitempty"`
+	Listeners    []listener     `structs:"listeners,omitempty"`
 }
 
 type SOH struct {

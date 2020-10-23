@@ -34,26 +34,26 @@ type Network struct {
 }
 
 type Reachability struct {
-	Hostname  string `mapstructure:"hostname" structs:"hostname"`
-	Timestamp string `mapstructure:"timestamp" structs:"timestamp"`
-	Error     string `mapstructure:"error" structs:"error"`
+	Hostname  string `json:"hostname" mapstructure:"hostname" structs:"hostname"`
+	Timestamp string `json:"timestamp" mapstructure:"timestamp" structs:"timestamp"`
+	Error     string `json:"error" mapstructure:"error" structs:"error"`
 }
 
 type Process struct {
-	Process   string `mapstructure:"process" structs:"process"`
-	Timestamp string `mapstructure:"timestamp" structs:"timestamp"`
-	Error     string `mapstructure:"error" structs:"error"`
+	Process   string `json:"process" mapstructure:"process" structs:"process"`
+	Timestamp string `json:"timestamp" mapstructure:"timestamp" structs:"timestamp"`
+	Error     string `json:"error" mapstructure:"error" structs:"error"`
 }
 
 type Listener struct {
-	Listener  string `mapstructure:"listener" structs:"listener"`
-	Timestamp string `mapstructure:"timestamp" structs:"timestamp"`
-	Error     string `mapstructure:"error" structs:"error"`
+	Listener  string `json:"listener" mapstructure:"listener" structs:"listener"`
+	Timestamp string `json:"timestamp" mapstructure:"timestamp" structs:"timestamp"`
+	Error     string `json:"error" mapstructure:"error" structs:"error"`
 }
 
 type HostState struct {
-	Hostname     string         `mapstructure:"hostname" structs:"hostname"`
-	Reachability []Reachability `mapstructure:"reachability,omitempty" structs:"reachability,omitempty"`
-	Processes    []Process      `mapstructure:"processes,omitempty" structs:"processes,omitempty"`
-	Listeners    []Listener     `mapstructure:"listener,omitempty" structs:"listener,omitempty"`
+	Hostname     string         `json:"hostname" mapstructure:"hostname" structs:"hostname"`
+	Reachability []Reachability `json:"reachability,omitempty" mapstructure:"reachability,omitempty" structs:"reachability,omitempty"`
+	Processes    []Process      `json:"processes,omitempty" mapstructure:"processes,omitempty" structs:"processes,omitempty"`
+	Listeners    []Listener     `json:"listeners,omitempty" mapstructure:"listeners,omitempty" structs:"listeners,omitempty"`
 }
