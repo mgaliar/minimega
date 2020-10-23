@@ -71,6 +71,30 @@ func (this *sohMetadata) init() error {
 	return nil
 }
 
+type sohProfile struct {
+	C2Timeout string   `mapstructure:"c2Timeout"`
+	Processes []string `mapstructure:"processes"`
+	Listeners []string `mapstructure:"listeners"`
+
+	// set after parsing
+	c2Timeout time.Duration
+}
+
+func (this *sohProfile) init() error {
+	if this.C2Timeout == "" {
+		// Default C2 timeout to 5m if not specified in the SoH Profile config.
+		this.c2Timeout = 5 * time.Minute
+	} else {
+		var err error
+
+		if this.c2Timeout, err = time.ParseDuration(this.C2Timeout); err != nil {
+			return fmt.Errorf("parsing C2 timeout setting '%s': %w", this.C2Timeout, err)
+		}
+	}
+
+	return nil
+}
+
 type reachability struct {
 	Hostname  string `structs:"hostname"`
 	Timestamp string `structs:"timestamp"`
@@ -451,18 +475,16 @@ func (this *SOH) waitForProcTest(ns string) {
 					continue
 				}
 
-				var md sohMetadata
+				var profile sohProfile
 
-				if err := mapstructure.Decode(ms, &md); err != nil {
+				if err := mapstructure.Decode(ms, &profile); err != nil {
 					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname, app.Name)
 					continue
 				}
 
-				for _, p := range md.HostProcesses {
-					for _, proc := range p.Processes {
-						printer.Printf("  Checking for process %s on host %s\n", proc, host.Hostname)
-						procTest(wg, ns, host.Hostname, proc)
-					}
+				for _, proc := range profile.Processes {
+					printer.Printf("  Checking for process %s on host %s\n", proc, host.Hostname)
+					procTest(wg, ns, host.Hostname, proc)
 				}
 			}
 		}
@@ -531,18 +553,16 @@ func (this *SOH) waitForPortTest(ns string) {
 					continue
 				}
 
-				var md sohMetadata
+				var profile sohProfile
 
-				if err := mapstructure.Decode(ms, &md); err != nil {
+				if err := mapstructure.Decode(ms, &profile); err != nil {
 					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname, app.Name)
 					continue
 				}
 
-				for _, l := range md.HostListeners {
-					for _, port := range l.Listeners {
-						printer.Printf("  Checking for listener %s on host %s\n", port, host.Hostname)
-						portTest(wg, ns, host.Hostname, port)
-					}
+				for _, port := range profile.Listeners {
+					printer.Printf("  Checking for listener %s on host %s\n", port, host.Hostname)
+					portTest(wg, ns, host.Hostname, port)
 				}
 			}
 		}
