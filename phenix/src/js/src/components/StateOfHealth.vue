@@ -1,13 +1,74 @@
 <template>
   <div>
     <b-modal :active.sync="detailsModal.active" :on-cancel="resetDetailsModal" has-modal-card>
-      <div class="modal-card" style="width:25em">
+      <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">{{ detailsModal.vm }} VM Details</p>
         </header>
         <section class="modal-card-body">
-          <p>Hostname: {{ detailsModal.vm }}</p>
-          <p>The quick brown fox jumped over the lazy dog.</p>
+          <template v-if="detailsModal.soh.length > 0">
+            <p>The following state of health has been reported for the {{ detailsModal.vm }} VM.</p>
+            <br>
+            <p>Reachability</p>
+            <div v-if="detailsModal.soh.reachability.length > 0">
+              <b-table
+                :data="detailsModal.soh.reachability"
+                default-sort="host">
+                <template slot-scope="props">
+                  <b-table-column field="host" label="Host" sortable>
+                    {{ props.row.host }}
+                  </b-table-column>
+                  <b-table-column field="timestamp" label="Timestamp" sortable>
+                    {{ props.row.timestamp }}
+                  </b-table-column>
+                  <b-table-column field="error" label="Error" sortable>
+                    {{ props.row.error }}
+                  </b-table-column>
+                </template>
+              </b-table>
+            </div>
+            <br>
+            <p>Processes</p>
+            <div v-if="detailsModal.soh.processes.length > 0">
+              <b-table
+                :data="detailsModal.soh.processes"
+                default-sort="process">
+                <template slot-scope="props">
+                  <b-table-column field="process" label="Process" sortable>
+                    {{ props.row.process }}
+                  </b-table-column>
+                  <b-table-column field="timestamp" label="Timestamp" sortable>
+                    {{ props.row.timestamp }}
+                  </b-table-column>
+                  <b-table-column field="error" label="Error" sortable>
+                    {{ props.row.error }}
+                  </b-table-column>
+                </template>
+              </b-table>
+            </div>
+            <br>
+            <p>Listeners</p>
+            <div v-if="detailsModal.soh.listeners.length > 0">
+              <b-table
+                :data="detailsModal.soh.listeners"
+                default-sort="listener">
+                <template slot-scope="props">
+                  <b-table-column field="listener" label="Listener" sortable>
+                    {{ props.row.listener }}
+                  </b-table-column>
+                  <b-table-column field="timestamp" label="Timestamp" sortable>
+                    {{ props.row.timestamp }}
+                  </b-table-column>
+                  <b-table-column field="error" label="Error" sortable>
+                    {{ props.row.error }}
+                  </b-table-column>
+                </template>
+              </b-table>
+            </div>
+          </template>
+          <template v-else>
+            <p>There is no state of health data available for the {{ detailsModal.vm }} VM.</p>
+          </template>
         </section>
         <footer class="modal-card-foot">
         </footer>
@@ -141,6 +202,8 @@ export default {
         let resp = await this.$http.get( url );
         let state = await resp.json();
 
+        console.log(state);
+
         this.running = state.started;
         this.nodes = state.nodes;
         this.edges = state.edges;
@@ -163,6 +226,11 @@ export default {
       if (!this.running) {
         return
       }
+
+      // TODO: fix the sizing of this image so that it is visible
+      // if ( node.status == "ignore" ) {
+      //   return "url(#Switch)";
+      // }
 
       const colors = {
         "running":    "green",
@@ -312,6 +380,8 @@ export default {
         .attr("stroke-width", 1.5)
         .attr("r", 5)
         .attr("fill", this.updateNodeColor)
+        .attr("width", 5)
+        .attr("height", 5)
         .on( 'mouseenter', this.entered)
         .on( 'mouseleave', this.exited)
         .on( 'click', this.clicked)
@@ -334,7 +404,7 @@ export default {
 
     entered(e, n) {
       let circle = d3.select(e.target);
-      console.log(circle);
+
       circle
         .transition()
         .attr("r", 15)
@@ -343,6 +413,7 @@ export default {
 
     exited(e, n) {
       let circle = d3.select(e.target);
+
       circle
         .transition()
         .attr("r", 5)
@@ -350,8 +421,38 @@ export default {
     },
 
     clicked(e, n) {
+      let soh = {
+        'reachability': [
+          {
+            'host': 'foobar',
+            'timestamp': '2020-10-23T16:18:18Z',
+            'error': 'host unreachable'
+          }
+        ],
+        'processes': [
+          {
+            'process': 'gobennu',
+            'timestamp': '2020-10-23T16:18:18Z',
+            'error': 'process not running'
+          }
+        ],
+        'listeners': [
+          {
+            'listener': ':502',
+            'timestamp': '2020-10-23T16:18:18Z',
+            'error': 'not listening on port'
+          },
+          {
+            'listener': ':443',
+            'timestamp': '2020-10-23T16:18:18Z',
+            'error': 'not listening on port'
+          }
+        ]
+      }
+
       this.detailsModal.active = true;
       this.detailsModal.vm = n.label;
+      this.detailsModal.soh = {};
     },
 
     color(d) {
@@ -378,9 +479,9 @@ export default {
       }
       
       return d3.drag()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended);
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
     },
   
     async resetNetwork () {
@@ -392,7 +493,8 @@ export default {
     resetDetailsModal () {
         this.detailsModal = {
           active: false,
-          vm: ''
+          vm: '',
+          soh: {}
         }
       },
   },
@@ -415,7 +517,8 @@ export default {
       vlan: VLAN,
       detailsModal: {
         active: false,
-        vm: ''
+        vm: '',
+        soh: {}
       }
     };
   }
