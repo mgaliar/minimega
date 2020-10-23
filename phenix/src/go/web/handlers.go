@@ -723,7 +723,7 @@ func GetExperimentFile(w http.ResponseWriter, r *http.Request) {
 	http.ServeContent(w, r, "", time.Now(), bytes.NewReader(contents))
 }
 
-// GET /experiments/{exp}/soh
+// GET /experiments/{exp}/soh[?statusFilter=<status filter>]
 func GetExperimentSoH(w http.ResponseWriter, r *http.Request) {
 	log.Debug("GetExperimentSoH HTTP handler called")
 
@@ -732,6 +732,9 @@ func GetExperimentSoH(w http.ResponseWriter, r *http.Request) {
 		role = ctx.Value("role").(rbac.Role)
 		vars = mux.Vars(r)
 		exp  = vars["name"]
+
+		query        = r.URL.Query()
+		statusFilter = query.Get("statusFilter")
 	)
 
 	if !role.Allowed("vms", "list") {
@@ -739,7 +742,7 @@ func GetExperimentSoH(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	state, err := soh.Get(exp)
+	state, err := soh.Get(exp, statusFilter)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

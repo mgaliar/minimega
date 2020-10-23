@@ -7,26 +7,26 @@ package soh
 
 type Font struct {
 	Color string `json:"color"`
-	Aling string `json:"aling"`
+	Align string `json:"align"`
 }
 
 type Node struct {
 	ID     int    `json:"id"`
 	Label  string `json:"label"`
 	Image  string `json:"image"`
-	Shape  string `json:"shape"`
 	Fonts  Font   `json:"font"`
 	Status string `json:"status"`
 }
 
 type Edge struct {
 	ID     int `json:"id"`
-	From   int `json:"source"`
-	To     int `json:"target"`
+	Source int `json:"source"`
+	Target int `json:"target"`
 	Length int `json:"length"`
 }
 
 type Network struct {
+	Started         bool   `json:"started"`
 	Nodes           []Node `json:"nodes"`
 	Edges           []Edge `json:"edges"`
 	NetworkEvents   string `json:"networkEvents"`

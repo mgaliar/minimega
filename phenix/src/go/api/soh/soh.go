@@ -11,12 +11,15 @@ import (
 
 var vlanAliasRegex = regexp.MustCompile(`(.*) \(\d*\)`)
 
-func Get(exp string) (*Network, error) {
+func Get(exp, statusFilter string) (*Network, error) {
 	// Create an empty network
 	network := new(Network)
 
 	// Create structure to format nodes' font
-	font := Font{"whitesmoke", "Center"}
+	font := Font{
+		Color: "whitesmoke",
+		Align: "center",
+	}
 
 	// fetch all the VMs in the experiment
 	vms, err := vm.List(exp)
@@ -24,11 +27,11 @@ func Get(exp string) (*Network, error) {
 		return nil, fmt.Errorf("getting experiment %s VMs: %w", exp, err)
 	}
 
-	if !experiment.Running(exp) {
-		return network, nil
+	if experiment.Running(exp) {
+		network.Started = true
 	}
 
-	// Internally use to track connections , VM's state, and whether or not the
+	// Internally use to track connections, VM's state, and whether or not the
 	// VM is in minimega
 	var (
 		interfaces      = make(map[string]int)
@@ -67,23 +70,19 @@ func Get(exp string) (*Network, error) {
 			}
 		}
 
-		/*
-			Depending on the VM state we set the icon.
-			node struct: {ID, Name, imagePath(placeholder), IconType, fontFormat, InternalVMtype}
-		*/
-		if vmState == "running" {
-			node := Node{vm.ID, vm.Name, "running", "image", font, "running"}
-			network.Nodes = append(network.Nodes, node)
-		} else if vmState == "notrunning" {
-			node := Node{vm.ID, vm.Name, "notrunning", "image", font, "notrunning"}
-			network.Nodes = append(network.Nodes, node)
-		} else if vmState == "notboot" {
-			node := Node{vm.ID, vm.Name, "notboot", "image", font, "notboot"}
-			network.Nodes = append(network.Nodes, node)
-		} else if vmState == "notdeploy" {
-			node := Node{vm.ID, vm.Name, "notdeploy", "image", font, "notdeploy"}
-			network.Nodes = append(network.Nodes, node)
+		if statusFilter != "" && vmState != statusFilter {
+			continue
 		}
+
+		node := Node{
+			ID:     vm.ID,
+			Label:  vm.Name,
+			Image:  vm.OSType,
+			Fonts:  font,
+			Status: vmState,
+		}
+
+		network.Nodes = append(network.Nodes, node)
 
 		// Look at the VM's interface and create an interface node, ignoring MGMT
 		// VLAN
@@ -99,9 +98,15 @@ func Get(exp string) (*Network, error) {
 			// If we got a new interface create the node
 			if _, ok := interfaces[vmIface]; !ok {
 				interfaces[vmIface] = ifaceCount
-				//Create structure to format nodes' font
-				font := Font{"whitesmoke", "center"}
-				node := Node{ifaceCount, vmIface, "interface", "image", font, "interface"}
+
+				node := Node{
+					ID:     ifaceCount,
+					Label:  vmIface,
+					Image:  "Switch",
+					Fonts:  font,
+					Status: "ignore",
+				}
+
 				network.Nodes = append(network.Nodes, node)
 				ifaceCount++
 			}
@@ -110,7 +115,13 @@ func Get(exp string) (*Network, error) {
 			id, _ := interfaces[vmIface]
 
 			// create and edge for the node and interface
-			edge := Edge{edgeCount, vm.ID, id, 150}
+			edge := Edge{
+				ID:     edgeCount,
+				Source: vm.ID,
+				Target: id,
+				Length: 150,
+			}
+
 			network.Edges = append(network.Edges, edge)
 			edgeCount++
 		}
