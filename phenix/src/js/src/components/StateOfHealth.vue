@@ -1,5 +1,18 @@
 <template>
   <div>
+    <b-modal :active.sync="detailsModal.active" :on-cancel="resetDetailsModal" has-modal-card>
+      <div class="modal-card" style="width:25em">
+        <header class="modal-card-head">
+          <p class="modal-card-title">{{ detailsModal.vm }} VM Details</p>
+        </header>
+        <section class="modal-card-body">
+          <p>Hostname: {{ detailsModal.vm }}</p>
+          <p>The quick brown fox jumped over the lazy dog.</p>
+        </section>
+        <footer class="modal-card-foot">
+        </footer>
+      </div>
+    </b-modal>
     <hr>
     <div class="level is-vcentered">
       <div class="level-item">
@@ -198,8 +211,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", Linux)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -209,8 +222,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", CentOS)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -220,8 +233,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", RedHat)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -231,8 +244,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", Windows)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -242,8 +255,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", Router)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -253,8 +266,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", Firewall)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -264,8 +277,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", Printer)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -275,8 +288,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", VLAN)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 30)
+        .attr("height", 30)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -287,8 +300,13 @@ export default {
         .attr("class", "circle")
         .attr("stroke", this.updateNodeColor)
         .attr("stroke-width", 1.5)
-        .attr("r", 10)
-        .attr("fill", this.updateNodeImage)
+        // .attr("r", 10)
+        // .attr("fill", this.updateNodeImage)
+        .attr("r", 5)
+        .attr("fill", this.updateNodeColor)
+        .on( 'mouseenter', this.entered)
+        .on( 'mouseleave', this.exited)
+        .on( 'click', this.clicked)
         .call(this.drag(simulation));
 
       node.append("title").text(d => d.label);
@@ -304,6 +322,28 @@ export default {
           .attr("cx", d => d.x)
           .attr("cy", d => d.y);
       });
+    },
+
+    entered(e, n) {
+      let circle = d3.select(e.target);
+      console.log(circle);
+      circle
+        .transition()
+        .attr("r", 15)
+        .attr("fill", () => this.updateNodeImage(n));
+    },
+
+    exited(e, n) {
+      let circle = d3.select(e.target);
+      circle
+        .transition()
+        .attr("r", 5)
+        .attr("fill", () => this.updateNodeColor(n));
+    },
+
+    clicked(e, n) {
+      this.detailsModal.active = true;
+      this.detailsModal.vm = n.label;
     },
 
     color(d) {
@@ -340,6 +380,13 @@ export default {
       await this.updateNetwork();
       this.generateGraph();
     },
+
+    resetDetailsModal () {
+        this.detailsModal = {
+          active: false,
+          vm: ''
+        }
+      },
   },
 
   watch: {
@@ -357,7 +404,11 @@ export default {
       nodes: [],
       edges: [],
       radioButton: '',
-      vlan: VLAN
+      vlan: VLAN,
+      detailsModal: {
+        active: false,
+        vm: ''
+      }
     };
   }
 }
