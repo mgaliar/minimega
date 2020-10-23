@@ -450,7 +450,7 @@ func Status(name string) (*v1.ExperimentStatus, error) {
 
 	var status *v1.ExperimentStatus
 
-	if err := mapstructure.Decode(c.Status, status); err != nil {
+	if err := mapstructure.Decode(c.Status, &status); err != nil {
 		return nil, fmt.Errorf("unable to decode experiment status: %w", err)
 	}
 
