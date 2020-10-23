@@ -26,7 +26,18 @@
       <div class="column" />
     </div>
     <div style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;">
-      <div v-if="nodes == null">No nodes match your search criteria</div>
+      <div v-if="nodes == null">
+        <section class="hero is-light is-bold is-large">
+          <div class="hero-body">
+            <div class="container" style="text-align: center">
+              <h1 class="title">
+                There are no nodes matching your search criteria!
+              </h1>
+                <b-button type="is-success" outlined @click="resetNetwork()">Refresh Network</b-button>
+            </div>
+          </div>
+        </section>
+      </div>
       <div v-else id="graph"></div>
     </div>
     <br>
@@ -116,9 +127,6 @@ export default {
       try {
         let resp = await this.$http.get( url );
         let state = await resp.json();
-
-        // remove when done testing
-        console.log(state);
 
         this.running = state.started;
         this.nodes = state.nodes;
