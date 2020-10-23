@@ -6,11 +6,11 @@
           <p class="modal-card-title">{{ detailsModal.vm }} VM Details</p>
         </header>
         <section class="modal-card-body">
-          <template v-if="detailsModal.soh.length > 0">
+          <template v-if="detailsModal.soh">
             <p>The following state of health has been reported for the {{ detailsModal.vm }} VM.</p>
-            <br>
-            <p>Reachability</p>
-            <div v-if="detailsModal.soh.reachability.length > 0">
+            <div v-if="detailsModal.soh.reachability">
+              <br>
+              <p>Reachability</p>
               <b-table
                 :data="detailsModal.soh.reachability"
                 default-sort="host">
@@ -27,9 +27,9 @@
                 </template>
               </b-table>
             </div>
-            <br>
-            <p>Processes</p>
-            <div v-if="detailsModal.soh.processes.length > 0">
+            <div v-if="detailsModal.soh.processes">
+              <br>
+              <p>Processes</p>
               <b-table
                 :data="detailsModal.soh.processes"
                 default-sort="process">
@@ -46,9 +46,9 @@
                 </template>
               </b-table>
             </div>
-            <br>
-            <p>Listeners</p>
-            <div v-if="detailsModal.soh.listeners.length > 0">
+            <div v-if="detailsModal.soh.listeners">
+              <br>
+              <p>Listeners</p>
               <b-table
                 :data="detailsModal.soh.listeners"
                 default-sort="listener">
@@ -421,7 +421,8 @@ export default {
     },
 
     clicked(e, n) {
-      let soh = {
+      // comment out any object to see how different data will look
+      let n_soh = {
         'reachability': [
           {
             'host': 'foobar',
@@ -452,7 +453,11 @@ export default {
 
       this.detailsModal.active = true;
       this.detailsModal.vm = n.label;
-      this.detailsModal.soh = {};
+
+      // change value to `null` to see results when soh is null
+      this.detailsModal.soh = n_soh;
+
+      console.log(this.detailsModal.soh);
     },
 
     color(d) {
@@ -494,7 +499,7 @@ export default {
         this.detailsModal = {
           active: false,
           vm: '',
-          soh: {}
+          soh: null
         }
       },
   },
@@ -518,7 +523,7 @@ export default {
       detailsModal: {
         active: false,
         vm: '',
-        soh: {}
+        soh: null
       }
     };
   }
