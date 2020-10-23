@@ -684,12 +684,20 @@ func pingTest(wg *mm.ErrGroup, ns, host, target string) {
 func procTest(wg *mm.ErrGroup, ns, host, proc string) {
 	exec := fmt.Sprintf("pgrep %s", proc)
 
+	retries := 5
+
 	cmd := &mm.C2ParallelCommand{
 		Wait:    wg,
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 		Meta:    map[string]interface{}{"host": host, "proc": proc},
 		Expected: func(resp string) error {
 			if resp == "" {
+				if retries > 0 {
+					fmt.Println("retrying proc test")
+					retries--
+					return mm.C2RetryError{Delay: 5 * time.Second}
+				}
+
 				return fmt.Errorf("process not running")
 			}
 
@@ -703,6 +711,8 @@ func procTest(wg *mm.ErrGroup, ns, host, proc string) {
 func portTest(wg *mm.ErrGroup, ns, host, port string) {
 	exec := fmt.Sprintf("ss -lntu state all 'sport = %s'", port)
 
+	retries := 5
+
 	cmd := &mm.C2ParallelCommand{
 		Wait:    wg,
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
@@ -711,6 +721,12 @@ func portTest(wg *mm.ErrGroup, ns, host, port string) {
 			lines := trim(resp)
 
 			if len(lines) <= 1 {
+				if retries > 0 {
+					fmt.Println("retrying port test")
+					retries--
+					return mm.C2RetryError{Delay: 5 * time.Second}
+				}
+
 				return fmt.Errorf("not listening on port")
 			}
 
