@@ -9,7 +9,6 @@ Running Experiment component. Within that component, click on the VM name and
 you will be presented with a VM information modal.
 
 ![screenshot](images/vm_diag.png){: width=400 .center}
-<br>
 
 Available commands
 
@@ -24,22 +23,25 @@ Buttons from left to right on the footer of modal:
 
 ### From the Command Line Binary
 
-There are two options for displaying the information for VMs in an experiment. First run the following command to see information for all VMs in a given experiment.
+There are two options for displaying the information for VMs in an experiment. First run 
+the following command to see information for all VMs in a given experiment.
 
 ```
 $> phenix vm info <experiment name>
 ```
-Or ... run the following to see the information for a specific VM in an experiment.
+Or, run the following to see the information for a specific VM in an experiment.
 ```
-$> phenix vm info <experiment name>/<VM name>
+$> phenix vm info <experiment name> <vm name>
 ```
-<br>
 
 ## Packet Capture
 
 ### From the Web-UI
 
-Click on the name of the network tap on a running VM in a started experiment to start a packet capture. The name of the network tap will turn green once a packet capture has started. It is possible to start captures on multiple network taps. However, we you stop packet capture, it will stop captures on all network taps.
+Click on the name of the network tap on a running VM in a started experiment to 
+start a packet capture. The name of the network tap will turn green once a packet 
+capture has started. It is possible to start captures on multiple network taps. 
+However, when you stop packet capture, it will stop captures on all network taps.
 
 ### From the Command Line Binary
 
@@ -54,13 +56,15 @@ To stop all packet captures on a running VM, use the following command.
 ```
 $> phenix vm capture stop <experiment name> <vm name>
 ```
-<br>
 
 ## Kill a VM
 
 ### From the Web-UI
 
-Click on a running VM in a started experiment to access the VM information modal. The red trash can icon to the far right of the modal footer will kill that VM. _Note_: if you stop and then start the experiment again, that VM will run again per the experiment configuration.
+Click on a running VM in a started experiment to access the VM information modal. 
+The red trash can icon to the far right of the modal footer will kill that VM. 
+_Note_: if you stop and then start the experiment again, that VM will run again 
+per the experiment configuration.
 
 ### From the Command Line Binary
 
@@ -69,13 +73,15 @@ To kill a VM, run the following command.
 ```
 $> phenix vm kill <experiment name> <vm name>
 ```
-<br>
 
-## Modify the network connectivity
+## Modify the Network Connectivity
 
 ### From the Web-UI
 
-Click on the network for the desired VM in the Running Component to modify the settings. Select from a pull down what network you want to switch the VM interface you clicked on to. To revert back to previous setting, simply repeat selecting the network interface you wish to change, and select the previous network setting.
+Click on the network for the desired VM in the Running Component to modify the 
+settings. Select from a pull down what network you want to switch the VM interface 
+you clicked on to. To revert back to previous setting, simply repeat selecting the 
+network interface you wish to change, and select the previous network setting.
 
 ### From the Command Line Binary
 
@@ -90,47 +96,52 @@ To disconnect a VM network interface, run the following command.
 ```
 $> phenix vm net disconnect <experiment name> <vm name> <iface index>
 ```
-<br>
 
 ## Pause a VM
 
 ### From the Web-UI
 
-Click on the name of a running VM in a started experiment to access the VM information modal. To pause a VM, click on the pause button (pause button, furthest button to the left). To start a paused VM, that same button will become a green play button; simply click it to start.
+Click on the name of a running VM in a started experiment to access the VM information 
+modal. To pause a VM, click on the pause button (pause button, furthest button to the 
+left). To start a paused VM, that same button will become a green play button; simply 
+click it to start.
 
 ### From the Command Line Binary
 
 To pause a VM, run the following command.
 
 ```
-$> phenix vm pause <experiment name> <VM name>
+$> phenix vm pause <experiment name> <vm name>
 ```
 To resume a paused VM, run the following command.
 ```
-$> phenix vm resume <experiment name> <VM name>
+$> phenix vm resume <experiment name> <vm name>
 ```
-<br>
 
 ## Redeploy a VM
 
 ### From the Web-UI
 
-Click on the name of a running VM in a started experiment to access the VM information modal. To redeploy a VM, click on the redeploy button (yellow power button, second from the right). You will be able to modify the settings for CPU, Memory, Disk, and whether to replicate original injections before you redeploy the VM.
+Click on the name of a running VM in a started experiment to access the VM information 
+modal. To redeploy a VM, click on the redeploy button (yellow power button, second from 
+the right). You will be able to modify the settings for CPU, Memory, Disk, and whether 
+to replicate original injections before you redeploy the VM.
 
 ### From the Command Line Binary
 
 To redploy a VM, run the following command.
 
 ```
-$> phenix vm redeploy <experiment name> <VM name>
+$> phenix vm redeploy <experiment name> <vm name>
 ```
-<br>
 
 ## Resume a VM
 
 ### From the Web-UI
 
-Click on the name of the paused VM in a started experiment to access the VM information modal. Click the green play button (previously the pause button, furthest button to the left).
+Click on the name of the paused VM in a started experiment to access the VM information 
+modal. Click the green play button (previously the pause button, furthest button to the 
+left).
 
 ### From the Command Line Binary
 
@@ -146,13 +157,15 @@ $> phenix vm resume <experiment name> <vm name>
 ### From the Web-UI
 
 There are two ways to modify VM settings:
-1. Click on a stopped experiment to access the Stopped Component. You are able to edit the following:
+1. Click on a stopped experiment to access the Stopped Component. You are able to edit the 
+following:
     * Host name
     * CPUs
     * Memory
     * Disk
     * Do not boot flag
-2. From a running experiment, click on the VM name and then the redeploy button (yellow power button, second from the right on the modal footer). You are able to edit the following:
+2. From a running experiment, click on the VM name and then the redeploy button (yellow 
+power button, second from the right on the modal footer). You are able to edit the following:
     * CPU
     * Memory
     * Disk

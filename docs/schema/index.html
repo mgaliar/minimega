@@ -1,6 +1,4 @@
 
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -15,27 +13,29 @@
         <meta name="author" content="activeshadow and dnkcom">
       
       <link rel="shortcut icon" href="../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.1.1">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
-        <title>Topology Schema - phenix documentation</title>
+        <title>Configuration File Schemas - phenix documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.a676eddb.min.css">
-      
-        <link rel="stylesheet" href="../assets/stylesheets/palette.b302131d.min.css">
-      
+      <link rel="stylesheet" href="../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#ff7043">
+          
+          
+          <meta name="theme-color" content="#ff6e42">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -54,7 +54,11 @@
   
     
     
-    <body dir="ltr" data-md-color-primary="deep-orange" data-md-color-accent="brown">
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="deep-orange" data-md-color-accent="brown">
+      
   
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -62,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#topology-schema" class="md-skip">
+        <a href="#configuration-file-schemas" class="md-skip">
           Skip to content
         </a>
       
@@ -79,7 +83,7 @@
 
     </a>
     <label class="md-header-nav__button md-icon" for="__drawer">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
     </label>
     <div class="md-header-nav__title" data-md-component="header-title">
       
@@ -89,7 +93,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Topology Schema
+              Configuration File Schemas
             
           </span>
         </div>
@@ -97,7 +101,7 @@
     </div>
     
       <label class="md-header-nav__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
       
 <div class="md-search" data-md-component="search" role="dialog">
@@ -106,18 +110,18 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
       <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
       </button>
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Type to start searching
+            Initializing search
           </div>
           <ol class="md-search-result__list"></ol>
         </div>
@@ -132,7 +136,7 @@
 <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/" title="Go to repository" class="md-source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     activeshadow/minimega
@@ -144,8 +148,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -172,7 +174,7 @@
 <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/" title="Go to repository" class="md-source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     activeshadow/minimega
@@ -190,6 +192,18 @@
   <li class="md-nav__item">
     <a href=".." title="Welcome" class="md-nav__link">
       Welcome
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../apps/" title="Apps" class="md-nav__link">
+      Apps
     </a>
   </li>
 
@@ -244,9 +258,87 @@
       
     
     
-    <a href="./" title="Topology Schema" class="md-nav__link md-nav__link--active">
-      Topology Schema
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Configuration File Schemas
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" title="Configuration File Schemas" class="md-nav__link md-nav__link--active">
+      Configuration File Schemas
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#topology-schema" class="md-nav__link">
+    Topology Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenario-schema" class="md-nav__link">
+    Scenario Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiment-schema" class="md-nav__link">
+    Experiment Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#image-schema" class="md-nav__link">
+    Image Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-schema" class="md-nav__link">
+    User Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#role-schema" class="md-nav__link">
+    Role Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#node-schema" class="md-nav__link">
+    Node Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interface-schema" class="md-nav__link">
+    Interface Schema
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -269,32 +361,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../user-apps/" title="User Apps" class="md-nav__link">
-      User Apps
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../vms/" title="VMs" class="md-nav__link">
       VMs
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../yaml/" title="YAML Configurations" class="md-nav__link">
-      YAML Configurations
     </a>
   </li>
 
@@ -316,6 +384,70 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#topology-schema" class="md-nav__link">
+    Topology Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scenario-schema" class="md-nav__link">
+    Scenario Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiment-schema" class="md-nav__link">
+    Experiment Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#image-schema" class="md-nav__link">
+    Image Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-schema" class="md-nav__link">
+    User Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#role-schema" class="md-nav__link">
+    Role Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#node-schema" class="md-nav__link">
+    Node Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interface-schema" class="md-nav__link">
+    Interface Schema
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -327,1531 +459,656 @@
               
                 
                   <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix/edit/master/docs/schema.md" title="Edit this page" class="md-content__button md-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                  
-                
-                
-                <h1 id="topology-schema">Topology Schema<a class="headerlink" href="#topology-schema" title="Permanent link">&para;</a></h1>
-<p>The following is the schema for a topology.</p>
-<div class="codehilite"><pre><span></span><code>{
-  &quot;type&quot;: &quot;object&quot;,
-  &quot;title&quot;: &quot;SCEPTRE Topology&quot;,
-  &quot;required&quot;: [
-    &quot;nodes&quot;
-  ],
-  &quot;properties&quot;: {
-    &quot;nodes&quot;: {
-      &quot;$id&quot;: &quot;#/properties/nodes&quot;,
-      &quot;type&quot;: &quot;array&quot;,
-      &quot;title&quot;: &quot;Nodes&quot;,
-      &quot;items&quot;: {
-        &quot;$id&quot;: &quot;#/properties/nodes/items&quot;,
-        &quot;type&quot;: &quot;object&quot;,
-        &quot;title&quot;: &quot;Node&quot;,
-        &quot;headerTemplate&quot;: &quot;{{i1}} - {{self.general.hostname}}&quot;,
-        &quot;required&quot;: [
-          &quot;type&quot;,
-          &quot;general&quot;,
-          &quot;hardware&quot;
-        ],
-        &quot;properties&quot;: {
-          &quot;type&quot;: {
-            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/type&quot;,
-            &quot;type&quot;: &quot;string&quot;,
-            &quot;title&quot;: &quot;Type&quot;,
-            &quot;enum&quot;: [
-              &quot;Firewall&quot;,
-              &quot;Printer&quot;,
-              &quot;Server&quot;,
-              &quot;Switch&quot;,
-              &quot;Router&quot;,
-              &quot;SCEPTRE&quot;,
-              &quot;VirtualMachine&quot;
-            ],
-            &quot;default&quot;: &quot;VirtualMachine&quot;,
-            &quot;examples&quot;: [
-              &quot;Firewall&quot;,
-              &quot;Printer&quot;,
-              &quot;Server&quot;,
-              &quot;Switch&quot;,
-              &quot;Router&quot;,
-              &quot;SCEPTRE&quot;,
-              &quot;VirtualMachine&quot;
-            ],
-            &quot;pattern&quot;: &quot;^(.*)$&quot;
-          },
-          &quot;general&quot;: {
-            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/general&quot;,
-            &quot;type&quot;: &quot;object&quot;,
-            &quot;title&quot;: &quot;General&quot;,
-            &quot;required&quot;: [
-              &quot;hostname&quot;
-            ],
-            &quot;properties&quot;: {
-              &quot;hostname&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/general/properties/hostname&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Hostname&quot;,
-                &quot;minLength&quot;: 1,
-                &quot;default&quot;: &quot;&quot;,
-                &quot;examples&quot;: [
-                  &quot;power-provider&quot;
-                ],
-                &quot;pattern&quot;: &quot;^[\\w-]+$&quot;
-              },
-              &quot;description&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/general/properties/description&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;description&quot;,
-                &quot;default&quot;: &quot;&quot;,
-                &quot;examples&quot;: [
-                  &quot;SCEPTRE power solver&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;snapshot&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/general/properties/snapshot&quot;,
-                &quot;type&quot;: &quot;boolean&quot;,
-                &quot;title&quot;: &quot;snapshot&quot;,
-                &quot;default&quot;: false,
-                &quot;examples&quot;: [
-                  false
-                ]
-              },
-              &quot;do_not_boot&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/general/properties/do_not_boot&quot;,
-                &quot;type&quot;: &quot;boolean&quot;,
-                &quot;title&quot;: &quot;do_not_boot&quot;,
-                &quot;default&quot;: false,
-                &quot;examples&quot;: [
-                  false
-                ]
-              }
-            }
-          },
-          &quot;hardware&quot;: {
-            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware&quot;,
-            &quot;type&quot;: &quot;object&quot;,
-            &quot;title&quot;: &quot;Hardware&quot;,
-            &quot;required&quot;: [
-              &quot;os_type&quot;,
-              &quot;drives&quot;
-            ],
-            &quot;properties&quot;: {
-              &quot;cpu&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/cpu&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;cpu&quot;,
-                &quot;default&quot;: &quot;Broadwell&quot;,
-                &quot;examples&quot;: [
-                  &quot;Broadwell&quot;,
-                  &quot;Haswell&quot;,
-                  &quot;core2duo&quot;,
-                  &quot;pentium3&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;vcpus&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/vcpus&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;vcpus&quot;,
-                &quot;default&quot;: &quot;1&quot;,
-                &quot;examples&quot;: [
-                  &quot;4&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;memory&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/memory&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;memory&quot;,
-                &quot;default&quot;: &quot;1024&quot;,
-                &quot;examples&quot;: [
-                  &quot;8192&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;os_type&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/os_type&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;os_type&quot;,
-                &quot;enum&quot;: [&quot;windows&quot;, &quot;linux&quot;, &quot;rhel&quot;, &quot;centos&quot;],
-                &quot;default&quot;: &quot;linux&quot;,
-                &quot;examples&quot;: [
-                  &quot;windows&quot;,
-                  &quot;linux&quot;,
-                  &quot;rhel&quot;,
-                  &quot;centos&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;drives&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/drives&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Drives&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/drives/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;Drive&quot;,
-                  &quot;required&quot;: [
-                    &quot;image&quot;
-                  ],
-                  &quot;properties&quot;: {
-                    &quot;image&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/drives/items/properties/image&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Image&quot;,
-                      &quot;minLength&quot;: 1,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;win10provider.qc2&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;interface&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/drives/items/properties/interface&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;interface&quot;,
-                      &quot;enum&quot;: [&quot;ahci&quot;, &quot;ide&quot;, &quot;scsi&quot;, &quot;sd&quot;, &quot;mtd&quot;, &quot;floppy&quot;, &quot;pflash&quot;, &quot;virtio&quot;],
-                      &quot;default&quot;: &quot;ide&quot;,
-                      &quot;examples&quot;: [
-                        &quot;ide&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;cache_mode&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/drives/items/properties/cache_mode&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;cache_mode&quot;,
-                      &quot;enum&quot;: [&quot;none&quot;, &quot;writeback&quot;, &quot;unsafe&quot;, &quot;directsync&quot;, &quot;writethrough&quot;],
-                      &quot;default&quot;: &quot;writeback&quot;,
-                      &quot;examples&quot;: [
-                        &quot;writeback&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;inject_partition&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/hardware/properties/drives/items/properties/inject_partition&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;inject_partition&quot;,
-                      &quot;default&quot;: &quot;1&quot;,
-                      &quot;examples&quot;: [
-                        &quot;2&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    }
-                  }
-                }
-              }
-            }
-          },
-          &quot;network&quot;: {
-            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network&quot;,
-            &quot;type&quot;: &quot;object&quot;,
-            &quot;title&quot;: &quot;Network&quot;,
-            &quot;required&quot;: [
-              &quot;interfaces&quot;
-            ],
-            &quot;properties&quot;: {
-              &quot;interfaces&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/interfaces&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Interfaces&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/interfaces/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;Interface&quot;,
-                  &quot;oneOf&quot;: [
-                    {
-                      &quot;$ref&quot;: &quot;#/definitions/static_iface&quot;,
-                      &quot;title&quot;: &quot;Static&quot;
-                    },
-                    {
-                      &quot;$ref&quot;: &quot;#/definitions/dhcp_iface&quot;,
-                      &quot;title&quot;: &quot;DHCP&quot;
-                    },
-                    {
-                      &quot;$ref&quot;: &quot;#/definitions/serial_iface&quot;,
-                      &quot;title&quot;: &quot;Serial&quot;
-                    }
-                  ]
-                }
-              },
-              &quot;routes&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/routes&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/routes/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;Route&quot;,
-                  &quot;required&quot;: [
-                    &quot;destination&quot;,
-                    &quot;next&quot;,
-                    &quot;cost&quot;
-                  ],
-                  &quot;properties&quot;: {
-                    &quot;destination&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/routes/items/properties/destination&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Destination&quot;,
-                      &quot;minLength&quot;: 1,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;192.168.0.0/24&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;next&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/routes/items/properties/next&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Next&quot;,
-                      &quot;minLength&quot;: 1,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;192.168.1.254&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;cost&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/routes/items/properties/cost&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Cost&quot;,
-                      &quot;minLength&quot;: 1,
-                      &quot;default&quot;: &quot;1&quot;,
-                      &quot;examples&quot;: [
-                        &quot;1&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    }
-                  }
-                }
-              },
-              &quot;ospf&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf&quot;,
-                &quot;type&quot;: &quot;object&quot;,
-                &quot;title&quot;: &quot;Ospf&quot;,
-                &quot;required&quot;: [
-                  &quot;router_id&quot;,
-                  &quot;areas&quot;
-                ],
-                &quot;properties&quot;: {
-                  &quot;router_id&quot;: {
-                    &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/router_id&quot;,
-                    &quot;type&quot;: &quot;string&quot;,
-                    &quot;title&quot;: &quot;Router_id&quot;,
-                    &quot;default&quot;: &quot;&quot;,
-                    &quot;examples&quot;: [
-                      &quot;0.0.0.1&quot;
-                    ],
-                    &quot;pattern&quot;: &quot;^(.*)$&quot;
-                  },
-                  &quot;areas&quot;: {
-                    &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/areas&quot;,
-                    &quot;type&quot;: &quot;array&quot;,
-                    &quot;title&quot;: &quot;Areas&quot;,
-                    &quot;items&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/areas/items&quot;,
-                      &quot;type&quot;: &quot;object&quot;,
-                      &quot;title&quot;: &quot;Area&quot;,
-                      &quot;required&quot;: [
-                        &quot;area_id&quot;,
-                        &quot;area_networks&quot;
-                      ],
-                      &quot;properties&quot;: {
-                        &quot;area_id&quot;: {
-                          &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/areas/items/properties/area_id&quot;,
-                          &quot;type&quot;: &quot;string&quot;,
-                          &quot;title&quot;: &quot;Area_id&quot;,
-                          &quot;default&quot;: &quot;&quot;,
-                          &quot;examples&quot;: [
-                            &quot;0&quot;
-                          ],
-                          &quot;pattern&quot;: &quot;^(.*)$&quot;
-                        },
-                        &quot;area_networks&quot;: {
-                          &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/areas/items/properties/area_networks&quot;,
-                          &quot;type&quot;: &quot;array&quot;,
-                          &quot;title&quot;: &quot;Area_networks&quot;,
-                          &quot;items&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/areas/items/properties/area_networks/items&quot;,
-                            &quot;type&quot;: &quot;object&quot;,
-                            &quot;title&quot;: &quot;Area Network&quot;,
-                            &quot;required&quot;: [
-                              &quot;network&quot;
-                            ],
-                            &quot;properties&quot;: {
-                              &quot;network&quot;: {
-                                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/ospf/properties/areas/items/properties/area_networks/items/properties/network&quot;,
-                                &quot;type&quot;: &quot;string&quot;,
-                                &quot;title&quot;: &quot;Network&quot;,
-                                &quot;default&quot;: &quot;&quot;,
-                                &quot;examples&quot;: [
-                                  &quot;10.1.25.0/24&quot;
-                                ],
-                                &quot;pattern&quot;: &quot;^(.*)$&quot;
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              &quot;rulesets&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Rulesets&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;Ruleset&quot;,
-                  &quot;required&quot;: [
-                    &quot;name&quot;,
-                    &quot;default&quot;,
-                    &quot;rules&quot;
-                  ],
-                  &quot;properties&quot;: {
-                    &quot;name&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/name&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Name&quot;,
-                      &quot;minLength&quot;: 1,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;OutToDMZ&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;description&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/description&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Description&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;From ICS to the DMZ network&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;default&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/default&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Default&quot;,
-                      &quot;minLength&quot;: 1,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;drop&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;rules&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;Rules&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;Rule&quot;,
-                        &quot;required&quot;: [
-                          &quot;id&quot;,
-                          &quot;action&quot;,
-                          &quot;protocol&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;id&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/id&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;Id&quot;,
-                            &quot;minLength&quot;: 1,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;10&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;description&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/description&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;Description&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;Allow UDP 10.1.26.80 ==&gt; 10.2.25.0/24:123&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;action&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/action&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;Action&quot;,
-                             &quot;enum&quot;: [
-                              &quot;accept&quot;,
-                              &quot;drop&quot;,
-                              &quot;reject&quot;
-                            ],
-                            &quot;default&quot;: &quot;drop&quot;,
-                            &quot;examples&quot;: [
-                              &quot;accept&quot;,
-                              &quot;drop&quot;,
-                              &quot;reject&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;protocol&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/protocol&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;Protocol&quot;,
-                            &quot;enum&quot;: [
-                              &quot;tcp&quot;,
-                              &quot;udp&quot;,
-                              &quot;icmp&quot;,
-                              &quot;esp&quot;,
-                              &quot;ah&quot;,
-                              &quot;all&quot;
-                            ],
-                            &quot;default&quot;: &quot;tcp&quot;,
-                            &quot;examples&quot;: [
-                              &quot;tcp&quot;,
-                              &quot;udp&quot;,
-                              &quot;icmp&quot;,
-                              &quot;esp&quot;,
-                              &quot;ah&quot;,
-                              &quot;all&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;source&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/source&quot;,
-                            &quot;type&quot;: &quot;object&quot;,
-                            &quot;title&quot;: &quot;Source&quot;,
-                            &quot;required&quot;: [
-                              &quot;address&quot;
-                            ],
-                            &quot;properties&quot;: {
-                              &quot;address&quot;: {
-                                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/source/properties/address&quot;,
-                                &quot;type&quot;: &quot;string&quot;,
-                                &quot;title&quot;: &quot;Address&quot;,
-                                &quot;default&quot;: &quot;&quot;,
-                                &quot;examples&quot;: [
-                                  &quot;10.1.24.0/24&quot;,
-                                  &quot;10.1.24.60&quot;
-                                ],
-                                &quot;pattern&quot;: &quot;^(.*)$&quot;
-                              },
-                              &quot;port&quot;: {
-                                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/source/properties/port&quot;,
-                                &quot;type&quot;: &quot;string&quot;,
-                                &quot;title&quot;: &quot;Port&quot;,
-                                &quot;default&quot;: &quot;&quot;,
-                                &quot;examples&quot;: [
-                                  &quot;3389&quot;
-                                ],
-                                &quot;pattern&quot;: &quot;^(.*)$&quot;
-                              }
-                            }
-                          },
-                          &quot;destination&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/destination&quot;,
-                            &quot;type&quot;: &quot;object&quot;,
-                            &quot;title&quot;: &quot;Destination&quot;,
-                            &quot;required&quot;: [
-                              &quot;address&quot;
-                            ],
-                            &quot;properties&quot;: {
-                              &quot;address&quot;: {
-                                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/source/properties/address&quot;,
-                                &quot;type&quot;: &quot;string&quot;,
-                                &quot;title&quot;: &quot;Address&quot;,
-                                &quot;default&quot;: &quot;&quot;,
-                                &quot;examples&quot;: [
-                                  &quot;10.1.24.0/24&quot;,
-                                  &quot;10.1.24.60&quot;
-                                ],
-                                &quot;pattern&quot;: &quot;^(.*)$&quot;
-                              },
-                              &quot;port&quot;: {
-                                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/network/properties/rulesets/items/properties/rules/items/properties/destination/properties/port&quot;,
-                                &quot;type&quot;: &quot;string&quot;,
-                                &quot;title&quot;: &quot;Port&quot;,
-                                &quot;default&quot;: &quot;&quot;,
-                                &quot;examples&quot;: [
-                                  &quot;3389&quot;
-                                ],
-                                &quot;pattern&quot;: &quot;^(.*)$&quot;
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          &quot;injections&quot;: {
-            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/injections&quot;,
-            &quot;type&quot;: &quot;array&quot;,
-            &quot;title&quot;: &quot;Injections&quot;,
-            &quot;items&quot;: {
-              &quot;$id&quot;: &quot;#/properties/nodes/items/properties/injections/items&quot;,
-              &quot;type&quot;: &quot;object&quot;,
-              &quot;title&quot;: &quot;Injection&quot;,
-              &quot;required&quot;: [
-                &quot;src&quot;,
-                &quot;dst&quot;
-              ],
-              &quot;properties&quot;: {
-                &quot;src&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/injections/properties/src&quot;,
-                  &quot;type&quot;: &quot;string&quot;,
-                  &quot;title&quot;: &quot;Src&quot;,
-                  &quot;minLength&quot;: 1,
-                  &quot;default&quot;: &quot;&quot;,
-                  &quot;examples&quot;: [
-                    &quot;ACTIVSg2000.PWB&quot;
-                  ],
-                  &quot;pattern&quot;: &quot;^(.*)$&quot;
-                },
-                &quot;dst&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/injections/properties/dst&quot;,
-                  &quot;type&quot;: &quot;string&quot;,
-                  &quot;title&quot;: &quot;Dst&quot;,
-                  &quot;minLength&quot;: 1,
-                  &quot;default&quot;: &quot;&quot;,
-                  &quot;examples&quot;: [
-                    &quot;sceptre/ACTIVSg2000.PWB&quot;
-                  ],
-                  &quot;pattern&quot;: &quot;^(.*)$&quot;
-                },
-                &quot;description&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/injections/properties/description&quot;,
-                  &quot;type&quot;: &quot;string&quot;,
-                  &quot;title&quot;: &quot;description&quot;,
-                  &quot;default&quot;: &quot;&quot;,
-                  &quot;examples&quot;: [
-                    &quot;PowerWorld case binary data&quot;
-                  ],
-                  &quot;pattern&quot;: &quot;^(.*)$&quot;
-                }
-              }
-            }
-          },
-          &quot;metadata&quot;: {
-            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata&quot;,
-            &quot;type&quot;: &quot;object&quot;,
-            &quot;title&quot;: &quot;Metadata&quot;,
-            &quot;properties&quot;: {
-              &quot;infrastructure&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/infrastructure&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Infrastructure&quot;,
-                &quot;enum&quot;: [&quot;power-transmission&quot;, &quot;power-distribution&quot;, &quot;batch-process&quot;],
-                &quot;default&quot;: &quot;power-transmission&quot;,
-                &quot;examples&quot;: [
-                  &quot;power-transmission&quot;,
-                  &quot;power-distribution&quot;,
-                  &quot;batch-process&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;provider&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/provider&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Provider&quot;,
-                &quot;default&quot;: &quot;power-provider&quot;,
-                &quot;examples&quot;: [
-                  &quot;power-provider&quot;,
-                  &quot;simulink-provider&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;simulator&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/simulator&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Simulator&quot;,
-                &quot;enum&quot;: [&quot;Dummy&quot;, &quot;PSSE&quot;, &quot;PyPower&quot;, &quot;PowerWorld&quot;, &quot;PowerWorldDynamics&quot;, &quot;OpenDSS&quot;, &quot;Simulink&quot;],
-                &quot;default&quot;: &quot;PowerWorld&quot;,
-                &quot;examples&quot;: [
-                  &quot;PowerWorld&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;publish_endpoint&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/publish_endpoint&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Publish_endpoint&quot;,
-                &quot;default&quot;: &quot;udp://*;239.0.0.1:40000&quot;,
-                &quot;examples&quot;: [
-                  &quot;udp://*;239.0.0.1:40000&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;cycle_time&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/cycle_time&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Cycle_time&quot;,
-                &quot;default&quot;: &quot;500&quot;,
-                &quot;examples&quot;: [
-                  &quot;1000&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;dnp3&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Dnp3&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;DNP3 Metadata&quot;,
-                  &quot;required&quot;: [
-                    &quot;type&quot;,
-                    &quot;name&quot;
-                  ],
-                  &quot;properties&quot;: {
-                    &quot;type&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/type&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Type&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;bus&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;name&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/name&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Name&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;bus-2052&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },&quot;analog-read&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/analog-read&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Analog-read Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/dnp3/items/properties/analog-read/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/analog-read/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;voltage&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/analog-read/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              0
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/analog-read/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;analog-input&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    },
-                    &quot;binary-read&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Binary-read Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/dnp3/items/properties/binary-read/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;active&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              7
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;binary-input&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    },
-                    &quot;binary-read-write&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read-write&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Binary-read-write Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/dnp3/items/properties/binary-read-write/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read-write/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;active&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read-write/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              9
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3/items/properties/binary-read-write/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;binary-output&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              &quot;dnp3-serial&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Dnp3-serial&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;DNP3-serial Metadata&quot;,
-                  &quot;required&quot;: [
-                    &quot;type&quot;,
-                    &quot;name&quot;
-                  ],
-                  &quot;properties&quot;: {
-                    &quot;type&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/type&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Type&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;bus&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;name&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/name&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Name&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;bus-2052&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },&quot;analog-read&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/analog-read&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Analog-read Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/dnp3-serial/items/properties/analog-read/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/analog-read/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;voltage&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/analog-read/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              0
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/analog-read/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;analog-input&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    },
-                    &quot;binary-read&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Binary-read Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/dnp3-serial/items/properties/binary-read/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;active&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              7
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;binary-input&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    },
-                    &quot;binary-read-write&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read-write&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Binary-read-write Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/dnp3-serial/items/properties/binary-read-write/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read-write/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;active&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read-write/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              9
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/dnp3-serial/items/properties/binary-read-write/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;binary-output&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              &quot;modbus&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Modbus&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items&quot;,
-                  &quot;type&quot;: &quot;object&quot;,
-                  &quot;title&quot;: &quot;Modbus Metadata&quot;,
-                  &quot;required&quot;: [
-                    &quot;type&quot;,
-                    &quot;name&quot;
-                  ],
-                  &quot;properties&quot;: {
-                    &quot;type&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/type&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Type&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;bus&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;name&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/name&quot;,
-                      &quot;type&quot;: &quot;string&quot;,
-                      &quot;title&quot;: &quot;Name&quot;,
-                      &quot;default&quot;: &quot;&quot;,
-                      &quot;examples&quot;: [
-                        &quot;bus-2052&quot;
-                      ],
-                      &quot;pattern&quot;: &quot;^(.*)$&quot;
-                    },
-                    &quot;analog-read&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/analog-read&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Analog-read Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/analog-read/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/analog-read/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;voltage&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/analog-read/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              30000
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/analog-read/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;input-register&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    },
-                    &quot;binary-read&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Binary-read Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/modbus/items/properties/binary-read/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;active&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              10000
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;discrete-input&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    },
-                    &quot;binary-read-write&quot;: {
-                      &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read-write&quot;,
-                      &quot;type&quot;: &quot;array&quot;,
-                      &quot;title&quot;: &quot;The Binary-read-write Schema&quot;,
-                      &quot;items&quot;: {
-                        &quot;$id&quot;: &quot;#/properties/metadata/properties/modbus/items/properties/binary-read-write/items&quot;,
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;title&quot;: &quot;The Items Schema&quot;,
-                        &quot;required&quot;: [
-                          &quot;field&quot;,
-                          &quot;register_number&quot;,
-                          &quot;register_type&quot;
-                        ],
-                        &quot;properties&quot;: {
-                          &quot;field&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read-write/items/properties/field&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Field Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;active&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          },
-                          &quot;register_number&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read-write/items/properties/register_number&quot;,
-                            &quot;type&quot;: &quot;integer&quot;,
-                            &quot;title&quot;: &quot;The Register_number Schema&quot;,
-                            &quot;default&quot;: 0,
-                            &quot;examples&quot;: [
-                              0
-                            ]
-                          },
-                          &quot;register_type&quot;: {
-                            &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/modbus/items/properties/binary-read-write/items/properties/register_type&quot;,
-                            &quot;type&quot;: &quot;string&quot;,
-                            &quot;title&quot;: &quot;The Register_type Schema&quot;,
-                            &quot;default&quot;: &quot;&quot;,
-                            &quot;examples&quot;: [
-                              &quot;coil&quot;
-                            ],
-                            &quot;pattern&quot;: &quot;^(.*)$&quot;
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              &quot;logic&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/logic&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Logic&quot;,
-                &quot;default&quot;: &quot;&quot;,
-                &quot;examples&quot;: [
-                  &quot;Tank1.fill_control = Tank1.tank_volume &lt; Tank1.level_setpoint || (Tank1.tank_volume &lt; 1.5*Tank1.level_setpoint &amp;&amp; Tank1.fill_control == 1); Pump1.control = ! FillingStation1.request == 0 &amp;&amp; Tank1.tank_volume&gt;0; Pump1.active = 1==1&quot;
-                ],
-                &quot;pattern&quot;: &quot;^(.*)$&quot;
-              },
-              &quot;connected_rtus&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/connected_rtus&quot;,
-                &quot;type&quot;: &quot;array&quot;,
-                &quot;title&quot;: &quot;Connected RTUs&quot;,
-                &quot;items&quot;: {
-                  &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/connected_rtus/items&quot;,
-                  &quot;type&quot;: &quot;string&quot;,
-                  &quot;title&quot;: &quot;RTU&quot;,
-                  &quot;default&quot;: &quot;&quot;,
-                  &quot;examples&quot;: [
-                    &quot;rtu-1&quot;,
-                    &quot;fuel-rtu-2&quot;
-                  ],
-                  &quot;pattern&quot;: &quot;^(.*)$&quot;
-                }
-              },
-              &quot;connect_to_scada&quot;: {
-                &quot;type&quot;: &quot;boolean&quot;,
-                &quot;title&quot;: &quot;connect_to_scada&quot;,
-                &quot;default&quot;: false,
-                &quot;examples&quot;: [
-                  true,
-                  false
-                ]
-              },
-              &quot;manual_register_config&quot;: {
-                &quot;$id&quot;: &quot;#/properties/nodes/items/properties/metadata/properties/manual_register_config&quot;,
-                &quot;type&quot;: &quot;string&quot;,
-                &quot;title&quot;: &quot;Manual register configuration&quot;,
-                &quot;default&quot;: &quot;false&quot;,
-                &quot;examples&quot;: [
-                  &quot;false&quot;
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    &quot;vlans&quot;: {
-      &quot;$id&quot;: &quot;#/properties/vlans&quot;,
-      &quot;type&quot;: &quot;array&quot;,
-      &quot;title&quot;: &quot;VLANs&quot;,
-      &quot;items&quot;: {
-        &quot;$id&quot;: &quot;#/properties/vlans/items&quot;,
-        &quot;type&quot;: &quot;object&quot;,
-        &quot;title&quot;: &quot;VLAN&quot;,
-        &quot;required&quot;: [
-          &quot;name&quot;,
-          &quot;id&quot;
-        ],
-        &quot;properties&quot;: {
-          &quot;name&quot;: {
-            &quot;$id&quot;: &quot;#/properties/vlans/items/properties/name&quot;,
-            &quot;type&quot;: &quot;string&quot;,
-            &quot;title&quot;: &quot;Name&quot;,
-            &quot;minLength&quot;: 1,
-            &quot;default&quot;: &quot;&quot;,
-            &quot;examples&quot;: [
-              &quot;SCADAPWR&quot;
-            ],
-            &quot;pattern&quot;: &quot;^(.*)$&quot;
-          },
-          &quot;id&quot;: {
-            &quot;$id&quot;: &quot;#/properties/vlans/items/properties/id&quot;,
-            &quot;type&quot;: &quot;string&quot;,
-            &quot;title&quot;: &quot;Id&quot;,
-            &quot;minLength&quot;: 1,
-            &quot;default&quot;: &quot;&quot;,
-            &quot;examples&quot;: [
-              &quot;101&quot;
-            ],
-            &quot;pattern&quot;: &quot;^(.*)$&quot;
-          }
-        }
-      }
-    }
-  },
-  &quot;definitions&quot;: {
-    &quot;iface&quot;: {
-      &quot;type&quot;: &quot;object&quot;,
-      &quot;properties&quot;: {
-        &quot;name&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;Name&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;eth0&quot;
-          ],
-          &quot;pattern&quot;: &quot;^[\\w-]+$&quot;
-        },
-        &quot;vlan&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;VLAN&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;SCADAPWR&quot;
-          ],
-          &quot;pattern&quot;: &quot;^[\\w-]+$&quot;
-        },
-        &quot;autostart&quot;: {
-          &quot;type&quot;: &quot;boolean&quot;,
-          &quot;title&quot;: &quot;autostart&quot;,
-          &quot;default&quot;: true,
-          &quot;examples&quot;: [
-            true,
-            false
-          ]
-        },
-        &quot;mac&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;mac&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;00:11:22:33:44:55:66&quot;
-          ],
-          &quot;pattern&quot;: &quot;^([0-9a-fA-F]{2}[:-]){5}([0-9a-fA-F]){2}$&quot;
-        },
-        &quot;mtu&quot;: {
-          &quot;type&quot;: &quot;integer&quot;,
-          &quot;title&quot;: &quot;mtu&quot;,
-          &quot;default&quot;: 1500,
-          &quot;examples&quot;: [
-            1500
-          ]
-        }
-      },
-      &quot;required&quot;: [&quot;name&quot;, &quot;vlan&quot;]
-    },
-    &quot;iface_address&quot;: {
-      &quot;type&quot;: &quot;object&quot;,
-      &quot;properties&quot;: {
-        &quot;address&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;address&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;192.168.1.100&quot;
-          ],
-          &quot;pattern&quot;: &quot;^(?!0)(?!.*\\.$)((1?\\d?\\d|25[0-5]|2[0-4]\\d)(\\.|$)){4}$&quot;
-        },
-        &quot;mask&quot;: {
-          &quot;type&quot;: &quot;integer&quot;,
-          &quot;title&quot;: &quot;mask&quot;,
-          &quot;default&quot;: 24,
-          &quot;minimum&quot;: 0,
-          &quot;maximum&quot;: 32,
-          &quot;examples&quot;: [
-            24
-          ]
-        },
-        &quot;gateway&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;gateway&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;192.168.1.1&quot;
-          ],
-          &quot;pattern&quot;: &quot;^(?!0)(?!.*\\.$)((1?\\d?\\d|25[0-5]|2[0-4]\\d)(\\.|$)){4}$&quot;
-        }
-      },
-      &quot;required&quot;: [&quot;address&quot;, &quot;mask&quot;]
-    },
-    &quot;iface_rulesets&quot;: {
-      &quot;type&quot;: &quot;object&quot;,
-      &quot;properties&quot;: {
-        &quot;ruleset_out&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;ruleset_out&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;OutToICS&quot;
-          ],
-          &quot;pattern&quot;: &quot;^[\\w-]+$&quot;
-        },
-        &quot;ruleset_in&quot;: {
-          &quot;type&quot;: &quot;string&quot;,
-          &quot;title&quot;: &quot;ruleset_in&quot;,
-          &quot;default&quot;: &quot;&quot;,
-          &quot;examples&quot;: [
-            &quot;InFromSCADA&quot;
-          ],
-          &quot;pattern&quot;: &quot;^[\\w-]+$&quot;
-        }
-      }
-    },
-    &quot;static_iface&quot;: {
-      &quot;allOf&quot;: [
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface&quot;
-        },
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface_address&quot;
-        },
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface_rulesets&quot;
-        },
-        {
-          &quot;properties&quot;: {
-            &quot;type&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;type&quot;,
-              &quot;enum&quot;: [&quot;ethernet&quot;],
-              &quot;default&quot;: &quot;ethernet&quot;,
-              &quot;examples&quot;: [
-                &quot;ethernet&quot;
-              ]
-            },
-            &quot;proto&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;proto&quot;,
-              &quot;enum&quot;: [&quot;static&quot;, &quot;ospf&quot;],
-              &quot;default&quot;: &quot;static&quot;,
-              &quot;examples&quot;: [
-                &quot;static&quot;,
-                &quot;ospf&quot;
-              ]
-            }
-          },
-          &quot;required&quot;: [&quot;type&quot;, &quot;proto&quot;]
-        }
-      ]
-    },
-    &quot;dhcp_iface&quot;: {
-      &quot;allOf&quot;: [
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface&quot;
-        },
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface_rulesets&quot;
-        },
-        {
-          &quot;properties&quot;: {
-            &quot;type&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;type&quot;,
-              &quot;enum&quot;: [&quot;ethernet&quot;],
-              &quot;default&quot;: &quot;ethernet&quot;,
-              &quot;examples&quot;: [
-                &quot;ethernet&quot;
-              ]
-            },
-            &quot;proto&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;proto&quot;,
-              &quot;enum&quot;: [&quot;dhcp&quot;],
-              &quot;default&quot;: &quot;dhcp&quot;,
-              &quot;examples&quot;: [
-                &quot;dhcp&quot;
-              ]
-            }
-          },
-          &quot;required&quot;: [&quot;type&quot;, &quot;proto&quot;]
-        }
-      ]
-    },
-    &quot;serial_iface&quot;: {
-      &quot;allOf&quot;: [
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface&quot;
-        },
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface_address&quot;
-        },
-        {
-          &quot;$ref&quot;: &quot;#/definitions/iface_rulesets&quot;
-        },
-        {
-          &quot;properties&quot;: {
-            &quot;type&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;type&quot;,
-              &quot;enum&quot;: [&quot;serial&quot;],
-              &quot;default&quot;: &quot;serial&quot;,
-              &quot;examples&quot;: [
-                &quot;serial&quot;
-              ]
-            },
-            &quot;proto&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;proto&quot;,
-              &quot;enum&quot;: [&quot;static&quot;],
-              &quot;default&quot;: &quot;static&quot;,
-              &quot;examples&quot;: [
-                &quot;static&quot;
-              ]
-            },
-            &quot;udp_port&quot;: {
-              &quot;type&quot;: &quot;integer&quot;,
-              &quot;title&quot;: &quot;udp_port&quot;,
-              &quot;default&quot;: 8989,
-              &quot;minimum&quot;: 0,
-              &quot;maximum&quot;: 65535,
-              &quot;examples&quot;: [
-                8989
-              ]
-            },
-            &quot;baud_rate&quot;: {
-              &quot;type&quot;: &quot;integer&quot;,
-              &quot;title&quot;: &quot;baud_rate&quot;,
-              &quot;enum&quot;: [110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000],
-              &quot;default&quot;: 9600,
-              &quot;examples&quot;: [
-                9600
-              ]
-            },
-            &quot;device&quot;: {
-              &quot;type&quot;: &quot;string&quot;,
-              &quot;title&quot;: &quot;device&quot;,
-              &quot;default&quot;: &quot;/dev/ttyS0&quot;,
-              &quot;examples&quot;: [
-                &quot;/dev/ttyS0&quot;
-              ],
-              &quot;pattern&quot;: &quot;^[\\w\\/]+\\w+$&quot;
-            }
-          },
-          &quot;required&quot;: [&quot;type&quot;, &quot;proto&quot;, &quot;udp_port&quot;, &quot;baud_rate&quot;, &quot;device&quot;]
-        }
-      ]
-    }
-  }
-}
+                <h1 id="configuration-file-schemas">Configuration File Schemas<a class="headerlink" href="#configuration-file-schemas" title="Permanent link">&para;</a></h1>
+<p>The following schemas are all represented using the <code>OpenAPIv3</code> format.</p>
+<h2 id="topology-schema">Topology Schema<a class="headerlink" href="#topology-schema" title="Permanent link">&para;</a></h2>
+<p>The <code>topology</code> schema is largely comprised of nodes, <a href="#node-schema">described
+here</a>.</p>
+<div class="codehilite"><pre><span></span><code>Topology:
+  type: object
+  title: Demo Topology
+  required:
+  - nodes
+  properties:
+    nodes:
+      type: array
+      title: Nodes
+      items:
+        $ref: &quot;#/components/schemas/Node&quot;
+</code></pre></div>
+
+
+<h2 id="scenario-schema">Scenario Schema<a class="headerlink" href="#scenario-schema" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">INCOMPLETE SCHEMA</p>
+<p>This schema definition is not complete.</p>
+</div>
+<div class="codehilite"><pre><span></span><code>Scenario:
+  type: object
+  required:
+  - apps
+  properties:
+    apps:
+      type: object
+      properties:
+        experiment:
+          type: array
+          items:
+            type: object
+            required:
+            - name
+            properties:
+              name:
+                type: string
+                minLength: 1
+</code></pre></div>
+
+
+<h2 id="experiment-schema">Experiment Schema<a class="headerlink" href="#experiment-schema" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">INCOMPLETE SCHEMA</p>
+<p>This schema definition is not complete.</p>
+</div>
+<div class="codehilite"><pre><span></span><code>Experiment:
+  type: object
+  required:
+  - experimentName
+  properties:
+    experimentName:
+      type: string
+      minLength: 1
+    baseDir:
+      type: string
+    vlans:
+      type: object
+      title: VLANs
+      properties:
+        aliases:
+          type: object
+          title: Aliases
+          additionalProperties:
+            type: integer
+          example:
+            MGMT: 200
+        min:
+          type: integer
+        max:
+          type: integer
+    schedule:
+      type: object
+      title: Schedule
+      additionalProperties:
+        type: string
+      example:
+        ADServer: compute1
+</code></pre></div>
+
+
+<h2 id="image-schema">Image Schema<a class="headerlink" href="#image-schema" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">INCOMPLETE SCHEMA</p>
+<p>This schema definition is not complete.</p>
+</div>
+<div class="codehilite"><pre><span></span><code>Image:
+  type: object
+  title: ubuntu Image
+  required:
+  - release
+  properties:
+    release:
+      type: string
+      minLength: 1
+</code></pre></div>
+
+
+<h2 id="user-schema">User Schema<a class="headerlink" href="#user-schema" title="Permanent link">&para;</a></h2>
+<div class="admonition bug">
+<p class="admonition-title">MISSING SCHEMA</p>
+<p>This schema definition does not (yet) exist.</p>
+</div>
+<h2 id="role-schema">Role Schema<a class="headerlink" href="#role-schema" title="Permanent link">&para;</a></h2>
+<div class="admonition bug">
+<p class="admonition-title">MISSING SCHEMA</p>
+<p>This schema definition does not (yet) exist.</p>
+</div>
+<h2 id="node-schema">Node Schema<a class="headerlink" href="#node-schema" title="Permanent link">&para;</a></h2>
+<p>The <code>node</code> schema contains references to the <code>interface</code> schema <a href="#interface-schema">described
+here</a>.</p>
+<div class="codehilite"><pre><span></span><code>Node:
+  type: object
+  title: Node
+  required:
+  - type
+  - general
+  - hardware
+  properties:
+    type:
+      type: string
+      title: Node Type
+      enum:
+      - Firewall
+      - Printer
+      - Router
+      - Server
+      - Switch
+      - VirtualMachine
+      default: VirtualMachine
+      example: VirtualMachine
+    general:
+      type: object
+      title: General Node Configuration
+      required:
+      - hostname
+      properties:
+        hostname:
+          type: string
+          title: Hostname
+          minLength: 1
+          example: ADServer
+        description:
+          type: string
+          title: Description
+          example: Active Directory Server
+        vm_type:
+          type: string
+          title: VM (Emulation) Type
+          enum:
+          - kvm
+          - container
+          - &quot;&quot;
+          default: kvm
+          example: kvm
+        snapshot:
+          type: boolean
+          title: Snapshot Mode
+          default: false
+          example: false
+          nullable: true
+        do_not_boot:
+          type: boolean
+          title: Do Not Boot VM
+          default: false
+          example: false
+          nullable: true
+    hardware:
+      type: object
+      title: Node Hardware Configuration
+      required:
+      - os_type
+      - drives
+      properties:
+        cpu:
+          type: string
+          title: CPU Emulation
+          enum:
+          - Broadwell
+          - Haswell
+          - core2duo
+          - pentium3
+          - &quot;&quot;
+          default: Broadwell
+          example: Broadwell
+        vcpus:
+          type: integer
+          title: VCPU Count
+          default: 1
+          example: 4
+        memory:
+          type: integer
+          title: Memory
+          default: 1024
+          example: 8192
+        os_type:
+          type: string
+          title: OS Type
+          enum:
+          - windows
+          - linux
+          - rhel
+          - centos
+          default: linux
+          example: windows
+        drives:
+          type: array
+          title: Drives
+          items:
+            type: object
+            title: Drive
+            required:
+            - image
+            properties:
+              image:
+                type: string
+                title: Image File Name
+                minLength: 1
+                example: ubuntu.qc2
+              interface:
+                type: string
+                title: Drive Interface
+                enum:
+                - ahci
+                - ide
+                - scsi
+                - sd
+                - mtd
+                - floppy
+                - pflash
+                - virtio
+                - &quot;&quot;
+                default: ide
+                example: ide
+              cache_mode:
+                type: string
+                title: Drive Cache Mode
+                enum:
+                - none
+                - writeback
+                - unsafe
+                - directsync
+                - writethrough
+                - &quot;&quot;
+                default: writeback
+                example: writeback
+              inject_partition:
+                type: integer
+                title: Disk Image Partition to Inject Files Into
+                default: 1
+                example: 2
+                nullable: true
+    network:
+      type: object
+      title: Node Network Configuration
+      required:
+      - interfaces
+      properties:
+        interfaces:
+          type: array
+          title: Network Interfaces
+          items:
+            type: object
+            title: Network Interface
+            oneOf:
+            - $ref: &#39;#/components/schemas/static_iface&#39;
+            - $ref: &#39;#/components/schemas/dhcp_iface&#39;
+            - $ref: &#39;#/components/schemas/serial_iface&#39;
+        routes:
+          type: array
+          items:
+            type: object
+            title: Network Route
+            required:
+            - destination
+            - next
+            - cost
+            properties:
+              destination:
+                type: string
+                title: Routing Destination
+                minLength: 1
+                example: 192.168.0.0/24
+              next:
+                type: string
+                title: Next Hop for Routing Destination
+                minLength: 1
+                example: 192.168.1.254
+              cost:
+                type: integer
+                title: Routing Cost (weight)
+                default: 1
+                example: 1
+        ospf:
+          type: object
+          title: OSPF Routing Configuration
+          required:
+          - router_id
+          - areas
+          properties:
+            router_id:
+              type: string
+              title: Router ID
+              minLength: 1
+              example: 0.0.0.1
+            areas:
+              type: array
+              title: Routing Areas
+              items:
+                type: object
+                title: Routing Area
+                required:
+                - area_id
+                - area_networks
+                properties:
+                  area_id:
+                    type: integer
+                    title: Area ID
+                    example: 1
+                    default: 1
+                  area_networks:
+                    type: array
+                    title: Area Networks
+                    items:
+                      type: object
+                      title: Area Network
+                      required:
+                      - network
+                      properties:
+                        network: 
+                          type: string
+                          title: Network
+                          minLength: 1
+                          example: 10.1.25.0/24
+        rulesets:
+          type: array
+          title: Firewall Rulesets
+          items:
+            type: object
+            title: Firewall Ruleset
+            required:
+            - name
+            - default
+            - rules
+            properties:
+              name:
+                type: string
+                title: Ruleset Name
+                minLength: 1
+                example: OutToDMZ
+              description:
+                type: string
+                title: Ruleset Description
+                minLength: 1
+                example: From Corp to the DMZ network
+              default:
+                type: string
+                title: Default Firewall Action
+                enum:
+                - accept
+                - drop
+                - reject
+                example: drop
+              rules:
+                type: array
+                title: Firewall Rules
+                items:
+                  type: object
+                  title: Firewall Rule
+                  required:
+                  - id
+                  - action
+                  - protocol
+                  properties:
+                    id:
+                      type: integer
+                      title: Rule ID
+                      example: 10
+                    description:
+                      type: string
+                      title: Rule Description
+                      example: Allow UDP 10.1.26.80 ==&gt; 10.2.25.0/24:123
+                    action:
+                      type: string
+                      title: Rule Action
+                      enum:
+                      - accept
+                      - drop
+                      - reject
+                      example: accept
+                    protocol:
+                      type: string
+                      title: Network Protocol
+                      enum:
+                      - tcp
+                      - udp
+                      - icmp
+                      - esp
+                      - ah
+                      - all
+                      default: tcp
+                      example: tcp
+                    source:
+                      type: object
+                      title: Source Address
+                      required:
+                      - address
+                      properties:
+                        address:
+                          type: string
+                          title: IP Address
+                          minLength: 1
+                          example: 10.1.24.60
+                        port:
+                          type: integer
+                          title: Port Number
+                          example: 3389
+                    destination:
+                      type: object
+                      title: Destination Address
+                      required:
+                      - address
+                      properties:
+                        address:
+                          type: string
+                          title: IP Address
+                          minLength: 1
+                          example: 10.1.24.60
+                        port:
+                          type: integer
+                          title: Port Number
+                          example: 3389
+    injections:
+      type: array
+      title: Node File Injections
+      items:
+        type: object
+        title: Node File Injection
+        required:
+        - src
+        - dst
+        properties:
+          src:
+            type: string
+            title: Location of Source File to Inject
+            minLength: 1
+            example: foo.xml
+          dst:
+            type: string
+            title: Destination Location to Inject File To
+            minLength: 1
+            example: /etc/phenix/foo.xml
+          description:
+            type: string
+            title: Description of file being injected
+            example: phenix config file
+          permissions:
+            type: string
+            title: Injected file permissions (UNIX style)
+            example: 0664
+</code></pre></div>
+
+
+<h2 id="interface-schema">Interface Schema<a class="headerlink" href="#interface-schema" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code>iface:
+  type: object
+  required:
+  - name
+  - vlan
+  properties:
+    name:
+      type: string
+      title: Name
+      minLength: 1
+      example: eth0
+    vlan:
+      type: string
+      title: VLAN
+      minLength: 1
+      example: EXP-1
+    autostart:
+      type: boolean
+      title: Auto Start Interface
+      default: true
+    mac:
+      type: string
+      title: Interface MAC Address
+      example: 00:11:22:33:44:55:66
+      pattern: &#39;^([0-9a-fA-F]{2}[:-]){5}([0-9a-fA-F]){2}$&#39;
+    mtu:
+      type: integer
+      title: Interface MTU
+      default: 1500
+      example: 1500
+    bridge:
+      type: string
+      title: OpenVSwitch Bridge
+      default: phenix
+iface_address:
+  type: object
+  required:
+  - address
+  - mask
+  properties:
+    address:
+      type: string
+      format: ipv4
+      title: IP Address
+      minLength: 7
+      example: 192.168.1.100
+    mask:
+      type: integer
+      title: IP Address Netmask
+      minimum: 0
+      maximum: 32
+      default: 24
+      example: 24
+    gateway:
+      type: string
+      format: ipv4
+      title: Default Gateway
+      minLength: 7
+      example: 192.168.1.1
+iface_rulesets:
+  type: object
+  properties:
+    ruleset_out:
+      type: string
+      title: Outbound Ruleset
+      example: OutToInet
+      pattern: &#39;^[\w-]+$&#39;
+    ruleset_in:
+      type: string
+      title: Inbound Ruleset
+      example: InFromInet
+      pattern: &#39;^[\w-]+$&#39;
+static_iface:
+  allOf:
+  - $ref: &#39;#/components/schemas/iface&#39;
+  - $ref: &#39;#/components/schemas/iface_address&#39;
+  - $ref: &#39;#/components/schemas/iface_rulesets&#39;
+  required:
+  - type
+  - proto
+  properties:
+    type:
+      type: string
+      title: Interface Type
+      enum:
+      - ethernet
+      default: ethernet
+      example: ethernet
+    proto:
+      type: string
+      title: Interface Protocol
+      enum:
+      - static
+      - ospf
+      default: static
+      example: static
+dhcp_iface:
+  allOf:
+  - $ref: &#39;#/components/schemas/iface&#39;
+  - $ref: &#39;#/components/schemas/iface_rulesets&#39;
+  required:
+  - type
+  - proto
+  properties:
+    type:
+      type: string
+      title: Interface Type
+      enum:
+      - ethernet
+      default: ethernet
+      example: ethernet
+    proto:
+      type: string
+      title: Interface Protocol
+      enum:
+      - dhcp
+      default: dhcp
+      example: dhcp
+serial_iface:
+  allOf:
+  - $ref: &#39;#/components/schemas/iface&#39;
+  - $ref: &#39;#/components/schemas/iface_address&#39;
+  - $ref: &#39;#/components/schemas/iface_rulesets&#39;
+  required:
+  - type
+  - proto
+  - udp_port
+  - baud_rate
+  - device
+  properties:
+    type:
+      type: string
+      title: Interface Type
+      enum:
+      - serial
+      default: serial
+      example: serial
+    proto:
+      type: string
+      title: Interface Protocol
+      enum:
+      - static
+      default: static
+      example: static
+    udp_port:
+      type: integer
+      title: UDP Port
+      minimum: 0
+      maximum: 65535
+      default: 8989
+      example: 8989
+    baud_rate:
+      type: integer
+      title: Serial Baud Rate
+      enum:
+      - 110
+      - 300
+      - 600
+      - 1200
+      - 2400
+      - 4800
+      - 9600
+      - 14400
+      - 19200
+      - 38400
+      - 57600
+      - 115200
+      - 128000
+      - 256000
+      default: 9600
+      example: 9600
+    device:
+      type: string
+      title: Serial Device
+      minLength: 1
+      default: /dev/ttyS0
+      example: /dev/ttyS0
+      pattern: &#39;^[\w\/]+\w+$&#39;
 </code></pre></div>
                 
               
@@ -1885,6 +1142,9 @@
     
       
       
+        
+        
+      
       <a href="https://github.com/activeshadow/minimega/tree/phenix/phenix" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
       </a>
@@ -1897,15 +1157,15 @@
       
     </div>
     
-      <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: [],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.58d22e8e.min.js"
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

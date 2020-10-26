@@ -7,11 +7,11 @@ This is only available from the command line binary at this time.
 ```
 $> phenix image list
 ```
-<br>
 
 ## Creating a disk image
 
-The [`vmdb2` utility](https://github.com/glattercj/vmdb2) is used to create the disk images.
+The [`vmdb2` utility](https://github.com/glattercj/vmdb2) is required 
+-- in path -- to create the disk images.
 
 ```
 $> phenix image create <image name>
@@ -61,11 +61,12 @@ The `vmdb2` configuration file can be read by running the following command:
 ```
 $> phenix cfg get image/<image name>
 ```
-<br>
 
 ## Building a disk image
 
-Building a disk image requires an existing configuration in the store (i.e., the `create` command should be run first to create a configuration); the `phenix image build --help` will output:
+Building a disk image requires an existing configuration in the store 
+(i.e., the `create` command should be run first to create a configuration); 
+the `phenix image build --help` will output:
 
 ```
 Build a virtual disk image
@@ -98,31 +99,34 @@ Global Flags:
       --log.error-stderr           log fatal errors to STDERR
       --store.endpoint string      endpoint for storage service (default "bolt:///etc/phenix/store.bdb")
 ```
-<br>
 
 ## Miscellaneous Commands
 
 ### Append
 
-The disk image management tool will allow you to add packages, overlays, and scripts to exisitng configurations using the `append` command. Command usage is:
+The disk image management tool will allow you to add packages, overlays, 
+and scripts to exisitng configurations using the `append` command. 
+Command usage is:
 
 ```
 $> phenix image append <configuration name> [flags]
 ```
 
-Flags are for the overlays, packages, and scripts that you need to append. 
-<br>
+Flags are for the overlays, packages, and scripts that you want to append. 
 
 ### Create From an Existing Configuration
 
-Run this command if you have an existing configuration that you would like to use as the base to create a new configuration from. The usage involves referencing the existing configuration, the new configuration name, and then additional packages, overlays, and scripts. 
+Run this command if you have an existing configuration that you would like 
+to use as the base to create a new configuration from. The usage involves 
+referencing the existing configuration, the new configuration name, and 
+then additional packages, overlays, and scripts. 
 
 ```
 $> phenix image create-from <existing configuration> <new configuration> [flags]
 ```
 
-Flags are for the overlays, packages, and scripts that you need to add to the new configuration. 
-<br>
+Flags are for the overlays, packages, and scripts that you want to add to 
+the new configuration. 
 
 ### Delete
 
@@ -135,21 +139,24 @@ An alternative could be to use the configuration management tool.
 ```
 $> phenix cfg delete image/<image name>
 ```
-<br>
 
 ### Remove
 
-The `remove` command will allow you to remove any packages, overlays, and scripts from an existing image configuration.
+The `remove` command will allow you to remove any packages, overlays, 
+and scripts from an existing image configuration.
 
 ```
 $> phenix image remove <configuration name> [flags]
 ```
-Flags are for the overlays, packages, and scripts that you need to remove.
-<br>
+Flags are for the overlays, packages, and scripts that you want to remove.
 
 ### Update
 
-This `update` command is used to update the script on an existing image configuration. The path to a script is tracked in the code. The image configuration gets updated with the script in the path; if no changes were made no harm. If the path no longer exists, phenix will leave the configuration alone.
+This `update` command is used to update the script on an existing image 
+configuration. The path to a script is tracked in the code. The image 
+configuration gets updated with the script in the path; if no changes were 
+made no harm. If the path no longer exists, phenix will leave the 
+configuration alone.
 
 ```
 $> phenix image update <configuration name>
