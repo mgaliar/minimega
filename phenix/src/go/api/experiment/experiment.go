@@ -448,13 +448,13 @@ func Status(name string) (*v1.ExperimentStatus, error) {
 		return nil, fmt.Errorf("unable to get experiment status from store: %w", err)
 	}
 
-	var status *v1.ExperimentStatus
+	var status v1.ExperimentStatus
 
 	if err := mapstructure.Decode(c.Status, &status); err != nil {
 		return nil, fmt.Errorf("unable to decode experiment status: %w", err)
 	}
 
-	return status, nil
+	return &status, nil
 }
 
 func Running(name string) bool {
