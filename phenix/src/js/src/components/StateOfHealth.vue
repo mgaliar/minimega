@@ -202,8 +202,6 @@ export default {
         let resp = await this.$http.get( url );
         let state = await resp.json();
 
-        console.log(state);
-
         this.running = state.started;
         this.nodes = state.nodes;
         this.edges = state.edges;
@@ -227,10 +225,9 @@ export default {
         return
       }
 
-      // TODO: fix the sizing of this image so that it is visible
-      // if ( node.status == "ignore" ) {
-      //   return "url(#Switch)";
-      // }
+      if ( node.status == "ignore" ) {
+        return "url(#Switch)";
+      }
 
       const colors = {
         "running":    "#4F8F00", // green
@@ -366,8 +363,8 @@ export default {
         .attr("height", 50)
         .append("svg:image")
         .attr("xlink:href", VLAN)
-        .attr("width", 30)
-        .attr("height", 30)
+        .attr("width", 10)
+        .attr("height", 10)
         .attr("x", 0)
         .attr("y", 0);
 
@@ -403,6 +400,10 @@ export default {
     },
 
     entered(e, n) {
+      if (n.image == "Switch") {
+        return;
+      }
+
       let circle = d3.select(e.target);
 
       circle
@@ -457,6 +458,7 @@ export default {
       // change value to `null` to see results when soh is null
       this.detailsModal.soh = n_soh;
 
+      // remove when done testing
       console.log(this.detailsModal.soh);
     },
 
