@@ -222,7 +222,11 @@ export default {
 
     updateNodeColor(node) {
       if (!this.running) {
-        return
+          if ( node.status == "ignore" ) {
+          return "url(#Switch)";
+        }
+
+        return;
       }
 
       if ( node.status == "ignore" ) {
