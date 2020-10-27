@@ -163,10 +163,8 @@
               </button>
             </b-table-column>
             <b-table-column v-if="globalUser()" label="SoH" width="50" centered>
-              <router-link class="navbar-item" :to="{ name: 'soh', params: { id: props.row.name }}">
-                <button class="button is-light is-small">
-                  <b-icon icon="heartbeat"></b-icon>
-                </button>
+              <router-link :disabled="updating( props.row.status )" class="button is-light is-small" :to="{ name: 'soh', params: { id: props.row.name }}">
+                <b-icon icon="heartbeat"></b-icon>
               </router-link>
             </b-table-column>
           </template>
