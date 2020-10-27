@@ -15,8 +15,8 @@
                 :data="detailsModal.soh.reachability"
                 default-sort="host">
                 <template slot-scope="props">
-                  <b-table-column field="host" label="Host" sortable>
-                    {{ props.row.host }}
+                  <b-table-column field="hostname" label="Host" sortable>
+                    {{ props.row.hostname }}
                   </b-table-column>
                   <b-table-column field="timestamp" label="Timestamp" sortable>
                     {{ props.row.timestamp }}
@@ -426,44 +426,9 @@ export default {
     },
 
     clicked(e, n) {
-      // comment out any object to see how different data will look
-      let n_soh = {
-        'reachability': [
-          {
-            'host': 'foobar',
-            'timestamp': '2020-10-23T16:18:18Z',
-            'error': 'host unreachable'
-          }
-        ],
-        'processes': [
-          {
-            'process': 'gobennu',
-            'timestamp': '2020-10-23T16:18:18Z',
-            'error': 'process not running'
-          }
-        ],
-        'listeners': [
-          {
-            'listener': ':502',
-            'timestamp': '2020-10-23T16:18:18Z',
-            'error': 'not listening on port'
-          },
-          {
-            'listener': ':443',
-            'timestamp': '2020-10-23T16:18:18Z',
-            'error': 'not listening on port'
-          }
-        ]
-      }
-
       this.detailsModal.active = true;
       this.detailsModal.vm = n.label;
-
-      // change value to `null` to see results when soh is null
-      this.detailsModal.soh = n_soh;
-
-      // remove when done testing
-      console.log(this.detailsModal.soh);
+      this.detailsModal.soh = n.soh;
     },
 
     color(d) {
