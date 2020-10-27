@@ -130,7 +130,7 @@
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: green" />
+            <b-icon icon="circle" style="color: #4F8F00" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">Running</span>
@@ -140,7 +140,7 @@
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: red" />
+            <b-icon icon="circle" style="color: #941100" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">Not running</span>
@@ -150,7 +150,7 @@
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: blue" />
+            <b-icon icon="circle" style="color: #005493" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">Not booted</span>
@@ -160,7 +160,7 @@
       <div class="column">
         <div class="columns is-variable is-1">
           <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: yellow" />
+            <b-icon icon="circle" style="color: #FFD479" />
           </div>
           <div class="column">
             <span style="color: whitesmoke;">Not deployed</span>
@@ -233,10 +233,10 @@ export default {
       // }
 
       const colors = {
-        "running":    "green",
-        "notrunning": "red",
-        "notboot":    "blue",
-        "notdeploy":  "yellow",
+        "running":    "#4F8F00", // green
+        "notrunning": "#941100", // red
+        "notboot":    "#005493", // blue
+        "notdeploy":  "#FFD479", // yellow
       }
 
       return colors[node.status];
