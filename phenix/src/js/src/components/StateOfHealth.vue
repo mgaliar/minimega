@@ -173,23 +173,6 @@
             <div class="column" />
           </div>
         </b-tab-item>
-        <b-tab-item label="Tree">
-          <div style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;">
-            <div v-if="nodes == null">
-              <section class="hero is-light is-bold is-large">
-                <div class="hero-body">
-                  <div class="container" style="text-align: center">
-                    <h1 class="title">
-                      There are no nodes matching your search criteria!
-                    </h1>
-                      <b-button type="is-success" outlined @click="resetNetwork()">Refresh Network</b-button>
-                  </div>
-                </div>
-              </section>
-            </div>
-            <div v-else id="tree"></div>
-          </div>
-        </b-tab-item>
         <b-tab-item label="Table">
           <div v-for="(n, index) in nodes" :key="index">
             <div v-if="n.soh">
@@ -277,7 +260,6 @@ export default {
   async created () {
     await this.updateNetwork();
     this.generateGraph();
-    this.generateTree();
   },
 
   methods: {
@@ -331,80 +313,6 @@ export default {
       }
 
       return colors[node.status];
-    },
-
-    generateTree() {
-      if (this.nodes == null) {
-        return;
-      }
-
-      const nodes = this.nodes.map(d => Object.create(d));
-      const links = this.edges.map(d => Object.create(d));
-
-      console.log(nodes);
-
-      const root = d3.hierarchy(nodes);
-      console.log(root);
-
-      // root.descendants().forEach((d, i) => {
-      //   d.id = i;
-      //   d._children = d.children;
-      //   if (d.depth) d.children = null;
-      // });
-
-      const width = 600;
-      const height = 400;
-
-      const tree = d3.tree().size([height, width]);
-      const i = 0;
-      const diagonal = d3.linkVertical().x(d => d.x).y(d => d.y)
-      
-      const svg = d3.select("#tree").append("svg")
-        .attr("viewBox", [0, 0, width, height]);
-
-      const g = svg.append("g");
-
-      update(root);
-
-      function update(source) {
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root).reverse(),
-          links = tree.links(nodes);
-
-        // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * 100; });
-
-        // Declare the nodes…
-        var node = svg.selectAll("g.node")
-          .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-        // Enter the nodes.
-        var nodeEnter = node.enter().append("g")
-          .attr("class", "node")
-          .attr("transform", function(d) { 
-            return "translate(" + d.x + "," + d.y + ")"; });
-
-        nodeEnter.append("circle")
-          .attr("r", 10)
-          .style("fill", "#999");
-
-        nodeEnter.append("text")
-          .attr("y", function(d) { 
-            return d.children || d._children ? -18 : 18; })
-          .attr("dy", ".35em")
-          .attr("text-anchor", "middle")
-          .text(function(d) { return d.name; })
-          .style("fill-opacity", 1);
-
-        // Declare the links…
-        var link = svg.selectAll("path.link")
-          .data(links, function(d) { return d.target.id; });
-
-        // Enter the links.
-        link.enter().insert("path", "g")
-          .attr("class", "link")
-          .attr("d", diagonal);
-      }
     },
 
     generateGraph() {
@@ -628,7 +536,6 @@ export default {
       this.radioButton = '';
       await this.updateNetwork();
       this.generateGraph();
-      this.generateTree();
     },
 
     resetDetailsModal () {
@@ -645,7 +552,6 @@ export default {
       if ( filter != '' ) {
         await this.updateNetwork(filter);
         this.generateGraph();
-        this.generateTree();
       }
     }
   },
