@@ -338,11 +338,11 @@ export default {
         return;
       }
 
-      const nodes = this.nodes.map(d => Object.create(d));
-      const links = this.edges.map(d => Object.create(d));
+      // const nodes = this.nodes.map(d => Object.create(d));
+      // const links = this.edges.map(d => Object.create(d));
 
-      const width = 600;
-      const height = 400;
+      // const width = 600;
+      // const height = 400;
 
     },
 

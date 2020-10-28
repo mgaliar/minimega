@@ -222,6 +222,10 @@
       &nbsp; &nbsp;
       <p class="control">
         <b-button v-if="adminUser()" class="button is-danger" slot="trigger" icon-right="stop" @click="stop"></b-button>
+        &nbsp;
+        <router-link v-if="adminUser()" class="button is-light" :to="{ name: 'soh', params: { id: this.$route.params.id }}">
+          <b-icon icon="heartbeat"></b-icon>
+        </router-link>
       </p>
     </b-field>
     <div style="margin-top: -4em;">
