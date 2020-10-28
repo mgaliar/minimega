@@ -77,97 +77,129 @@
     <hr>
     <div class="level is-vcentered">
       <div class="level-item">
-        <span style="font-weight: bold; font-size: x-large;">State of Health Board for Experiment: {{ this.$route.params.id }}</span>&nbsp;
+        <span style="font-weight: bold; font-size: x-large;">State of Health Board for Experiment: {{ this.$route.params.id }}</span>
       </div>
     </div>
-    <div class="columns is-vcentered">
-      <div class="column" />
-      <div class="column">
-        <b-radio v-model="radioButton" native-value="running" type="is-light">Running</b-radio>
-      </div>
-      <div class="column">
-        <b-radio v-model="radioButton" native-value="notrunning" type="is-light">Not running</b-radio>
-      </div>
-      <div class="column">
-        <b-radio v-model="radioButton" native-value="notboot" type="is-light">Not booted</b-radio>
-      </div>
-      <div class="column">
-        <b-radio v-model="radioButton" native-value="notdeploy" type="is-light">Not deployed</b-radio>
-      </div>
-      <div class="column">
-        <b-button @click="resetNetwork" type="is-light">Refresh Network</b-button>
-      </div>
-      <div class="column" />
-    </div>
-    <div style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;">
-      <div v-if="nodes == null">
-        <section class="hero is-light is-bold is-large">
-          <div class="hero-body">
-            <div class="container" style="text-align: center">
-              <h1 class="title">
-                There are no nodes matching your search criteria!
-              </h1>
-                <b-button type="is-success" outlined @click="resetNetwork()">Refresh Network</b-button>
+    <div>
+      <b-tabs>
+        <b-tab-item label="Graph">
+          <div class="columns is-vcentered">
+            <div class="column" />
+            <div class="column">
+              <b-radio v-model="radioButton" native-value="running" type="is-light">Running</b-radio>
             </div>
+            <div class="column">
+              <b-radio v-model="radioButton" native-value="notrunning" type="is-light">Not running</b-radio>
+            </div>
+            <div class="column">
+              <b-radio v-model="radioButton" native-value="notboot" type="is-light">Not booted</b-radio>
+            </div>
+            <div class="column">
+              <b-radio v-model="radioButton" native-value="notdeploy" type="is-light">Not deployed</b-radio>
+            </div>
+            <div class="column">
+              <b-button @click="resetNetwork" type="is-light">Refresh Network</b-button>
+            </div>
+            <div class="column" />
           </div>
-        </section>
-      </div>
-      <div v-else id="graph"></div>
-    </div>
-    <br>
-    <div class="columns is-vcentered">
-      <div class="column" />
-      <div class="column">
-        <div class="columns is-variable is-1">
-          <div class="column is-one-fifth has-text-right">
-            <img :src="vlan" style="width:20px;height:20px;" />
+          <div style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;">
+            <div v-if="nodes == null">
+              <section class="hero is-light is-bold is-large">
+                <div class="hero-body">
+                  <div class="container" style="text-align: center">
+                    <h1 class="title">
+                      There are no nodes matching your search criteria!
+                    </h1>
+                      <b-button type="is-success" outlined @click="resetNetwork()">Refresh Network</b-button>
+                  </div>
+                </div>
+              </section>
+            </div>
+            <div v-else id="graph"></div>
           </div>
-          <div class="column">
-            <span style="color: whitesmoke;">VLAN Segment</span>
+          <br>
+          <div class="columns is-vcentered">
+            <div class="column" />
+            <div class="column">
+              <div class="columns is-variable is-1">
+                <div class="column is-one-fifth has-text-right">
+                  <img :src="vlan" style="width:20px;height:20px;" />
+                </div>
+                <div class="column">
+                  <span style="color: whitesmoke;">VLAN Segment</span>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="columns is-variable is-1">
+                <div class="column is-one-fifth has-text-right">
+                  <b-icon icon="circle" style="color: #4F8F00" />
+                </div>
+                <div class="column">
+                  <span style="color: whitesmoke;">Running</span>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="columns is-variable is-1">
+                <div class="column is-one-fifth has-text-right">
+                  <b-icon icon="circle" style="color: #941100" />
+                </div>
+                <div class="column">
+                  <span style="color: whitesmoke;">Not running</span>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="columns is-variable is-1">
+                <div class="column is-one-fifth has-text-right">
+                  <b-icon icon="circle" style="color: #005493" />
+                </div>
+                <div class="column">
+                  <span style="color: whitesmoke;">Not booted</span>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="columns is-variable is-1">
+                <div class="column is-one-fifth has-text-right">
+                  <b-icon icon="circle" style="color: #FFD479" />
+                </div>
+                <div class="column">
+                  <span style="color: whitesmoke;">Not deployed</span>
+                </div>
+              </div>
+            </div>
+            <div class="column" />
           </div>
-        </div>
-      </div>
-      <div class="column">
-        <div class="columns is-variable is-1">
-          <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: #4F8F00" />
-          </div>
-          <div class="column">
-            <span style="color: whitesmoke;">Running</span>
-          </div>
-        </div>
-      </div>
-      <div class="column">
-        <div class="columns is-variable is-1">
-          <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: #941100" />
-          </div>
-          <div class="column">
-            <span style="color: whitesmoke;">Not running</span>
-          </div>
-        </div>
-      </div>
-      <div class="column">
-        <div class="columns is-variable is-1">
-          <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: #005493" />
-          </div>
-          <div class="column">
-            <span style="color: whitesmoke;">Not booted</span>
-          </div>
-        </div>
-      </div>
-      <div class="column">
-        <div class="columns is-variable is-1">
-          <div class="column is-one-fifth has-text-right">
-            <b-icon icon="circle" style="color: #FFD479" />
-          </div>
-          <div class="column">
-            <span style="color: whitesmoke;">Not deployed</span>
-          </div>
-        </div>
-      </div>
-      <div class="column" />
+        </b-tab-item>
+        <b-tab-item label="Tree">
+          <template>
+            <section class="hero is-light is-bold is-large">
+              <div class="hero-body">
+                <div class="container" style="text-align: center">
+                  <h1 class="title">
+                    There is not a tree here yet.
+                  </h1>
+                </div>
+              </div>
+            </section>
+          </template>
+        </b-tab-item>
+        <b-tab-item label="Table">
+          <template>
+            <section class="hero is-light is-bold is-large">
+              <div class="hero-body">
+                <div class="container" style="text-align: center">
+                  <h1 class="title">
+                    There is not a table here yet.
+                  </h1>
+                </div>
+              </div>
+            </section>
+          </template>
+        </b-tab-item>
+      </b-tabs>
     </div>
   </div>
 </template>
