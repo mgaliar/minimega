@@ -8,9 +8,9 @@
         <section class="modal-card-body">
           <template v-if="detailsModal.soh">
             <p>The following state of health has been reported for the {{ detailsModal.vm }} VM.</p>
+            <br>
             <div v-if="detailsModal.soh.reachability">
-              <br>
-              <p>Reachability</p>
+              <p class="title is-5">Reachability</p>
               <b-table
                 :data="detailsModal.soh.reachability"
                 default-sort="host">
@@ -26,10 +26,10 @@
                   </b-table-column>
                 </template>
               </b-table>
+              <br>
             </div>
             <div v-if="detailsModal.soh.processes">
-              <br>
-              <p>Processes</p>
+              <p class="title is-5">Processes</p>
               <b-table
                 :data="detailsModal.soh.processes"
                 default-sort="process">
@@ -45,10 +45,10 @@
                   </b-table-column>
                 </template>
               </b-table>
+              <br>
             </div>
             <div v-if="detailsModal.soh.listeners">
-              <br>
-              <p>Listeners</p>
+              <p class="title is-5">Listeners</p>
               <b-table
                 :data="detailsModal.soh.listeners"
                 default-sort="listener">
@@ -64,6 +64,7 @@
                   </b-table-column>
                 </template>
               </b-table>
+              <br>
             </div>
           </template>
           <template v-else>
