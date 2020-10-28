@@ -338,12 +338,73 @@ export default {
         return;
       }
 
-      // const nodes = this.nodes.map(d => Object.create(d));
-      // const links = this.edges.map(d => Object.create(d));
+      const nodes = this.nodes.map(d => Object.create(d));
+      const links = this.edges.map(d => Object.create(d));
 
-      // const width = 600;
-      // const height = 400;
+      console.log(nodes);
 
+      const root = d3.hierarchy(nodes);
+      console.log(root);
+
+      // root.descendants().forEach((d, i) => {
+      //   d.id = i;
+      //   d._children = d.children;
+      //   if (d.depth) d.children = null;
+      // });
+
+      const width = 600;
+      const height = 400;
+
+      const tree = d3.tree().size([height, width]);
+      const i = 0;
+      const diagonal = d3.linkVertical().x(d => d.x).y(d => d.y)
+      
+      const svg = d3.select("#tree").append("svg")
+        .attr("viewBox", [0, 0, width, height]);
+
+      const g = svg.append("g");
+
+      update(root);
+
+      function update(source) {
+        // Compute the new tree layout.
+        var nodes = tree.nodes(root).reverse(),
+          links = tree.links(nodes);
+
+        // Normalize for fixed-depth.
+        nodes.forEach(function(d) { d.y = d.depth * 100; });
+
+        // Declare the nodes…
+        var node = svg.selectAll("g.node")
+          .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+        // Enter the nodes.
+        var nodeEnter = node.enter().append("g")
+          .attr("class", "node")
+          .attr("transform", function(d) { 
+            return "translate(" + d.x + "," + d.y + ")"; });
+
+        nodeEnter.append("circle")
+          .attr("r", 10)
+          .style("fill", "#999");
+
+        nodeEnter.append("text")
+          .attr("y", function(d) { 
+            return d.children || d._children ? -18 : 18; })
+          .attr("dy", ".35em")
+          .attr("text-anchor", "middle")
+          .text(function(d) { return d.name; })
+          .style("fill-opacity", 1);
+
+        // Declare the links…
+        var link = svg.selectAll("path.link")
+          .data(links, function(d) { return d.target.id; });
+
+        // Enter the links.
+        link.enter().insert("path", "g")
+          .attr("class", "link")
+          .attr("d", diagonal);
+      }
     },
 
     generateGraph() {
