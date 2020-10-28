@@ -174,69 +174,71 @@
           </div>
         </b-tab-item>
         <b-tab-item label="Table">
-          <div v-for="(n, index) in nodes" :key="index">
-            <div v-if="n.soh">
-              <span style="font-weight: bold; font-size: x-large;">{{ n.label }}</span>
-              <br>
-              <div v-if="n.soh.reachability">
-                <br>
-                <h2>Reachability</h2>
-                <b-table
-                  :data="n.soh.reachability"
-                  default-sort="host">
-                  <template slot-scope="props">
-                    <b-table-column field="hostname" label="Host" sortable>
-                      {{ props.row.hostname }}
-                    </b-table-column>
-                    <b-table-column field="timestamp" label="Timestamp" sortable>
-                      {{ props.row.timestamp }}
-                    </b-table-column>
-                    <b-table-column field="error" label="Error" sortable>
-                      {{ props.row.error }}
-                    </b-table-column>
-                  </template>
-                </b-table>
-              </div>
-              <div v-if="n.soh.processes">
-                <br>
-                <h2>Processes</h2>
-                <b-table
-                  :data="n.soh.processes"
-                  default-sort="process">
-                  <template slot-scope="props">
-                    <b-table-column field="process" label="Process" sortable>
-                      {{ props.row.process }}
-                    </b-table-column>
-                    <b-table-column field="timestamp" label="Timestamp" sortable>
-                      {{ props.row.timestamp }}
-                    </b-table-column>
-                    <b-table-column field="error" label="Error" sortable>
-                      {{ props.row.error }}
-                    </b-table-column>
-                  </template>
-                </b-table>
-              </div>
-              <div v-if="n.soh.listeners">
-                <br>
-                <h2>Listeners</h2>
-                <b-table
-                  :data="n.soh.listeners"
-                  default-sort="listener">
-                  <template slot-scope="props">
-                    <b-table-column field="listener" label="Listener" sortable>
-                      {{ props.row.listener }}
-                    </b-table-column>
-                    <b-table-column field="timestamp" label="Timestamp" sortable>
-                      {{ props.row.timestamp }}
-                    </b-table-column>
-                    <b-table-column field="error" label="Error" sortable>
-                      {{ props.row.error }}
-                    </b-table-column>
-                  </template>
-                </b-table>
+          <div class="columns is-centered is-multiline">
+            <div v-for="(n, index) in nodes" :key="index">
+              <div class="column is-one-half">
+                <div v-if="n.soh">
+                  <h3 class="title is-3">{{ n.label }}</h3>
+                  <div v-if="n.soh.reachability">
+                    <h3 class="title is-5">Reachability</h3>
+                    <b-table
+                      :data="n.soh.reachability"
+                      default-sort="host">
+                      <template slot-scope="props">
+                        <b-table-column field="hostname" label="Host" sortable>
+                          {{ props.row.hostname }}
+                        </b-table-column>
+                        <b-table-column field="timestamp" label="Timestamp" sortable>
+                          {{ props.row.timestamp }}
+                        </b-table-column>
+                        <b-table-column field="error" label="Error" sortable>
+                          {{ props.row.error }}
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                    <br>
+                  </div>
+                  <div v-if="n.soh.processes">
+                    <h3 class="title is-5">Processes</h3>
+                    <b-table
+                      :data="n.soh.processes"
+                      default-sort="process">
+                      <template slot-scope="props">
+                        <b-table-column field="process" label="Process" sortable>
+                          {{ props.row.process }}
+                        </b-table-column>
+                        <b-table-column field="timestamp" label="Timestamp" sortable>
+                          {{ props.row.timestamp }}
+                        </b-table-column>
+                        <b-table-column field="error" label="Error" sortable>
+                          {{ props.row.error }}
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                    <br>
+                  </div>
+                  <div v-if="n.soh.listeners">
+                    <h3 class="title is-5">Listeners</h3>
+                    <b-table
+                      :data="n.soh.listeners"
+                      default-sort="listener">
+                      <template slot-scope="props">
+                        <b-table-column field="listener" label="Listener" sortable>
+                          {{ props.row.listener }}
+                        </b-table-column>
+                        <b-table-column field="timestamp" label="Timestamp" sortable>
+                          {{ props.row.timestamp }}
+                        </b-table-column>
+                        <b-table-column field="error" label="Error" sortable>
+                          {{ props.row.error }}
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                    <br>
+                  </div>
+                </div>
               </div>
             </div>
-            <br>
           </div>
         </b-tab-item>
       </b-tabs>
