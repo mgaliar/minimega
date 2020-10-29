@@ -308,6 +308,14 @@ export default {
       return "url(#" + node.image + ")";
     },
 
+    updateNodeBorder(node) {
+      if (node.soh) {
+        return '#FF9900'; // orange
+      }
+
+      return this.updateNodeColor(node);
+    },
+
     updateNodeColor(node) {
       if (!this.running) {
           if ( node.status == "ignore" ) {
@@ -465,7 +473,7 @@ export default {
         .data(nodes)
         .join("circle")
         .attr("class", "circle")
-        .attr("stroke", this.updateNodeColor)
+        .attr("stroke", this.updateNodeBorder)
         .attr("stroke-width", 1.5)
         .attr("r", 5)
         .attr("fill", this.updateNodeColor)
