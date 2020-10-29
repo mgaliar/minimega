@@ -123,8 +123,8 @@
           </div>
           <br>
           <div class="columns is-vcentered">
-            <!-- <div class="column" /> -->
-            <div class="column">
+            <div class="column" />
+            <div class="column is-one-fifth">
               <div class="columns is-variable is-1">
                 <div class="column has-text-right">
                   <img :src="vlan" style="width:20px;height:20px;" />
@@ -134,7 +134,7 @@
                 </div>
               </div>
             </div>
-            <div class="column">
+            <div class="column is-one-fifth">
               <div class="columns is-variable is-1">
                 <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #4F8F00" />
@@ -144,7 +144,7 @@
                 </div>
               </div>
             </div>
-            <div class="column">
+            <div class="column is-one-fifth">
               <div class="columns is-variable is-1">
                 <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #941100" />
@@ -154,7 +154,11 @@
                 </div>
               </div>
             </div>
-            <div class="column">
+            <div class="column" />
+          </div>
+          <div class="columns is-vcentered">
+            <div class="column" />
+            <div class="column is-one-fifth">
               <div class="columns is-variable is-1">
                 <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #005493" />
@@ -164,7 +168,7 @@
                 </div>
               </div>
             </div>
-            <div class="column">
+            <div class="column is-one-fifth">
               <div class="columns is-variable is-1">
                 <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #FFD479" />
@@ -174,7 +178,7 @@
                 </div>
               </div>
             </div>
-            <div class="column">
+            <div class="column is-one-fifth">
               <div class="columns is-variable is-1">
                 <div class="column has-text-right">
                   <b-icon icon="circle" style="color: black" />
@@ -184,10 +188,21 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="column" /> -->
+            <div class="column" />
           </div>
         </b-tab-item>
         <b-tab-item label="Messages">
+          <div v-if="nodes.soh == null">
+            <section class="hero is-light is-bold is-large">
+              <div class="hero-body">
+                <div class="container" style="text-align: center">
+                  <h1 class="title">
+                    There are no state of health messages avaiable!
+                  </h1>
+                </div>
+              </div>
+            </section>
+          </div>
           <div class="columns is-centered is-multiline">
             <div v-for="( n, index ) in nodes" :key="index">
               <div class="column is-one-half">
@@ -273,12 +288,88 @@ import Printer  from "@/assets/printer.svg";
 import VLAN     from "@/assets/vlan.svg";
 
 export default {
+  async beforeDestroy () {
+    this.$options.sockets.onmessage = null;
+  },
+
   async created () {
+    this.$options.sockets.onmessage = this.handler;
     await this.updateNetwork();
     this.generateGraph();
   },
 
   methods: {
+    handler ( event ) {
+      event.data.split( /\r?\n/ ).forEach( m => {
+        let msg = JSON.parse( m );
+        this.handle( msg );
+      });
+    },
+
+    handle ( msg ) {
+      switch ( msg.resource.type ) {
+        case 'experiment': {
+          if ( msg.resource.name != this.$route.params.id ) {
+            return;
+          }
+
+          switch ( msg.resource.action ) {
+            case 'stop':
+            case 'start': {
+              this.resetNetwork();
+            }
+          }
+
+          break;
+        }
+
+        case 'experiment/vm': {
+          // exp_name/vm_name
+          let resource = msg.resource.name.split( '/' );
+          let expName  = resource[0];
+          let vmName   = resource[1];
+
+          // Ignore this broadcast if it's not for this experiment.
+          if ( expName != this.$route.params.id ) {
+            return;
+          }
+
+          switch ( msg.resource.action ) {
+            case 'stop': {
+              for ( let i = 0; i < this.nodes.length; i++ ) {
+                if ( this.nodes[i].label == vmName ) {
+                  this.nodes[i].status = 'notrunning';
+                  d3.selectAll('circle').attr( "fill", this.updateNodeColor );
+                }
+              }
+
+              break;
+            }
+            case 'start': {
+              for ( let i = 0; i < this.nodes.length; i++ ) {
+                if ( this.nodes[i].label == vmName ) {
+                  this.nodes[i].status = 'running';
+                  d3.selectAll('circle').attr( "fill", this.updateNodeColor );
+                }
+              }
+              
+              break;
+            }
+            case 'delete': {
+              for ( let i = 0; i < this.nodes.length; i++ ) {
+                if ( this.nodes[i].label == vmName ) {
+                  this.nodes[i].status = 'notdeploy';
+                  d3.selectAll('circle').attr( "fill", this.updateNodeColor );
+                }
+              }
+              
+              break;
+            }
+          }
+        }
+      }
+    },
+
     async updateNetwork ( filter = '' ) {
       let url = 'experiments/' + this.$route.params.id + '/soh';
 
@@ -571,6 +662,7 @@ export default {
     },
 
     execSoH () {
+      // TODO: add WS call to execute SoH refresh
       return;
     }
   },
