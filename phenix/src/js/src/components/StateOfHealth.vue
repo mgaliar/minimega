@@ -101,6 +101,9 @@
             <div class="column">
               <b-button @click="resetNetwork" type="is-light">Refresh Network</b-button>
             </div>
+            <div class="column">
+              <b-button @click="execSoH" type="is-light" disabled>Manual Refresh</b-button>
+            </div>
             <div class="column" />
           </div>
           <div style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;">
@@ -120,10 +123,10 @@
           </div>
           <br>
           <div class="columns is-vcentered">
-            <div class="column" />
+            <!-- <div class="column" /> -->
             <div class="column">
               <div class="columns is-variable is-1">
-                <div class="column is-one-fifth has-text-right">
+                <div class="column has-text-right">
                   <img :src="vlan" style="width:20px;height:20px;" />
                 </div>
                 <div class="column">
@@ -133,7 +136,7 @@
             </div>
             <div class="column">
               <div class="columns is-variable is-1">
-                <div class="column is-one-fifth has-text-right">
+                <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #4F8F00" />
                 </div>
                 <div class="column">
@@ -143,7 +146,7 @@
             </div>
             <div class="column">
               <div class="columns is-variable is-1">
-                <div class="column is-one-fifth has-text-right">
+                <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #941100" />
                 </div>
                 <div class="column">
@@ -153,7 +156,7 @@
             </div>
             <div class="column">
               <div class="columns is-variable is-1">
-                <div class="column is-one-fifth has-text-right">
+                <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #005493" />
                 </div>
                 <div class="column">
@@ -163,7 +166,7 @@
             </div>
             <div class="column">
               <div class="columns is-variable is-1">
-                <div class="column is-one-fifth has-text-right">
+                <div class="column has-text-right">
                   <b-icon icon="circle" style="color: #FFD479" />
                 </div>
                 <div class="column">
@@ -171,7 +174,17 @@
                 </div>
               </div>
             </div>
-            <div class="column" />
+            <div class="column">
+              <div class="columns is-variable is-1">
+                <div class="column has-text-right">
+                  <b-icon icon="circle" style="color: black" />
+                </div>
+                <div class="column">
+                  <span style="color: whitesmoke;">Experiment stopped</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="column" /> -->
           </div>
         </b-tab-item>
         <b-tab-item label="Messages">
@@ -542,12 +555,16 @@ export default {
     },
 
     resetDetailsModal () {
-        this.detailsModal = {
-          active: false,
-          vm: '',
-          soh: null
-        }
-      },
+      this.detailsModal = {
+        active: false,
+        vm: '',
+        soh: null
+      }
+    },
+
+    execSoH () {
+      return;
+    }
   },
 
   watch: {
