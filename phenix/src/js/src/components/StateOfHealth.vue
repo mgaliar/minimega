@@ -174,7 +174,7 @@
             <div class="column" />
           </div>
         </b-tab-item>
-        <b-tab-item label="Table">
+        <b-tab-item label="Messages">
           <div class="columns is-centered is-multiline">
             <div v-for="(n, index) in nodes" :key="index">
               <div class="column is-one-half">
