@@ -189,7 +189,7 @@
         </b-tab-item>
         <b-tab-item label="Messages">
           <div class="columns is-centered is-multiline">
-            <div v-for="(n, index) in nodes" :key="index">
+            <div v-for="( n, index ) in nodes" :key="index">
               <div class="column is-one-half">
                 <div v-if="n.soh">
                   <h3 class="title is-3">{{ n.label }}</h3>
@@ -279,10 +279,10 @@ export default {
   },
 
   methods: {
-    async updateNetwork (filter = '') {
+    async updateNetwork ( filter = '' ) {
       let url = 'experiments/' + this.$route.params.id + '/soh';
 
-      if (filter) {
+      if ( filter ) {
         url = url + '?statusFilter=' + filter;
       }
 
@@ -304,20 +304,20 @@ export default {
       }
     },
 
-    updateNodeImage(node) {
+    updateNodeImage( node ) {
       return "url(#" + node.image + ")";
     },
 
-    updateNodeBorder(node) {
-      if (node.soh) {
+    updateNodeBorder( node ) {
+      if ( node.soh ) {
         return '#FF9900'; // orange
       }
 
-      return this.updateNodeColor(node);
+      return this.updateNodeColor( node );
     },
 
-    updateNodeColor(node) {
-      if (!this.running) {
+    updateNodeColor( node ) {
+      if ( !this.running ) {
           if ( node.status == "ignore" ) {
           return "url(#Switch)";
         }
@@ -336,224 +336,224 @@ export default {
         "notdeploy":  "#FFD479", // yellow
       }
 
-      return colors[node.status];
+      return colors[ node.status ];
     },
 
     generateGraph() {
-      if (this.nodes == null) {
+      if ( this.nodes == null ) {
         return;
       }
 
-      const nodes = this.nodes.map(d => Object.create(d));
-      const links = this.edges.map(d => Object.create(d));
+      const nodes = this.nodes.map( d => Object.create( d ) );
+      const links = this.edges.map( d => Object.create( d ) );
 
       const width = 600;
       const height = 400;
 
-      const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id))
-        .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
+      const simulation = d3.forceSimulation( nodes )
+        .force( "link", d3.forceLink( links ).id( d => d.id ) )
+        .force( "charge", d3.forceManyBody() )
+        .force( "center", d3.forceCenter( width / 2, height / 2 ) );
 
-      d3.select("#graph").select("svg").remove();
+      d3.select( "#graph" ).select( "svg" ).remove();
 
-      const svg = d3.select("#graph").append("svg")
-        .attr("viewBox", [0, 0, width, height]);
+      const svg = d3.select( "#graph" ).append( "svg" )
+        .attr( "viewBox", [ 0, 0, width, height ] );
 
-      const g = svg.append("g");
+      const g = svg.append( "g" );
 
-      svg.call(d3.zoom()
-        .extent([[0, 0], [width, height]])
-        .scaleExtent([-5, 5])
-        .on("zoom", function ({transform}) {
-          g.attr("transform", transform);
+      svg.call( d3.zoom()
+        .extent( [ [ 0, 0 ], [ width, height ] ] )
+        .scaleExtent([  -5, 5 ] )
+        .on( "zoom", function ( { transform } ) {
+          g.attr( "transform", transform );
         })
       );
 
-      const link = g.append("g")
-        .attr("stroke", "#999")
-        .attr("stroke-opacity", 0.6)
-        .selectAll("line")
-        .data(links)
-        .join("line")
-        .attr("stroke-width", d => Math.sqrt(d.value));
+      const link = g.append( "g" )
+        .attr( "stroke", "#999" )
+        .attr( "stroke-opacity", 0.6 )
+        .selectAll( "line" )
+        .data( links )
+        .join( "line" )
+        .attr( "stroke-width", d => Math.sqrt( d.value ) );
 
-      const defs = svg.append("svg:defs");
+      const defs = svg.append( "svg:defs" );
 
-      defs.append("svg:pattern")
-        .attr("id", "linux")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", Linux)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "linux" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", Linux )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "centos")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", CentOS)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "centos" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", CentOS )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "rhel")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", RedHat)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "rhel" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", RedHat )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "windows")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", Windows)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "windows" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", Windows )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "Router")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", Router)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "Router" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", Router )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "Firewall")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", Firewall)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "Firewall" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", Firewall )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "Printer")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", Printer)
-        .attr("width", 30)
-        .attr("height", 30)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "Printer" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", Printer )
+        .attr( "width", 30 )
+        .attr( "height", 30 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      defs.append("svg:pattern")
-        .attr("id", "Switch")
-        .attr("width", 50)
-        .attr("height", 50)
-        .append("svg:image")
-        .attr("xlink:href", VLAN)
-        .attr("width", 10)
-        .attr("height", 10)
-        .attr("x", 0)
-        .attr("y", 0);
+      defs.append( "svg:pattern" )
+        .attr( "id", "Switch" )
+        .attr( "width", 50 )
+        .attr( "height", 50 )
+        .append( "svg:image" )
+        .attr( "xlink:href", VLAN )
+        .attr( "width", 10 )
+        .attr( "height", 10 )
+        .attr( "x", 0 )
+        .attr( "y", 0 );
 
-      const node = g.append("g")
-        .selectAll("circle")
-        .data(nodes)
-        .join("circle")
-        .attr("class", "circle")
-        .attr("stroke", this.updateNodeBorder)
-        .attr("stroke-width", 1.5)
-        .attr("r", 5)
-        .attr("fill", this.updateNodeColor)
-        .attr("width", 5)
-        .attr("height", 5)
-        .on( 'mouseenter', this.entered)
-        .on( 'mouseleave', this.exited)
-        .on( 'click', this.clicked)
-        .call(this.drag(simulation));
+      const node = g.append( "g" )
+        .selectAll( "circle" )
+        .data( nodes )
+        .join( "circle" )
+        .attr( "class", "circle" )
+        .attr( "stroke", this.updateNodeBorder )
+        .attr( "stroke-width", 1.5 )
+        .attr( "r", 5 )
+        .attr( "fill", this.updateNodeColor )
+        .attr( "width", 5 )
+        .attr( "height", 5 )
+        .on( 'mouseenter', this.entered )
+        .on( 'mouseleave', this.exited )
+        .on( 'click', this.clicked )
+        .call( this.drag( simulation ) );
 
-      node.append("title").text(d => d.label);
+      node.append( "title" ).text( d => d.label );
 
-      simulation.on("tick", () => {
+      simulation.on( "tick", () => {
         link
-          .attr("x1", d => d.source.x)
-          .attr("y1", d => d.source.y)
-          .attr("x2", d => d.target.x)
-          .attr("y2", d => d.target.y);
+          .attr( "x1", d => d.source.x )
+          .attr( "y1", d => d.source.y )
+          .attr( "x2", d => d.target.x )
+          .attr( "y2", d => d.target.y );
 
         node
-          .attr("cx", d => d.x)
-          .attr("cy", d => d.y);
+          .attr( "cx", d => d.x )
+          .attr( "cy", d => d.y) ;
       });
     },
 
-    entered(e, n) {
-      if (n.image == "Switch") {
+    entered ( e, n ) {
+      if ( n.image == "Switch" ) {
         return;
       }
 
-      let circle = d3.select(e.target);
+      let circle = d3.select( e.target );
 
       circle
         .transition()
-        .attr("r", 15)
-        .attr("fill", () => this.updateNodeImage(n));
+        .attr( "r", 15 )
+        .attr( "fill", () => this.updateNodeImage( n ) );
     },
 
-    exited(e, n) {
-      let circle = d3.select(e.target);
+    exited ( e, n ) {
+      let circle = d3.select( e.target );
 
       circle
         .transition()
-        .attr("r", 5)
-        .attr("fill", () => this.updateNodeColor(n));
+        .attr( "r", 5 )
+        .attr( "fill", () => this.updateNodeColor( n ) );
     },
 
-    clicked(e, n) {
+    clicked ( e, n ) {
       this.detailsModal.active = true;
       this.detailsModal.vm = n.label;
       this.detailsModal.soh = n.soh;
     },
 
-    color(d) {
-      const scale = d3.scaleOrdinal(d3.schemeCategory10);
-      return d => scale(d.group);
+    color ( d ) {
+      const scale = d3.scaleOrdinal( d3.schemeCategory10 );
+      return d => scale( d.group );
     },
 
-    drag(simulation) {
-      function dragstarted(event) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
+    drag ( simulation ) {
+      function dragstarted ( event ) {
+        if ( !event.active ) simulation.alphaTarget( 0.3 ).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
       }
       
-      function dragged(event) {
+      function dragged ( event ) {
         event.subject.fx = event.x;
         event.subject.fy = event.y;
       }
       
-      function dragended(event) {
-        if (!event.active) simulation.alphaTarget(0);
+      function dragended ( event ) {
+        if ( !event.active ) simulation.alphaTarget( 0 );
         event.subject.fx = null;
         event.subject.fy = null;
       }
       
       return d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
+        .on( "start", dragstarted )
+        .on( "drag", dragged )
+        .on( "end", dragended );
     },
   
     async resetNetwork () {
@@ -578,7 +578,7 @@ export default {
   watch: {
     radioButton: async function ( filter ) {
       if ( filter != '' ) {
-        await this.updateNetwork(filter);
+        await this.updateNetwork( filter );
         this.generateGraph();
       }
     }
