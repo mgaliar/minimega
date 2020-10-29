@@ -83,7 +83,7 @@
     </div>
     <div>
       <b-tabs>
-        <b-tab-item label="Graph">
+        <b-tab-item label="Topology Graph">
           <div class="columns is-vcentered">
             <div class="column" />
             <div class="column">
@@ -191,19 +191,18 @@
             <div class="column" />
           </div>
         </b-tab-item>
-        <b-tab-item label="Messages">
-          <div v-if="nodes.soh == null">
-            <section class="hero is-light is-bold is-large">
-              <div class="hero-body">
-                <div class="container" style="text-align: center">
-                  <h1 class="title">
-                    There are no state of health messages avaiable!
-                  </h1>
-                </div>
-              </div>
-            </section>
+        <b-tab-item label="Network Volume">
+          <div class="columns is-centered">
+            <div class="column is-one-quarter">
+              <h3 class="title is-4">This is all mock data.</h3>
+            </div>
           </div>
-          <div class="columns is-centered is-multiline">
+          <div style="margin-top: 10px; border: 2px solid whitesmoke; background: #333;">
+            <div id="chord"></div>
+          </div>
+        </b-tab-item>
+        <b-tab-item label="SoH Messages">
+          <div v-if="messages" class="columns is-centered is-multiline">
             <div v-for="( n, index ) in nodes" :key="index">
               <div class="column is-one-half">
                 <div v-if="n.soh">
@@ -269,6 +268,17 @@
               </div>
             </div>
           </div>
+          <div v-else>
+            <section class="hero is-light is-bold is-large">
+              <div class="hero-body">
+                <div class="container" style="text-align: center">
+                  <h1 class="title">
+                    There are no state of health messages avaiable!
+                  </h1>
+                </div>
+              </div>
+            </section>
+          </div>
         </b-tab-item>
       </b-tabs>
     </div>
@@ -296,6 +306,7 @@ export default {
     this.$options.sockets.onmessage = this.handler;
     await this.updateNetwork();
     this.generateGraph();
+    this.generateChord();
   },
 
   methods: {
@@ -393,6 +404,15 @@ export default {
       } finally {
         this.isWaiting = false;
       }
+
+      // check if there are any SoH messages; set messages
+      // true if so and break
+      for ( let i = 0; i < this.nodes.length; i++ ) {
+        if ( this.nodes[i].soh != null ) {
+          this.messages = true;
+          break;
+        } 
+      }
     },
 
     updateNodeImage( node ) {
@@ -430,7 +450,7 @@ export default {
       return colors[ node.status ];
     },
 
-    generateGraph() {
+    generateGraph () {
       if ( this.nodes == null ) {
         return;
       }
@@ -646,11 +666,116 @@ export default {
         .on( "drag", dragged )
         .on( "end", dragended );
     },
+
+    generateChord () {
+      const names = this.mockData.names === undefined ? d3.range(this.mockData.length) : this.mockData.names;
+      const colors = this.mockData.colors === undefined ? d3.quantize(d3.interpolateRainbow, names.length) : this.mockData.colors;
+      const tickStep = d3.tickStep(0, d3.sum(this.mockData.flat()), 100);
+      const formatValue = d3.format(".1~%");
+
+      const height = 900;
+      const width = 900;
+      const outerRadius = Math.min(width, height) * 0.5 - 60;
+      const innerRadius = outerRadius - 10;
+      
+      const chord = d3.chord()
+        .padAngle(10 / innerRadius)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.descending);
+      
+      const arc = d3.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+      
+      const ribbon = d3.ribbon()
+        .radius(innerRadius - 1)
+        .padAngle(1 / innerRadius);
+
+      const color = d3.scaleOrdinal(names, colors);
+
+      function ticks (startAngle, endAngle, value) {
+        const k = (endAngle - startAngle) / value;
+        return d3.range(0, value, tickStep).map(value => {
+          return {value, angle: value * k + startAngle};
+        });
+      }
+
+      d3.select( "#chord" ).select( "svg" ).remove();
+
+      const svg = d3.select("#chord").append("svg")
+        .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+      const chords = chord(this.mockData);
+
+      const group = svg.append("g")
+        .attr("font-size", 10)
+        .attr("font-family", "sans-serif")
+        .selectAll("g")
+        .data(chords.groups)
+        .join("g");
+      
+      group.append("path")
+        .attr("fill", d => color(names[d.index]))
+        .attr("d", arc);
+
+      group.append("title")
+        .text(d => `${names[d.index]}
+          ${formatValue(d.value)}`);
+
+      const groupTick = group.append("g")
+        .selectAll("g")
+        .data(ticks)
+        .join("g")
+        .attr("transform", d => `rotate(${d.angle * 180 / Math.PI - 90}) translate(${outerRadius},0)`);
+
+      groupTick.append("line")
+        .attr("stroke", "currentColor")
+        .attr("x2", 6);
+
+      groupTick.append("text")
+        .attr("x", 8)
+        .attr("dy", "0.35em")
+        .attr("fill", "whitesmoke")
+        .attr("transform", d => d.angle > Math.PI ? "rotate(180) translate(-16)" : null)
+        .attr("text-anchor", d => d.angle > Math.PI ? "end" : null)
+        .text(d => formatValue(d.value));
+
+      group.select("text")
+        .attr("font-weight", "bold")
+        .attr("fill", "whitesmoke")
+        .text(function(d) {
+          return this.getAttribute("text-anchor") === "end"
+            ? `↑ ${names[d.index]}`
+            : `${names[d.index]} ↓`;
+        });
+
+      svg.append("g")
+        .attr("fill-opacity", 0.8)
+        .selectAll("path")
+        .data(chords)
+        .join("path")
+        .style("mix-blend-mode", "multiply")
+        .attr("fill", d => color(names[d.source.index]))
+        .attr("d", ribbon)
+        .append("title")
+        .text(d => `${formatValue(d.source.value)} ${names[d.target.index]} → ${names[d.source.index]}${d.source.index === d.target.index ? "" : `\n${formatValue(d.target.value)} ${names[d.source.index]} → ${names[d.target.index]}`}`)
+        .on("mouseover", this.showToolTip)
+        .on("mouseleave", this.hideToolTip);
+    },
+
+    showToolTip (d) {
+      console.log(d);
+    },
+
+    hideToolTip (d) {
+      console.log(d);
+    },
   
     async resetNetwork () {
       this.radioButton = '';
       await this.updateNetwork();
       this.generateGraph();
+      this.generateChord();
     },
 
     resetDetailsModal () {
@@ -672,6 +797,7 @@ export default {
       if ( filter != '' ) {
         await this.updateNetwork( filter );
         this.generateGraph();
+        this.generateChord();
       }
     }
   },
@@ -679,6 +805,7 @@ export default {
   data() {
     return {
       running: false,
+      messages: false,
       nodes: [],
       edges: [],
       radioButton: '',
@@ -687,7 +814,20 @@ export default {
         active: false,
         vm: '',
         soh: null
-      }
+      },
+      mockData: Object.assign([
+        [.0, .008859, .000554, .004430, .025471, .024363, .005537, .025471],
+        [.001107, .0, .000000, .004983, .011074, .010520, .002215, .004983],
+        [.000554, .002769, .0, .002215, .003876, .008306, .000554, .003322],
+        [.000554, .001107, .000554, .0, .011628, .006645, .004983, .010520],
+        [.002215, .004430, .000000, .002769, .0, .012182, .004983, .028239],
+        [.011628, .026024, .000000, .013843, .087486, .0, .017165, .055925],
+        [.000554, .004983, .000000, .003322, .004430, .008859, .0, .004430],
+        [.002215, .007198, .000000, .003322, .016611, .014950, .001107, .0]
+      ], {
+        names: ["generator", "plc-01", "plc-02", "plc-03", "plc-04", "plc-05", "plc-06", "plc-07"],
+        colors: ["#c4c4c4", "#69b40f", "#ec1d25", "#c8125c", "#008fc8", "#10218b", "#134b24", "#737373"]
+      })
     };
   }
 }
