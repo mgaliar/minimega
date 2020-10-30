@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"phenix/store"
 	"phenix/types"
@@ -17,19 +18,23 @@ import (
 )
 
 func Init() error {
-	for _, name := range AssetNames() {
+	for _, file := range AssetNames() {
 		var c types.Config
 
-		if err := yaml.Unmarshal(MustAsset(name), &c); err != nil {
-			return fmt.Errorf("unmarshaling default config %s: %w", name, err)
+		if err := yaml.Unmarshal(MustAsset(file), &c); err != nil {
+			return fmt.Errorf("unmarshaling default config %s: %w", file, err)
 		}
 
-		if _, err := Get("role/" + c.Metadata.Name); err == nil {
+		name := strings.ToLower(c.Kind) + "/" + c.Metadata.Name
+
+		// Don't attempt to create this default config again if it already exists in
+		// the store.
+		if _, err := Get(name); err == nil {
 			continue
 		}
 
 		if err := store.Create(&c); err != nil {
-			return fmt.Errorf("storing default config %s: %w", name, err)
+			return fmt.Errorf("storing default config %s: %w", file, err)
 		}
 	}
 
