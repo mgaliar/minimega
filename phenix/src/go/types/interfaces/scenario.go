@@ -6,6 +6,7 @@ type ScenarioSpec interface {
 
 type ScenarioApp interface {
 	Name() string
+	Metadata() map[string]interface{}
 	Hosts() []ScenarioAppHost
 }
 

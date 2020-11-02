@@ -18,6 +18,14 @@ type VLANSpec struct {
 	MaxF     int            `json:"max" yaml:"max" structs:"max" mapstructure:"max"`
 }
 
+func (this *VLANSpec) Init() error {
+	if this.AliasesF == nil {
+		this.AliasesF = make(map[string]int)
+	}
+
+	return nil
+}
+
 func (this VLANSpec) Aliases() map[string]int {
 	return this.AliasesF
 }
@@ -66,35 +74,7 @@ type ExperimentSpec struct {
 	RunLocalF       bool              `json:"runLocal" yaml:"runLocal" structs:"runLocal" mapstructure:"runLocal"`
 }
 
-func (this ExperimentSpec) ExperimentName() string {
-	return this.ExperimentNameF
-}
-
-func (this ExperimentSpec) BaseDir() string {
-	return this.BaseDirF
-}
-
-func (this ExperimentSpec) Topology() ifaces.TopologySpec {
-	return this.TopologyF
-}
-
-func (this ExperimentSpec) Scenario() ifaces.ScenarioSpec {
-	return this.ScenarioF
-}
-
-func (this ExperimentSpec) VLANs() ifaces.VLANSpec {
-	return this.VLANsF
-}
-
-func (this ExperimentSpec) Schedules() map[string]string {
-	return this.SchedulesF
-}
-
-func (this ExperimentSpec) RunLocal() bool {
-	return this.RunLocalF
-}
-
-func (this *ExperimentSpec) SetDefaults() {
+func (this *ExperimentSpec) Init() error {
 	if this.BaseDirF == "" {
 		this.BaseDirF = common.PhenixBase + "/experiments/" + this.ExperimentNameF
 	}
@@ -126,6 +106,36 @@ func (this *ExperimentSpec) SetDefaults() {
 			}
 		}
 	}
+
+	return nil
+}
+
+func (this ExperimentSpec) ExperimentName() string {
+	return this.ExperimentNameF
+}
+
+func (this ExperimentSpec) BaseDir() string {
+	return this.BaseDirF
+}
+
+func (this ExperimentSpec) Topology() ifaces.TopologySpec {
+	return this.TopologyF
+}
+
+func (this ExperimentSpec) Scenario() ifaces.ScenarioSpec {
+	return this.ScenarioF
+}
+
+func (this ExperimentSpec) VLANs() ifaces.VLANSpec {
+	return this.VLANsF
+}
+
+func (this ExperimentSpec) Schedules() map[string]string {
+	return this.SchedulesF
+}
+
+func (this ExperimentSpec) RunLocal() bool {
+	return this.RunLocalF
 }
 
 func (this *ExperimentSpec) SetVLANAlias(a string, i int, f bool) error {
@@ -226,6 +236,22 @@ type ExperimentStatus struct {
 	VLANsF     map[string]int         `json:"vlans" yaml:"vlans" structs:"vlans" mapstructure:"vlans"`
 }
 
+func (this *ExperimentStatus) Init() error {
+	if this.SchedulesF == nil {
+		this.SchedulesF = make(map[string]string)
+	}
+
+	if this.AppsF == nil {
+		this.AppsF = make(map[string]interface{})
+	}
+
+	if this.VLANsF == nil {
+		this.VLANsF = make(map[string]int)
+	}
+
+	return nil
+}
+
 func (this ExperimentStatus) StartTime() string {
 	return this.StartTimeF
 }
@@ -236,6 +262,10 @@ func (this ExperimentStatus) AppStatus() map[string]interface{} {
 
 func (this ExperimentStatus) VLANs() map[string]int {
 	return this.VLANsF
+}
+
+func (this ExperimentStatus) Schedules() map[string]string {
+	return this.SchedulesF
 }
 
 func (this *ExperimentStatus) SetStartTime(t string) {
@@ -252,4 +282,8 @@ func (this *ExperimentStatus) SetVLANs(v map[string]int) {
 
 func (this *ExperimentStatus) SetSchedule(s map[string]string) {
 	this.SchedulesF = s
+}
+
+func (this *ExperimentStatus) ResetAppStatus() {
+	this.AppsF = make(map[string]interface{})
 }

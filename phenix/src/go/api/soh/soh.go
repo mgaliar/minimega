@@ -13,7 +13,7 @@ import (
 
 var vlanAliasRegex = regexp.MustCompile(`(.*) \(\d*\)`)
 
-func Get(exp, statusFilter string) (*Network, error) {
+func Get(expName, statusFilter string) (*Network, error) {
 	// Create an empty network
 	network := new(Network)
 
@@ -23,27 +23,27 @@ func Get(exp, statusFilter string) (*Network, error) {
 		Align: "center",
 	}
 
-	// fetch all the VMs in the experiment
-	vms, err := vm.List(exp)
+	exp, err := experiment.Get(expName)
 	if err != nil {
-		return nil, fmt.Errorf("getting experiment %s VMs: %w", exp, err)
+		return nil, fmt.Errorf("unable to get experiment %s: %w", expName, err)
 	}
 
-	expStatus, err := experiment.Status(exp)
+	// fetch all the VMs in the experiment
+	vms, err := vm.List(expName)
 	if err != nil {
-		return nil, fmt.Errorf("unable to get experiment status: %w", err)
+		return nil, fmt.Errorf("getting experiment %s VMs: %w", expName, err)
 	}
 
 	status := make(map[string]*HostState)
 
-	if expStatus.Running() {
+	if exp.Running() {
 		network.Started = true
 
-		if apps := expStatus.Apps; apps != nil {
-			if soh, ok := apps["soh"]; ok {
+		for app, data := range exp.Status.AppStatus() {
+			if app == "soh" {
 				var statuses []*HostState
 
-				if err := mapstructure.Decode(soh, &statuses); err != nil {
+				if err := mapstructure.Decode(data, &statuses); err != nil {
 					return nil, fmt.Errorf("unable to decode state of health details: %w", err)
 				}
 

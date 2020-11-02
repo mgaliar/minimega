@@ -17,8 +17,10 @@ import (
 	"phenix/tmpl"
 	"phenix/types"
 	"phenix/types/version"
+	v1 "phenix/types/version/v1"
 
 	"github.com/activeshadow/structs"
+	"github.com/mitchellh/mapstructure"
 )
 
 func init() {
@@ -27,21 +29,18 @@ func init() {
 			return nil
 		}
 
-		var spec v1.ExperimentSpec
-
-		if err := mapstructure.Decode(c.Spec, &spec); err != nil {
-			return fmt.Errorf("decoding experiment spec: %w", err)
+		exp, err := types.DecodeExperimentFromConfig(*c)
+		if err != nil {
+			return fmt.Errorf("decoding experiment from config: %w", err)
 		}
 
-		spec.SetDefaults()
+		exp.Spec.Init()
 
-		if err := spec.VerifyScenario(context.TODO()); err != nil {
+		if err := exp.Spec.VerifyScenario(context.TODO()); err != nil {
 			return fmt.Errorf("verifying experiment scenario: %w", err)
 		}
 
-		exp := types.Experiment{Metadata: c.Metadata, Spec: &spec}
-
-		if err := app.ApplyApps(app.ACTIONCONFIG, &exp); err != nil {
+		if err := app.ApplyApps(app.ACTIONCONFIG, exp); err != nil {
 			return fmt.Errorf("applying apps to experiment: %w", err)
 		}
 
@@ -195,7 +194,7 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 
 	exp.Spec.SetVLANRange(o.vlanMin, o.vlanMax, false)
 
-	exp.Spec.SetDefaults()
+	exp.Spec.Init()
 
 	if err := exp.Spec.VerifyScenario(ctx); err != nil {
 		return fmt.Errorf("verifying experiment scenario: %w", err)

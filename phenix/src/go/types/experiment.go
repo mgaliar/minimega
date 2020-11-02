@@ -22,6 +22,9 @@ func NewExperiment(md ConfigMetadata) *Experiment {
 	spec, _ := version.GetVersionedSpecForKind("Experiment", ver)
 	status, _ := version.GetVersionedStatusForKind("Experiment", ver)
 
+	spec.(ifaces.ExperimentSpec).Init()
+	status.(ifaces.ExperimentStatus).Init()
+
 	return &Experiment{
 		Metadata: md,
 		Spec:     spec.(ifaces.ExperimentSpec),

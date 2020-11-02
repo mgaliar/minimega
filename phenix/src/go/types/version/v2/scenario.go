@@ -33,6 +33,10 @@ func (this ScenarioApp) Name() string {
 	return this.NameF
 }
 
+func (this ScenarioApp) Metadata() map[string]interface{} {
+	return this.MetadataF
+}
+
 func (this ScenarioApp) Hosts() []ifaces.ScenarioAppHost {
 	hosts := make([]ifaces.ScenarioAppHost, len(this.HostsF))
 

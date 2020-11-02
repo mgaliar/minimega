@@ -128,9 +128,9 @@ type App interface {
 // encountered while applying the apps.
 func ApplyApps(action Action, exp *types.Experiment) error {
 	if action == ACTIONPOSTSTART || action == ACTIONCLEANUP {
-		// Initialize (or reset) status.apps for experiment. Note that this will get
-		// rid of any app status from previous experiment deployments.
-		exp.Status.Apps = make(map[string]interface{})
+		// Reset status.apps for experiment. Note that this will get rid of any app
+		// status from previous experiment deployments.
+		exp.Status.ResetAppStatus()
 	}
 
 	var err error

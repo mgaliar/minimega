@@ -12,7 +12,8 @@ import (
 	"phenix/internal/mm"
 	"phenix/tmpl"
 	"phenix/types"
-	v1 "phenix/types/version/v1"
+	ifaces "phenix/types/interfaces"
+	"phenix/types/version"
 
 	"github.com/activeshadow/structs"
 	"github.com/fatih/color"
@@ -155,8 +156,8 @@ type SOH struct {
 	// Track app status for Experiment Config status
 	status map[string]hostState
 
-	// List of host apps that should be checked for a SoH profile
-	hostApps []v1.HostApp
+	// Experiment apps to examine hosts for SoH profile data
+	apps []ifaces.ScenarioApp
 }
 
 func newSOH() *SOH {
@@ -199,247 +200,66 @@ func (this *SOH) deployCapture(exp *types.Experiment) error {
 
 	currentIP, mask, _ := net.ParseCIDR(this.md.PacketCapture.ElasticServer.IPAddress)
 	cidr, _ := mask.Mask.Size()
+	svrAddr := currentIP.String()
+
+	svr, err := this.buildElasticServerNode(exp, svrAddr, cidr)
+	if err != nil {
+		return fmt.Errorf("building Elastic server node: %w", err)
+	}
+
+	caps := []ifaces.NodeSpec{svr}
 
 	var (
-		name = this.md.PacketCapture.ElasticServer.Hostname
-		tz   = "Etc/UTC"
-
-		startupDir   = exp.Spec.BaseDir + "/startup"
-		hostnameFile = startupDir + "/" + name + "-hostname.sh"
-		timezoneFile = startupDir + "/" + name + "-timezone.sh"
-		ifaceFile    = startupDir + "/" + name + "-interfaces"
-
-		elasticConfigFile = fmt.Sprintf("%s/%s-elasticsearch.yml", startupDir, name)
-		kibanaConfigFile  = fmt.Sprintf("%s/%s-kibana.yml", startupDir, name)
+		sched    = make(map[string]string)
+		monitors = make(map[string][]string)
 	)
 
-	es := &v1.Node{
-		Labels: map[string]string{"elastic-server": "true"},
-		Type:   "VirtualMachine",
-		General: v1.General{
-			Hostname: name,
-			VMType:   "kvm",
-		},
-		Hardware: v1.Hardware{
-			VCPU:   2,
-			Memory: 2048,
-			Drives: []v1.Drive{
-				{
-					Image: this.md.PacketCapture.ElasticImage,
-				},
-			},
-			OSType: "linux",
-		},
-		Injections: []*v1.Injection{
-			{
-				Src: hostnameFile,
-				Dst: "/etc/phenix/startup/1_hostname-start.sh",
-			},
-			{
-				Src: timezoneFile,
-				Dst: "/etc/phenix/startup/2_timezone-start.sh",
-			},
-			{
-				Src: ifaceFile,
-				Dst: "/etc/network/interfaces",
-			},
-			{
-				Src: elasticConfigFile,
-				Dst: "/etc/elasticsearch/elasticsearch.yml",
-			},
-			{
-				Src: kibanaConfigFile,
-				Dst: "/etc/kibana/kibana.yml",
-			},
-		},
-		Network: v1.Network{
-			Interfaces: []v1.Interface{
-				{
-					Name:    "IF0",
-					Type:    "ethernet",
-					VLAN:    "MGMT",
-					Address: currentIP.String(),
-					Mask:    cidr,
-					Proto:   "static",
-					Bridge:  "phenix",
-				},
-			},
-		},
-	}
+	for nodeToMonitor := range this.md.PacketCapture.CaptureHosts {
+		node := exp.Spec.Topology().FindNodeByName(nodeToMonitor)
 
-	if err := tmpl.CreateFileFromTemplate("linux_hostname.tmpl", name, hostnameFile); err != nil {
-		return fmt.Errorf("generating linux hostname config: %w", err)
-	}
-
-	if err := tmpl.CreateFileFromTemplate("linux_timezone.tmpl", tz, timezoneFile); err != nil {
-		return fmt.Errorf("generating linux timezone config: %w", err)
-	}
-
-	if err := tmpl.CreateFileFromTemplate("linux_interfaces.tmpl", es, ifaceFile); err != nil {
-		return fmt.Errorf("generating linux interfaces config: %w", err)
-	}
-
-	esc := struct {
-		Hostname       string
-		ExperimentName string
-	}{
-		Hostname:       name,
-		ExperimentName: exp.Spec.ExperimentName,
-	}
-
-	if err := tmpl.CreateFileFromTemplate("elasticsearch.yml.tmpl", esc, elasticConfigFile); err != nil {
-		return fmt.Errorf("generating elasticsearch config: %w", err)
-	}
-
-	if err := tmpl.CreateFileFromTemplate("kibana.yml.tmpl", name, kibanaConfigFile); err != nil {
-		return fmt.Errorf("generating kibana config: %w", err)
-	}
-
-	var caps []*v1.Node
-	sched := make(map[string]string)
-	monitors := make(map[string][]string)
-
-	for n := range this.md.PacketCapture.CaptureHosts {
-		t := exp.Spec.Topology.FindNodeByName(n)
-
-		if t == nil {
+		if node == nil {
 			// TODO: yell loudly
 			continue
 		}
 
-		var (
-			name = n + "-monitor"
-			tz   = "Etc/UTC"
+		ip := nextIP(currentIP)
 
-			startupDir   = exp.Spec.BaseDir + "/startup"
-			hostnameFile = startupDir + "/" + name + "-hostname.sh"
-			timezoneFile = startupDir + "/" + name + "-timezone.sh"
-			ifaceFile    = startupDir + "/" + name + "-interfaces"
-
-			packetBeatConfigFile = fmt.Sprintf("%s/%s-packetbeat.yml", startupDir, name)
-		)
-
-		currentIP = nextIP(currentIP)
-
-		c := &v1.Node{
-			Labels: map[string]string{"monitor-node": "true"},
-			Type:   "VirtualMachine",
-			General: v1.General{
-				Hostname: name,
-				VMType:   "kvm",
-			},
-			Hardware: v1.Hardware{
-				VCPU:   1,
-				Memory: 512,
-				Drives: []v1.Drive{
-					{
-						Image: this.md.PacketCapture.PacketBeatImage,
-					},
-				},
-				OSType: "linux",
-			},
-			Injections: []*v1.Injection{
-				{
-					Src: hostnameFile,
-					Dst: "/etc/phenix/startup/1_hostname-start.sh",
-				},
-				{
-					Src: timezoneFile,
-					Dst: "/etc/phenix/startup/2_timezone-start.sh",
-				},
-				{
-					Src: ifaceFile,
-					Dst: "/etc/network/interfaces",
-				},
-				{
-					Src: packetBeatConfigFile,
-					Dst: "/etc/packetbeat/packetbeat.yml",
-				},
-			},
-			Network: v1.Network{
-				Interfaces: []v1.Interface{
-					{
-						Name:    "IF0",
-						Type:    "ethernet",
-						VLAN:    "MGMT",
-						Address: currentIP.String(),
-						Mask:    cidr,
-						Proto:   "static",
-						Bridge:  "phenix",
-					},
-				},
-			},
+		cap, mon, err := this.buildPacketBeatNode(exp, node, svrAddr, ip.String(), cidr)
+		if err != nil {
+			return fmt.Errorf("building PacketBeat node: %w", err)
 		}
 
-		for idx, i := range this.md.PacketCapture.CaptureHosts[n] {
-			for midx, iface := range t.Network.Interfaces {
-				if iface.Name == i {
-					mIface := v1.Interface{
-						Name:   fmt.Sprintf("MONITOR%d", idx),
-						Type:   "ethernet",
-						VLAN:   iface.VLAN,
-						Proto:  "static",
-						Bridge: "phenix",
-					}
+		caps = append(caps, cap)
 
-					c.Network.Interfaces = append(c.Network.Interfaces, mIface)
-					monitors[name] = append(monitors[name], fmt.Sprintf("%s %d", t.General.Hostname, midx))
-
-					break
-				}
-			}
-		}
-
-		if err := tmpl.CreateFileFromTemplate("linux_hostname.tmpl", name, hostnameFile); err != nil {
-			return fmt.Errorf("generating linux hostname config: %w", err)
-		}
-
-		if err := tmpl.CreateFileFromTemplate("linux_timezone.tmpl", tz, timezoneFile); err != nil {
-			return fmt.Errorf("generating linux timezone config: %w", err)
-		}
-
-		if err := tmpl.CreateFileFromTemplate("linux_interfaces.tmpl", c, ifaceFile); err != nil {
-			return fmt.Errorf("generating linux interfaces config: %w", err)
-		}
-
-		pb := struct {
-			ElasticServer string
-			Hostname      string
-		}{
-			ElasticServer: es.Network.Interfaces[0].Address,
-			Hostname:      name,
-		}
-
-		if err := tmpl.CreateFileFromTemplate("packetbeat.yml.tmpl", pb, packetBeatConfigFile); err != nil {
-			return fmt.Errorf("generating packetbeat config: %w", err)
-		}
-
-		caps = append(caps, c)
-
-		sched[c.General.Hostname] = exp.Status.Schedules[n]
+		sched[cap.General().Hostname()] = exp.Status.Schedules()[nodeToMonitor]
+		monitors[cap.General().Hostname()] = mon
 	}
 
-	caps = append(caps, es)
-
-	mon := v1.ExperimentSpec{
-		ExperimentName: exp.Spec.ExperimentName,
-		Topology: &v1.TopologySpec{
-			Nodes: caps,
+	spec := map[string]interface{}{
+		"experimentName": exp.Spec.ExperimentName(),
+		"topology": map[string]interface{}{
+			"nodes": caps,
 		},
-		Schedules: sched,
+		"schedules": sched,
 	}
 
-	foobar := struct {
-		Exp v1.ExperimentSpec
+	expMonitor, _ := version.GetStoredSpecForKind("Experiment")
+
+	if err := mapstructure.Decode(spec, &expMonitor); err != nil {
+		return fmt.Errorf("decoding experiment spec for monitor nodes: %w", err)
+	}
+
+	data := struct {
+		Exp ifaces.ExperimentSpec
 		Mon map[string][]string
 	}{
-		Exp: mon,
+		Exp: expMonitor.(ifaces.ExperimentSpec),
 		Mon: monitors,
 	}
 
 	filename := fmt.Sprintf("%s/mm_files/%s-monitor.mm", exp.Spec.BaseDir, exp.Spec.ExperimentName)
 
-	if err := tmpl.CreateFileFromTemplate("packet_capture_script.tmpl", foobar, filename); err != nil {
+	if err := tmpl.CreateFileFromTemplate("packet_capture_script.tmpl", data, filename); err != nil {
 		return fmt.Errorf("generating packet capture script: %w", err)
 	}
 
@@ -455,13 +275,11 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 		return err
 	}
 
+	this.apps = exp.Spec.Scenario().Apps()
+
 	if err := this.deployCapture(exp); err != nil {
 		return err
 	}
-
-	// Used by the process and listener tests to see if host metadata includes an
-	// SoH profile.
-	this.hostApps = exp.Spec.Scenario.Apps.Host
 
 	printer := color.New(color.FgBlue)
 
@@ -469,19 +287,19 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 
 	// *** WAIT FOR NODES TO HAVE NETWORKING CONFIGURED *** //
 
-	ns := exp.Spec.ExperimentName
+	ns := exp.Spec.ExperimentName()
 	wg := new(mm.ErrGroup)
 
-	for _, node := range exp.Spec.Topology.Nodes {
-		if !strings.EqualFold(node.Type, "VirtualMachine") {
+	for _, node := range exp.Spec.Topology().Nodes() {
+		if !strings.EqualFold(node.Type(), "VirtualMachine") {
 			continue
 		}
 
-		if *node.General.DoNotBoot {
+		if *node.General().DoNotBoot() {
 			continue
 		}
 
-		host := node.General.Hostname
+		host := node.General().Hostname()
 
 		if skip(node, this.md.SkipHosts) {
 			printer.Printf("  Skipping host %s per config\n", host)
@@ -492,25 +310,25 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 		// mapping the first time C2 is proven to not be working.
 		this.c2Hosts[host] = struct{}{}
 
-		for _, iface := range node.Network.Interfaces {
-			if strings.EqualFold(iface.VLAN, "MGMT") {
+		for _, iface := range node.Network().Interfaces() {
+			if strings.EqualFold(iface.VLAN(), "MGMT") {
 				continue
 			}
 
-			if iface.Type == "serial" {
+			if iface.Type() == "serial" {
 				continue
 			}
 
 			this.reachabilityHosts[host] = struct{}{}
-			this.addrHosts[iface.Address] = host
-			this.vlans[iface.VLAN] = append(this.vlans[iface.VLAN], iface.Address)
+			this.addrHosts[iface.Address()] = host
+			this.vlans[iface.VLAN()] = append(this.vlans[iface.VLAN()], iface.Address())
 
 			if !this.md.SkipNetworkConfig {
-				cidr := fmt.Sprintf("%s/%d", iface.Address, iface.Mask)
+				cidr := fmt.Sprintf("%s/%d", iface.Address(), iface.Mask())
 
 				printer.Printf("  Waiting for IP %s on host %s to be set...\n", cidr, host)
 
-				isNetworkingConfigured(wg, ns, host, cidr, iface.Gateway)
+				isNetworkingConfigured(wg, ns, host, cidr, iface.Gateway())
 			}
 		}
 	}
@@ -558,14 +376,14 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 			states = append(states, structs.Map(state))
 		}
 
-		exp.Status.Apps["soh"] = states
+		exp.Status.SetAppStatus("soh", states)
 	}
 
 	return nil
 }
 
 func (SOH) Cleanup(exp *types.Experiment) error {
-	if err := mm.ClearC2Responses(mm.C2NS(exp.Spec.ExperimentName)); err != nil {
+	if err := mm.ClearC2Responses(mm.C2NS(exp.Spec.ExperimentName())); err != nil {
 		return fmt.Errorf("deleting minimega C2 responses: %w", err)
 	}
 
@@ -575,9 +393,9 @@ func (SOH) Cleanup(exp *types.Experiment) error {
 func (this *SOH) decodeMetadata(exp *types.Experiment) error {
 	var ms map[string]interface{}
 
-	for _, app := range exp.Spec.Scenario.Apps.Experiment {
-		if app.Name == "soh" {
-			ms = app.Metadata
+	for _, app := range exp.Spec.Scenario().Apps() {
+		if app.Name() == "soh" {
+			ms = app.Metadata()
 		}
 	}
 
@@ -754,25 +572,25 @@ func (this *SOH) waitForProcTest(ns string) {
 		}
 	}
 
-	// Check to see if any of the host apps have hosts with metadata that include an SoH profile.
-	for _, app := range this.hostApps {
-		for _, host := range app.Hosts {
-			if ms, ok := host.Metadata[this.md.AppProfileKey]; ok {
-				if _, ok := this.c2Hosts[host.Hostname]; !ok {
-					printer.Printf("  Skipping host %s per config\n", host.Hostname)
+	// Check to see if any of the apps have hosts with metadata that include an SoH profile.
+	for _, app := range this.apps {
+		for _, host := range app.Hosts() {
+			if ms, ok := host.Metadata()[this.md.AppProfileKey]; ok {
+				if _, ok := this.c2Hosts[host.Hostname()]; !ok {
+					printer.Printf("  Skipping host %s per config\n", host.Hostname())
 					continue
 				}
 
 				var profile sohProfile
 
 				if err := mapstructure.Decode(ms, &profile); err != nil {
-					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname, app.Name)
+					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname(), app.Name())
 					continue
 				}
 
 				for _, proc := range profile.Processes {
-					printer.Printf("  Checking for process %s on host %s\n", proc, host.Hostname)
-					procTest(wg, ns, host.Hostname, proc)
+					printer.Printf("  Checking for process %s on host %s\n", proc, host.Hostname())
+					procTest(wg, ns, host.Hostname(), proc)
 				}
 			}
 		}
@@ -832,25 +650,25 @@ func (this *SOH) waitForPortTest(ns string) {
 		}
 	}
 
-	// Check to see if any of the host apps have hosts with metadata that include an SoH profile.
-	for _, app := range this.hostApps {
-		for _, host := range app.Hosts {
-			if ms, ok := host.Metadata[this.md.AppProfileKey]; ok {
-				if _, ok := this.c2Hosts[host.Hostname]; !ok {
-					printer.Printf("  Skipping host %s per config\n", host.Hostname)
+	// Check to see if any of the apps have hosts with metadata that include an SoH profile.
+	for _, app := range this.apps {
+		for _, host := range app.Hosts() {
+			if ms, ok := host.Metadata()[this.md.AppProfileKey]; ok {
+				if _, ok := this.c2Hosts[host.Hostname()]; !ok {
+					printer.Printf("  Skipping host %s per config\n", host.Hostname())
 					continue
 				}
 
 				var profile sohProfile
 
 				if err := mapstructure.Decode(ms, &profile); err != nil {
-					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname, app.Name)
+					printer.Printf("incorrect SoH profile for host %s in app %s", host.Hostname(), app.Name())
 					continue
 				}
 
 				for _, port := range profile.Listeners {
-					printer.Printf("  Checking for listener %s on host %s\n", port, host.Hostname)
-					portTest(wg, ns, host.Hostname, port)
+					printer.Printf("  Checking for listener %s on host %s\n", port, host.Hostname())
+					portTest(wg, ns, host.Hostname(), port)
 				}
 			}
 		}
@@ -1045,18 +863,18 @@ func portTest(wg *mm.ErrGroup, ns, host, port string) {
 	mm.ScheduleC2ParallelCommand(cmd)
 }
 
-func skip(node *v1.Node, toSkip []string) bool {
+func skip(node ifaces.NodeSpec, toSkip []string) bool {
 	for _, skipHost := range toSkip {
 		// Check to see if this is a reference to an image. If so, skip this host if
 		// it's using the referenced image.
 		if ext := filepath.Ext(skipHost); ext == ".qc2" || ext == ".qcow2" {
-			if filepath.Base(node.Hardware.Drives[0].Image) == skipHost {
+			if filepath.Base(node.Hardware().Drives()[0].Image()) == skipHost {
 				return true
 			}
 		}
 
 		// Check to see if this node's hostname matches one to be skipped.
-		if node.General.Hostname == skipHost {
+		if node.General().Hostname() == skipHost {
 			return true
 		}
 	}

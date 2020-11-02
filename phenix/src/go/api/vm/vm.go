@@ -74,7 +74,7 @@ func List(expName string) ([]mm.VM, error) {
 			OSType:     node.Type(),
 		}
 
-		if node.Type == "VirtualMachine" {
+		if node.Type() == "VirtualMachine" {
 			vm.OSType = string(node.Hardware().OSType())
 		}
 
