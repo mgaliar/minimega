@@ -3,7 +3,6 @@ package contract
 import (
 	"phenix/internal/mm"
 	"phenix/types"
-	v1 "phenix/types/version/v1"
 	"phenix/web/cache"
 )
 
@@ -32,41 +31,33 @@ type Experiment struct {
 
 func NewExperiment(exp types.Experiment, status cache.Status, vms []mm.VM) Experiment {
 	e := Experiment{
-		Name:      exp.Spec.ExperimentName,
+		Name:      exp.Spec.ExperimentName(),
 		Topology:  exp.Metadata.Annotations["topology"],
 		Scenario:  exp.Metadata.Annotations["scenario"],
-		StartTime: exp.Status.StartTime,
-		Running:   exp.Status.Running(),
+		StartTime: exp.Status.StartTime(),
+		Running:   exp.Running(),
 		Status:    string(status),
 		VMs:       vms,
 		VMCount:   len(vms),
 	}
 
-	if exp.Spec.Scenario != nil && exp.Spec.Scenario.Apps != nil {
-		var apps []string
+	var apps []string
 
-		for _, app := range exp.Spec.Scenario.Apps.Experiment {
-			apps = append(apps, app.Name)
-		}
-
-		for _, app := range exp.Spec.Scenario.Apps.Host {
-			apps = append(apps, app.Name)
-		}
-
-		e.Apps = apps
+	for _, app := range exp.Apps() {
+		apps = append(apps, app.Name())
 	}
 
-	var aliases v1.VLANAliases
+	var aliases map[string]int
 
-	if exp.Status.Running() {
-		aliases = exp.Status.VLANs
+	if exp.Running() {
+		aliases = exp.Status.VLANs()
 
 		var (
 			min = 0
 			max = 0
 		)
 
-		for _, k := range exp.Status.VLANs {
+		for _, k := range exp.Status.VLANs() {
 			if min == 0 || k < min {
 				min = k
 			}
@@ -79,10 +70,10 @@ func NewExperiment(exp types.Experiment, status cache.Status, vms []mm.VM) Exper
 		e.VLANMin = min
 		e.VLANMax = max
 	} else {
-		aliases = exp.Spec.VLANs.Aliases
+		aliases = exp.Spec.VLANs().Aliases()
 
-		e.VLANMin = exp.Spec.VLANs.Min
-		e.VLANMax = exp.Spec.VLANs.Max
+		e.VLANMin = exp.Spec.VLANs().Min()
+		e.VLANMax = exp.Spec.VLANs().Max()
 	}
 
 	if aliases != nil {
@@ -125,7 +116,7 @@ type ExperimentSchedule struct {
 func NewExperimentSchedule(exp types.Experiment) ExperimentSchedule {
 	var sched []Schedule
 
-	for vm, host := range exp.Spec.Schedules {
+	for vm, host := range exp.Spec.Schedules() {
 		sched = append(sched, Schedule{VM: vm, Host: host})
 	}
 

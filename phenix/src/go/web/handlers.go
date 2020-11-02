@@ -1797,7 +1797,7 @@ func GetAllVMs(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, v := range vms {
-			if !role.Allowed("vms", exp.Spec.ExperimentName, "list", v.Name) {
+			if !role.Allowed("vms", exp.Spec.ExperimentName(), "list", v.Name) {
 				continue
 			}
 
