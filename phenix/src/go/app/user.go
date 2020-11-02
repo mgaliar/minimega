@@ -114,7 +114,7 @@ func (this UserApp) shellOut(action Action, exp *types.Experiment) error {
 		return fmt.Errorf("user app %s command %s failed: %w", this.options.Name, cmdName, err)
 	}
 
-	var result types.Experiment
+	result := types.NewExperiment(exp.Metadata)
 
 	if err := json.Unmarshal(stdOut, &result); err != nil {
 		return fmt.Errorf("unmarshaling experiment from JSON: %w", err)
@@ -122,10 +122,10 @@ func (this UserApp) shellOut(action Action, exp *types.Experiment) error {
 
 	switch action {
 	case ACTIONCONFIG, ACTIONPRESTART:
-		exp.Spec = result.Spec
+		exp.SetSpec(result.Spec)
 	case ACTIONPOSTSTART, ACTIONCLEANUP:
-		if metadata, ok := result.Status.Apps[this.options.Name]; ok {
-			exp.Status.Apps[this.options.Name] = metadata
+		if metadata, ok := result.Status.AppStatus()[this.options.Name]; ok {
+			exp.Status.SetAppStatus(this.options.Name, metadata)
 		}
 	}
 
