@@ -23,6 +23,9 @@ spec:
   - dbus
   - linux-image-generic
   - linux-headers-generic
+  - xserver-xorg-video-qxl
+  - xserver-xorg-video-vesa
+  - xubuntu-desktop
   ramdisk: false
   release: focal
   script_order:
@@ -40,6 +43,38 @@ spec:
       rm ./kibana-oss-7.9.3-amd64.deb
       ln -s /lib/systemd/system/elasticsearch.yml /etc/systemd/system/multi-user.target.wants/elasticsearch.yml
       ln -s /etc/systemd/system/kibana.yml /etc/systemd/system/multi-user.target.wants/kibana.yml
+      apt update && apt install -y firefox
+      cat > /root/.profile <<EOF
+      # ~/.profile: executed by Bourne-compatible login shells.
+      if [ "$BASH" ]; then
+        if [ -f ~/.bashrc ]; then
+          . ~/.bashrc
+        fi
+      fi
+      tty -s && mesg n || true
+      EOF
+      cat > /etc/lightdm/lightdm.conf <<EOF
+      [Seat:*]
+      autologin-guest=false
+      autologin-user=root
+      autologin-user-timeout=0
+      EOF
+      mkdir -p /root/.config/autostart
+      cat > /root/.config/autostart/Kibana.desktop <<EOF
+      [Desktop Entry]
+      Encoding=UTF-8
+      Version=1.0
+      Type=Application
+      Name=Kibana
+      Comment=Kibana Browser
+      # HACK: The "Path" option isn't honored on autostart
+      # (see https://gitlab.xfce.org/xfce/xfce4-session/-/issues/9).
+      Exec=firefox http://localhost:5601
+      OnlyShowIn=XFCE;
+      StartupNotify=false
+      Terminal=false
+      Hidden=false
+      EOF
     POSTBUILD_APT_CLEANUP: |
       apt clean || apt-get clean || echo "unable to clean apt cache"
     POSTBUILD_NO_ROOT_PASSWD: |

@@ -20,16 +20,6 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
-type hostProcesses struct {
-	Hostname  string   `mapstructure:"hostname"`
-	Processes []string `mapstructure:"processes"`
-}
-
-type hostListeners struct {
-	Hostname  string   `mapstructure:"hostname"`
-	Listeners []string `mapstructure:"listeners"`
-}
-
 type packetCapture struct {
 	ElasticImage    string              `mapstructure:"elasticImage"`
 	PacketBeatImage string              `mapstructure:"packetBeatImage"`
@@ -44,14 +34,14 @@ type elasticServer struct {
 }
 
 type sohMetadata struct {
-	C2Timeout         string          `mapstructure:"c2Timeout"`
-	Reachability      string          `mapstructure:"testReachability"`
-	SkipNetworkConfig bool            `mapstructure:"skipInitialNetworkConfigTests"`
-	SkipHosts         []string        `mapstructure:"skipHosts"`
-	HostProcesses     []hostProcesses `mapstructure:"hostProcesses"`
-	HostListeners     []hostListeners `mapstructure:"hostListeners"`
-	AppProfileKey     string          `mapstructure:"appMetadataProfileKey"`
-	PacketCapture     packetCapture   `mapstructure:"packetCapture"`
+	C2Timeout         string              `mapstructure:"c2Timeout"`
+	Reachability      string              `mapstructure:"testReachability"`
+	SkipNetworkConfig bool                `mapstructure:"skipInitialNetworkConfigTests"`
+	SkipHosts         []string            `mapstructure:"skipHosts"`
+	HostProcesses     map[string][]string `mapstructure:"hostProcesses"`
+	HostListeners     map[string][]string `mapstructure:"hostListeners"`
+	AppProfileKey     string              `mapstructure:"appMetadataProfileKey"`
+	PacketCapture     packetCapture       `mapstructure:"packetCapture"`
 
 	// set after parsing
 	c2Timeout time.Duration
@@ -92,6 +82,7 @@ type sohProfile struct {
 	C2Timeout string   `mapstructure:"c2Timeout"`
 	Processes []string `mapstructure:"processes"`
 	Listeners []string `mapstructure:"listeners"`
+	Captures  []string `mapstructure:"captureInterfaces"`
 
 	// set after parsing
 	c2Timeout time.Duration
@@ -257,7 +248,7 @@ func (this *SOH) deployCapture(exp *types.Experiment) error {
 		Mon: monitors,
 	}
 
-	filename := fmt.Sprintf("%s/mm_files/%s-monitor.mm", exp.Spec.BaseDir, exp.Spec.ExperimentName)
+	filename := fmt.Sprintf("%s/mm_files/%s-monitor.mm", exp.Spec.BaseDir(), exp.Spec.ExperimentName())
 
 	if err := tmpl.CreateFileFromTemplate("packet_capture_script.tmpl", data, filename); err != nil {
 		return fmt.Errorf("generating packet capture script: %w", err)
@@ -557,18 +548,18 @@ func (this *SOH) waitForProcTest(ns string) {
 	wg := new(mm.ErrGroup)
 	printer := color.New(color.FgBlue)
 
-	for _, p := range this.md.HostProcesses {
+	for host, processes := range this.md.HostProcesses {
 		// If the host isn't in the C2 hosts map, then don't operate on it since it
 		// was likely skipped for a reason.
-		if _, ok := this.c2Hosts[p.Hostname]; !ok {
-			printer.Printf("  Skipping host %s per config\n", p.Hostname)
+		if _, ok := this.c2Hosts[host]; !ok {
+			printer.Printf("  Skipping host %s per config\n", host)
 			continue
 		}
 
-		for _, proc := range p.Processes {
-			printer.Printf("  Checking for process %s on host %s\n", proc, p.Hostname)
+		for _, proc := range processes {
+			printer.Printf("  Checking for process %s on host %s\n", proc, host)
 
-			procTest(wg, ns, p.Hostname, proc)
+			procTest(wg, ns, host, proc)
 		}
 	}
 
@@ -635,18 +626,18 @@ func (this *SOH) waitForPortTest(ns string) {
 	wg := new(mm.ErrGroup)
 	printer := color.New(color.FgBlue)
 
-	for _, l := range this.md.HostListeners {
+	for host, listeners := range this.md.HostListeners {
 		// If the host isn't in the C2 hosts map, then don't operate on it since it
 		// was likely skipped for a reason.
-		if _, ok := this.c2Hosts[l.Hostname]; !ok {
-			printer.Printf("  Skipping host %s per config\n", l.Hostname)
+		if _, ok := this.c2Hosts[host]; !ok {
+			printer.Printf("  Skipping host %s per config\n", host)
 			continue
 		}
 
-		for _, port := range l.Listeners {
-			printer.Printf("  Checking for listener %s on host %s\n", port, l.Hostname)
+		for _, port := range listeners {
+			printer.Printf("  Checking for listener %s on host %s\n", port, host)
 
-			portTest(wg, ns, l.Hostname, port)
+			portTest(wg, ns, host, port)
 		}
 	}
 
