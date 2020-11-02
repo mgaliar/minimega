@@ -33,9 +33,10 @@ spec:
   scripts:
     /phenix/vmdb/scripts/packetbeat.sh: |
       apt install libpcap0.8
-      curl -k -L -O https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-7.8.1-amd64.deb
-      apt install ./packetbeat-7.8.1-amd64.deb
-      rm ./packetbeat-7.8.1-amd64.deb
+      curl -k -L -O https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-oss-7.9.3-amd64.deb
+      apt install ./packetbeat-oss-7.9.3-amd64.deb
+      rm ./packetbeat-oss-7.9.3-amd64.deb
+      ln -s /lib/systemd/system/packetbeat.yml /etc/systemd/system/multi-user.target.wants/packetbeat.yml
     POSTBUILD_APT_CLEANUP: |
       apt clean || apt-get clean || echo "unable to clean apt cache"
     POSTBUILD_NO_ROOT_PASSWD: |

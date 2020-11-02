@@ -4,11 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"net"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"phenix/internal/mm"
+	"phenix/tmpl"
 	"phenix/types"
 	v1 "phenix/types/version/v1"
 
@@ -27,6 +29,19 @@ type hostListeners struct {
 	Listeners []string `mapstructure:"listeners"`
 }
 
+type packetCapture struct {
+	ElasticImage    string              `mapstructure:"elasticImage"`
+	PacketBeatImage string              `mapstructure:"packetBeatImage"`
+	ElasticServer   elasticServer       `mapstructure:"elasticServer"`
+	CaptureHosts    map[string][]string `mapstructure:"captureHosts"`
+}
+
+type elasticServer struct {
+	Hostname  string `mapstructure:"hostname"`
+	IPAddress string `mapstructure:"ipAddress"`
+	VLAN      string `mapstructure:"vlan"`
+}
+
 type sohMetadata struct {
 	C2Timeout         string          `mapstructure:"c2Timeout"`
 	Reachability      string          `mapstructure:"testReachability"`
@@ -35,6 +50,7 @@ type sohMetadata struct {
 	HostProcesses     []hostProcesses `mapstructure:"hostProcesses"`
 	HostListeners     []hostListeners `mapstructure:"hostListeners"`
 	AppProfileKey     string          `mapstructure:"appMetadataProfileKey"`
+	PacketCapture     packetCapture   `mapstructure:"packetCapture"`
 
 	// set after parsing
 	c2Timeout time.Duration
@@ -166,33 +182,281 @@ func (SOH) Configure(exp *types.Experiment) error {
 	return nil
 }
 
-func (SOH) PreStart(exp *types.Experiment) error {
-	// TODO: inject ICMP allow into any rulesets in topology routers
+func (this *SOH) PreStart(exp *types.Experiment) error {
+	// TODO: inject ICMP allow into any rulesets in topology routers???
+
+	return nil
+}
+
+func (this *SOH) deployCapture(exp *types.Experiment) error {
+	if err := this.decodeMetadata(exp); err != nil {
+		return err
+	}
+
+	if len(this.md.PacketCapture.CaptureHosts) == 0 {
+		return nil
+	}
+
+	currentIP, mask, _ := net.ParseCIDR(this.md.PacketCapture.ElasticServer.IPAddress)
+	cidr, _ := mask.Mask.Size()
+
+	var (
+		name = this.md.PacketCapture.ElasticServer.Hostname
+		tz   = "Etc/UTC"
+
+		startupDir   = exp.Spec.BaseDir + "/startup"
+		hostnameFile = startupDir + "/" + name + "-hostname.sh"
+		timezoneFile = startupDir + "/" + name + "-timezone.sh"
+		ifaceFile    = startupDir + "/" + name + "-interfaces"
+
+		elasticConfigFile = fmt.Sprintf("%s/%s-elasticsearch.yml", startupDir, name)
+		kibanaConfigFile  = fmt.Sprintf("%s/%s-kibana.yml", startupDir, name)
+	)
+
+	es := &v1.Node{
+		Labels: map[string]string{"elastic-server": "true"},
+		Type:   "VirtualMachine",
+		General: v1.General{
+			Hostname: name,
+			VMType:   "kvm",
+		},
+		Hardware: v1.Hardware{
+			VCPU:   2,
+			Memory: 2048,
+			Drives: []v1.Drive{
+				{
+					Image: this.md.PacketCapture.ElasticImage,
+				},
+			},
+			OSType: "linux",
+		},
+		Injections: []*v1.Injection{
+			{
+				Src: hostnameFile,
+				Dst: "/etc/phenix/startup/1_hostname-start.sh",
+			},
+			{
+				Src: timezoneFile,
+				Dst: "/etc/phenix/startup/2_timezone-start.sh",
+			},
+			{
+				Src: ifaceFile,
+				Dst: "/etc/network/interfaces",
+			},
+			{
+				Src: elasticConfigFile,
+				Dst: "/etc/elasticsearch/elasticsearch.yml",
+			},
+			{
+				Src: kibanaConfigFile,
+				Dst: "/etc/kibana/kibana.yml",
+			},
+		},
+		Network: v1.Network{
+			Interfaces: []v1.Interface{
+				{
+					Name:    "IF0",
+					Type:    "ethernet",
+					VLAN:    "MGMT",
+					Address: currentIP.String(),
+					Mask:    cidr,
+					Proto:   "static",
+					Bridge:  "phenix",
+				},
+			},
+		},
+	}
+
+	if err := tmpl.CreateFileFromTemplate("linux_hostname.tmpl", name, hostnameFile); err != nil {
+		return fmt.Errorf("generating linux hostname config: %w", err)
+	}
+
+	if err := tmpl.CreateFileFromTemplate("linux_timezone.tmpl", tz, timezoneFile); err != nil {
+		return fmt.Errorf("generating linux timezone config: %w", err)
+	}
+
+	if err := tmpl.CreateFileFromTemplate("linux_interfaces.tmpl", es, ifaceFile); err != nil {
+		return fmt.Errorf("generating linux interfaces config: %w", err)
+	}
+
+	esc := struct {
+		Hostname       string
+		ExperimentName string
+	}{
+		Hostname:       name,
+		ExperimentName: exp.Spec.ExperimentName,
+	}
+
+	if err := tmpl.CreateFileFromTemplate("elasticsearch.yml.tmpl", esc, elasticConfigFile); err != nil {
+		return fmt.Errorf("generating elasticsearch config: %w", err)
+	}
+
+	if err := tmpl.CreateFileFromTemplate("kibana.yml.tmpl", name, kibanaConfigFile); err != nil {
+		return fmt.Errorf("generating kibana config: %w", err)
+	}
+
+	var caps []*v1.Node
+	sched := make(map[string]string)
+	monitors := make(map[string][]string)
+
+	for n := range this.md.PacketCapture.CaptureHosts {
+		t := exp.Spec.Topology.FindNodeByName(n)
+
+		if t == nil {
+			// TODO: yell loudly
+			continue
+		}
+
+		var (
+			name = n + "-monitor"
+			tz   = "Etc/UTC"
+
+			startupDir   = exp.Spec.BaseDir + "/startup"
+			hostnameFile = startupDir + "/" + name + "-hostname.sh"
+			timezoneFile = startupDir + "/" + name + "-timezone.sh"
+			ifaceFile    = startupDir + "/" + name + "-interfaces"
+
+			packetBeatConfigFile = fmt.Sprintf("%s/%s-packetbeat.yml", startupDir, name)
+		)
+
+		currentIP = nextIP(currentIP)
+
+		c := &v1.Node{
+			Labels: map[string]string{"monitor-node": "true"},
+			Type:   "VirtualMachine",
+			General: v1.General{
+				Hostname: name,
+				VMType:   "kvm",
+			},
+			Hardware: v1.Hardware{
+				VCPU:   1,
+				Memory: 512,
+				Drives: []v1.Drive{
+					{
+						Image: this.md.PacketCapture.PacketBeatImage,
+					},
+				},
+				OSType: "linux",
+			},
+			Injections: []*v1.Injection{
+				{
+					Src: hostnameFile,
+					Dst: "/etc/phenix/startup/1_hostname-start.sh",
+				},
+				{
+					Src: timezoneFile,
+					Dst: "/etc/phenix/startup/2_timezone-start.sh",
+				},
+				{
+					Src: ifaceFile,
+					Dst: "/etc/network/interfaces",
+				},
+				{
+					Src: packetBeatConfigFile,
+					Dst: "/etc/packetbeat/packetbeat.yml",
+				},
+			},
+			Network: v1.Network{
+				Interfaces: []v1.Interface{
+					{
+						Name:    "IF0",
+						Type:    "ethernet",
+						VLAN:    "MGMT",
+						Address: currentIP.String(),
+						Mask:    cidr,
+						Proto:   "static",
+						Bridge:  "phenix",
+					},
+				},
+			},
+		}
+
+		for idx, i := range this.md.PacketCapture.CaptureHosts[n] {
+			for midx, iface := range t.Network.Interfaces {
+				if iface.Name == i {
+					mIface := v1.Interface{
+						Name:   fmt.Sprintf("MONITOR%d", idx),
+						Type:   "ethernet",
+						VLAN:   iface.VLAN,
+						Proto:  "static",
+						Bridge: "phenix",
+					}
+
+					c.Network.Interfaces = append(c.Network.Interfaces, mIface)
+					monitors[name] = append(monitors[name], fmt.Sprintf("%s %d", t.General.Hostname, midx))
+
+					break
+				}
+			}
+		}
+
+		if err := tmpl.CreateFileFromTemplate("linux_hostname.tmpl", name, hostnameFile); err != nil {
+			return fmt.Errorf("generating linux hostname config: %w", err)
+		}
+
+		if err := tmpl.CreateFileFromTemplate("linux_timezone.tmpl", tz, timezoneFile); err != nil {
+			return fmt.Errorf("generating linux timezone config: %w", err)
+		}
+
+		if err := tmpl.CreateFileFromTemplate("linux_interfaces.tmpl", c, ifaceFile); err != nil {
+			return fmt.Errorf("generating linux interfaces config: %w", err)
+		}
+
+		pb := struct {
+			ElasticServer string
+			Hostname      string
+		}{
+			ElasticServer: es.Network.Interfaces[0].Address,
+			Hostname:      name,
+		}
+
+		if err := tmpl.CreateFileFromTemplate("packetbeat.yml.tmpl", pb, packetBeatConfigFile); err != nil {
+			return fmt.Errorf("generating packetbeat config: %w", err)
+		}
+
+		caps = append(caps, c)
+
+		sched[c.General.Hostname] = exp.Status.Schedules[n]
+	}
+
+	caps = append(caps, es)
+
+	mon := v1.ExperimentSpec{
+		ExperimentName: exp.Spec.ExperimentName,
+		Topology: &v1.TopologySpec{
+			Nodes: caps,
+		},
+		Schedules: sched,
+	}
+
+	foobar := struct {
+		Exp v1.ExperimentSpec
+		Mon map[string][]string
+	}{
+		Exp: mon,
+		Mon: monitors,
+	}
+
+	filename := fmt.Sprintf("%s/mm_files/%s-monitor.mm", exp.Spec.BaseDir, exp.Spec.ExperimentName)
+
+	if err := tmpl.CreateFileFromTemplate("packet_capture_script.tmpl", foobar, filename); err != nil {
+		return fmt.Errorf("generating packet capture script: %w", err)
+	}
+
+	if err := mm.ReadScriptFromFile(filename); err != nil {
+		return fmt.Errorf("reading packet capture script: %w", err)
+	}
 
 	return nil
 }
 
 func (this *SOH) PostStart(exp *types.Experiment) error {
-	// *** LOAD APP CONFIGURATION METADATA *** //
-
-	var ms map[string]interface{}
-
-	for _, app := range exp.Spec.Scenario.Apps.Experiment {
-		if app.Name == "soh" {
-			ms = app.Metadata
-		}
+	if err := this.decodeMetadata(exp); err != nil {
+		return err
 	}
 
-	if ms == nil {
-		return fmt.Errorf("soh app must have metadata defined")
-	}
-
-	if err := mapstructure.Decode(ms, &this.md); err != nil {
-		return fmt.Errorf("decoding app metadata: %w", err)
-	}
-
-	if err := this.md.init(); err != nil {
-		return fmt.Errorf("initializing app metadata: %w", err)
+	if err := this.deployCapture(exp); err != nil {
+		return err
 	}
 
 	// Used by the process and listener tests to see if host metadata includes an
@@ -303,6 +567,30 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 func (SOH) Cleanup(exp *types.Experiment) error {
 	if err := mm.ClearC2Responses(mm.C2NS(exp.Spec.ExperimentName)); err != nil {
 		return fmt.Errorf("deleting minimega C2 responses: %w", err)
+	}
+
+	return nil
+}
+
+func (this *SOH) decodeMetadata(exp *types.Experiment) error {
+	var ms map[string]interface{}
+
+	for _, app := range exp.Spec.Scenario.Apps.Experiment {
+		if app.Name == "soh" {
+			ms = app.Metadata
+		}
+	}
+
+	if ms == nil {
+		return fmt.Errorf("soh app must have metadata defined")
+	}
+
+	if err := mapstructure.Decode(ms, &this.md); err != nil {
+		return fmt.Errorf("decoding app metadata: %w", err)
+	}
+
+	if err := this.md.init(); err != nil {
+		return fmt.Errorf("initializing app metadata: %w", err)
 	}
 
 	return nil
@@ -810,4 +1098,18 @@ func periodicallyNotify(msg string, d time.Duration) chan struct{} {
 	}()
 
 	return done
+}
+
+func nextIP(ip net.IP) net.IP {
+	i := ip.To4()
+	v := uint(i[0])<<24 + uint(i[1])<<16 + uint(i[2])<<8 + uint(i[3])
+
+	v++
+
+	v3 := byte(v & 0xFF)
+	v2 := byte((v >> 8) & 0xFF)
+	v1 := byte((v >> 16) & 0xFF)
+	v0 := byte((v >> 24) & 0xFF)
+
+	return net.IPv4(v0, v1, v2, v3)
 }

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"phenix/api/config"
 	"phenix/app"
 	"phenix/internal/common"
 	"phenix/internal/file"
@@ -20,6 +21,40 @@ import (
 	"github.com/activeshadow/structs"
 	"github.com/mitchellh/mapstructure"
 )
+
+func init() {
+	config.RegisterConfigHook("Experiment", func(s string, c *types.Config) error {
+		if s != "create" {
+			return nil
+		}
+
+		var spec v1.ExperimentSpec
+
+		if err := mapstructure.Decode(c.Spec, &spec); err != nil {
+			return fmt.Errorf("decoding experiment spec: %w", err)
+		}
+
+		spec.SetDefaults()
+
+		if err := spec.VerifyScenario(context.TODO()); err != nil {
+			return fmt.Errorf("verifying experiment scenario: %w", err)
+		}
+
+		exp := types.Experiment{Metadata: c.Metadata, Spec: &spec}
+
+		if err := app.ApplyApps(app.ACTIONCONFIG, &exp); err != nil {
+			return fmt.Errorf("applying apps to experiment: %w", err)
+		}
+
+		c.Spec = structs.MapDefaultCase(exp.Spec, structs.CASESNAKE)
+
+		if err := types.ValidateConfigSpec(*c); err != nil {
+			return fmt.Errorf("validating experiment config: %w", err)
+		}
+
+		return nil
+	})
+}
 
 // List collects experiments, each in a struct that references the latest
 // versioned experiment spec and status. It returns a slice of experiments and
@@ -184,12 +219,6 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 
 	c.Spec = structs.MapDefaultCase(exp.Spec, structs.CASESNAKE)
 
-	/*
-		if err := create(ctx, c); err != nil {
-			return fmt.Errorf("creating experiment config: %w", err)
-		}
-	*/
-
 	if err := types.ValidateConfigSpec(*c); err != nil {
 		return fmt.Errorf("validating experiment config: %w", err)
 	}
@@ -200,32 +229,6 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 
 	return nil
 }
-
-/*
-func create(ctx.Context, c *types.Config) error {
-	var spec v1.ExperimentSpec
-
-	if err := mapstructure.Decode(c.Spec, &spec); err != nil {
-		return fmt.Errorf("decoding experiment spec: %w", err)
-	}
-
-	spec.SetDefaults()
-
-	if err := spec.VerifyScenario(ctx); err != nil {
-		return fmt.Errorf("verifying experiment scenario: %w", err)
-	}
-
-	exp := types.Experiment{Metadata: c.Metadata, Spec: &spec}
-
-	if err := app.ApplyApps(app.ACTIONCONFIG, &exp); err != nil {
-		return fmt.Errorf("applying apps to experiment: %w", err)
-	}
-
-	c.Spec = structs.MapDefaultCase(exp.Spec, structs.CASESNAKE)
-
-	return nil
-}
-*/
 
 // Schedule applies the given scheduling algorithm to the experiment with the
 // given name. It returns any errors encountered while scheduling the

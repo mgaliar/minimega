@@ -32,9 +32,14 @@ spec:
   - /phenix/vmdb/scripts/elasticsearch.sh
   scripts:
     /phenix/vmdb/scripts/elasticsearch.sh: |
-      curl -k -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.1-amd64.deb
-      apt install ./elasticsearch-7.8.1-amd64.deb
-      rm ./elasticsearch-7.8.1-amd64.deb
+      curl -k -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.9.3-amd64.deb
+      curl -k -L -O https://artifacts.elastic.co/downloads/kibana/kibana-oss-7.9.3-amd64.deb
+      apt install ./elasticsearch-oss-7.9.3-amd64.deb
+      apt install ./kibana-oss-7.9.3-amd64.deb
+      rm ./elasticsearch-oss-7.9.3-amd64.deb
+      rm ./kibana-oss-7.9.3-amd64.deb
+      ln -s /lib/systemd/system/elasticsearch.yml /etc/systemd/system/multi-user.target.wants/elasticsearch.yml
+      ln -s /etc/systemd/system/kibana.yml /etc/systemd/system/multi-user.target.wants/kibana.yml
     POSTBUILD_APT_CLEANUP: |
       apt clean || apt-get clean || echo "unable to clean apt cache"
     POSTBUILD_NO_ROOT_PASSWD: |
