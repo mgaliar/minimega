@@ -97,12 +97,14 @@ func (this *ExperimentSpec) Init() error {
 		this.SchedulesF = make(map[string]string)
 	}
 
-	this.TopologyF.SetDefaults()
+	if this.TopologyF != nil {
+		this.TopologyF.SetDefaults()
 
-	for _, n := range this.TopologyF.NodesF {
-		for _, i := range n.NetworkF.InterfacesF {
-			if _, ok := this.VLANsF.AliasesF[i.VLANF]; !ok {
-				this.VLANsF.AliasesF[i.VLANF] = 0
+		for _, n := range this.TopologyF.NodesF {
+			for _, i := range n.NetworkF.InterfacesF {
+				if _, ok := this.VLANsF.AliasesF[i.VLANF]; !ok {
+					this.VLANsF.AliasesF[i.VLANF] = 0
+				}
 			}
 		}
 	}
