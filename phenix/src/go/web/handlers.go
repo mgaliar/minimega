@@ -74,7 +74,7 @@ func GetExperiments(w http.ResponseWriter, r *http.Request) {
 		status := isExperimentLocked(exp.Metadata.Name)
 
 		if status == "" {
-			if exp.Status.Running() {
+			if exp.Running() {
 				status = cache.StatusStarted
 			} else {
 				status = cache.StatusStopped
@@ -83,18 +83,18 @@ func GetExperiments(w http.ResponseWriter, r *http.Request) {
 
 		// TODO: limit per-experiment VMs based on RBAC
 
-		vms, err := vm.List(exp.Spec.ExperimentName)
+		vms, err := vm.List(exp.Spec.ExperimentName())
 		if err != nil {
 			// TODO
 		}
 
-		if exp.Status.Running() && size != "" {
+		if exp.Running() && size != "" {
 			for i, v := range vms {
 				if !v.Running {
 					continue
 				}
 
-				screenshot, err := util.GetScreenshot(exp.Spec.ExperimentName, v.Name, size)
+				screenshot, err := util.GetScreenshot(exp.Spec.ExperimentName(), v.Name, size)
 				if err != nil {
 					log.Error("getting screenshot - %v", err)
 					continue
@@ -937,7 +937,7 @@ func DeleteVM(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !e.Status.Running() {
+	if !e.Running() {
 		http.Error(w, "experiment not running", http.StatusBadRequest)
 		return
 	}
@@ -1791,7 +1791,7 @@ func GetAllVMs(w http.ResponseWriter, r *http.Request) {
 	allowed := []mm.VM{}
 
 	for _, exp := range exps {
-		vms, err := vm.List(exp.Spec.ExperimentName)
+		vms, err := vm.List(exp.Spec.ExperimentName())
 		if err != nil {
 			// TODO
 		}
@@ -1807,7 +1807,7 @@ func GetAllVMs(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if size != "" {
-				screenshot, err := util.GetScreenshot(exp.Spec.ExperimentName, v.Name, size)
+				screenshot, err := util.GetScreenshot(exp.Spec.ExperimentName(), v.Name, size)
 				if err != nil {
 					log.Error("getting screenshot: %v", err)
 				} else {
@@ -1969,7 +1969,7 @@ func GetClusterHosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hosts, err := mm.GetClusterHosts()
+	hosts, err := mm.GetClusterHosts(false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
