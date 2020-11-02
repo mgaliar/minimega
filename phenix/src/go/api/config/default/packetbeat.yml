@@ -23,6 +23,7 @@ spec:
   - dbus
   - linux-image-generic
   - linux-headers-generic
+  - tcpdump
   ramdisk: false
   release: focal
   script_order:

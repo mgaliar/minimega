@@ -26,6 +26,8 @@ spec:
   - xserver-xorg-video-qxl
   - xserver-xorg-video-vesa
   - xubuntu-desktop
+  - firefox
+  - tcpdump
   ramdisk: false
   release: focal
   script_order:
@@ -43,7 +45,6 @@ spec:
       rm ./kibana-oss-7.9.3-amd64.deb
       ln -s /lib/systemd/system/elasticsearch.yml /etc/systemd/system/multi-user.target.wants/elasticsearch.yml
       ln -s /etc/systemd/system/kibana.yml /etc/systemd/system/multi-user.target.wants/kibana.yml
-      apt update && apt install -y firefox
       cat > /root/.profile <<EOF
       # ~/.profile: executed by Bourne-compatible login shells.
       if [ "$BASH" ]; then
