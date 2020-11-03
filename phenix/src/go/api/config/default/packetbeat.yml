@@ -37,7 +37,23 @@ spec:
       curl -k -L -O https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-oss-7.9.3-amd64.deb
       apt install ./packetbeat-oss-7.9.3-amd64.deb
       rm ./packetbeat-oss-7.9.3-amd64.deb
-      ln -s /lib/systemd/system/packetbeat.yml /etc/systemd/system/multi-user.target.wants/packetbeat.yml
+      cat > /lib/systemd/system/packetbeat.service <<EOF
+      [Unit]
+      Description=Packetbeat analyzes network traffic and sends the data to Elasticsearch.
+      Documentation=https://www.elastic.co/products/beats/packetbeat
+      Wants=network-online.target
+      After=network-online.target
+      [Service]
+      Environment="BEAT_LOG_OPTS="
+      Environment="BEAT_CONFIG_OPTS=-c /etc/packetbeat/packetbeat.yml"
+      Environment="BEAT_PATH_OPTS=--path.home /usr/share/packetbeat --path.config /etc/packetbeat --path.data /var/lib/packetbeat --path.logs /var/log/packetbeat"
+      ExecStart=/usr/share/packetbeat/bin/packetbeat --environment systemd $BEAT_LOG_OPTS $BEAT_CONFIG_OPTS $BEAT_PATH_OPTS
+      Restart=always
+      RestartSec=15
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+      ln -s /lib/systemd/system/packetbeat.service /etc/systemd/system/multi-user.target.wants/packetbeat.service
     POSTBUILD_APT_CLEANUP: |
       apt clean || apt-get clean || echo "unable to clean apt cache"
     POSTBUILD_NO_ROOT_PASSWD: |

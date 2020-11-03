@@ -750,11 +750,19 @@ func GetExperimentSoH(w http.ResponseWriter, r *http.Request) {
 	}
 
 	state, err := soh.Get(exp, statusFilter)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	hosts, flows, err := soh.GetFlows(ctx, exp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	state.Hosts = hosts
+	state.HostFlows = flows
 
 	marshalled, err := json.Marshal(state)
 	if err != nil {

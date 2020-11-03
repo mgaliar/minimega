@@ -5,6 +5,8 @@ type TopologySpec interface {
 
 	FindNodeByName(string) NodeSpec
 	FindNodesWithLabels(...string) []NodeSpec
+
+	// AddNode(string, string) NodeSpec
 }
 
 type NodeSpec interface {
@@ -15,8 +17,16 @@ type NodeSpec interface {
 	Network() NodeNetwork
 	Injections() []NodeInjection
 
-	AddInject(string, string, string, string)
 	SetInjections([]NodeInjection)
+
+	/*
+		AddLabel(string, string)
+		AddHardware(string, int, int) NodeHardware
+		AddNetworkInterface(string, string, string) NodeNetworkInterface
+		AddNetworkRoute(string, string, int)
+	*/
+
+	AddInject(string, string, string, string)
 }
 
 type NodeGeneral interface {
@@ -38,6 +48,8 @@ type NodeHardware interface {
 
 	SetVCPU(int)
 	SetMemory(int)
+
+	// AddDrive(string, int) NodeDrive
 }
 
 type NodeDrive interface {
@@ -73,6 +85,23 @@ type NodeNetworkInterface interface {
 	Gateway() string
 	RulesetIn() string
 	RulesetOut() string
+
+	/*
+		SetName(string)
+		SetType(string)
+		SetProto(string)
+		SetUDPPort(int)
+		SetBaudRate(int)
+		SetDevice(string)
+		SetVLAN(string)
+		SetBridge(string)
+		SetAutostart(bool)
+		SetMAC(string)
+		SetMTU(int)
+		SetAddress(string)
+		SetMask(int)
+		SetGateway(string)
+	*/
 }
 
 type NodeNetworkRoute interface {

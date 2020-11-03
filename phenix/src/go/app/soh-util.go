@@ -26,15 +26,15 @@ func (this *SOH) buildElasticServerNode(exp *types.Experiment, ip string, cidr i
 	)
 
 	spec := map[string]interface{}{
-		"labels": map[string]string{"elastic-server": "true"},
+		"labels": map[string]string{"soh-elastic-server": "true"},
 		"type":   "VirtualMachine",
 		"general": map[string]interface{}{
 			"hostname": name,
 			"vm_type":  "kvm",
 		},
 		"hardware": map[string]interface{}{
-			"vcpus":  2,
-			"memory": 2048,
+			"vcpus":  4,
+			"memory": 4096,
 			"drives": []map[string]interface{}{
 				{
 					"image": this.md.PacketCapture.ElasticImage,
@@ -165,7 +165,7 @@ func (this *SOH) buildPacketBeatNode(exp *types.Experiment, target ifaces.NodeSp
 	}
 
 	spec := map[string]interface{}{
-		"labels": map[string]string{"monitor-node": "true"},
+		"labels": map[string]string{"soh-monitor-node": "true"},
 		"type":   "VirtualMachine",
 		"general": map[string]interface{}{
 			"hostname": name,

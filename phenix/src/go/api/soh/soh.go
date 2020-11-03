@@ -1,7 +1,9 @@
 package soh
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -9,6 +11,7 @@ import (
 	"phenix/api/vm"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/olivere/elastic/v7"
 )
 
 var vlanAliasRegex = regexp.MustCompile(`(.*) \(\d*\)`)
@@ -161,4 +164,86 @@ func Get(expName, statusFilter string) (*Network, error) {
 	network.TotalCount = runningCount + notRunningCount + notBootCount + notDeployCount
 
 	return network, err
+}
+
+func GetFlows(ctx context.Context, expName string) ([]string, [][]float64, error) {
+	exp, err := experiment.Get(expName)
+	if err != nil {
+		return nil, nil, fmt.Errorf("unable to get experiment %s: %w", expName, err)
+	}
+
+	svr := exp.Spec.Topology().FindNodesWithLabels("soh-elastic-server")
+
+	if len(svr) == 0 {
+		return nil, nil, fmt.Errorf("no SoH Elastic server found in experiment")
+	}
+
+	c := new(http.Client)
+
+	client, err := elastic.NewClient(
+		elastic.SetHttpClient(c),
+		elastic.SetScheme("http"),
+		elastic.SetURL(svr[0].Network().Interfaces()[0].Address()),
+		elastic.SetSniff(false),
+	)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("connecting to Elastic server: %w", err)
+	}
+
+	q := elastic.NewBoolQuery().Must(elastic.NewTermQuery("type", "flow"))
+
+	result, err := client.Search().
+		Index("packetbeat-*").
+		Query(q).
+		Size(10000).
+		Do(ctx)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("querying Elastic for PacketBeat data: %w", err)
+	}
+
+	if result.Hits == nil {
+		return nil, nil, fmt.Errorf("no flow data found")
+	}
+
+	if len(result.Hits.Hits) == 0 {
+		return nil, nil, fmt.Errorf("no flow data found")
+	}
+
+	raw := make(map[string]map[string]float64)
+
+	for _, hit := range result.Hits.Hits {
+		var (
+			src   = hit.Fields["source.ip"].(string)
+			dst   = hit.Fields["destination.ip"].(string)
+			bytes = hit.Fields["network.bytes"].(float64)
+		)
+
+		v, ok := raw[src]
+		if !ok {
+			v = make(map[string]float64)
+		}
+
+		v[dst] += bytes
+		raw[src] = v
+	}
+
+	var hosts []string
+
+	for k := range raw {
+		hosts = append(hosts, k)
+	}
+
+	flows := make([][]float64, len(hosts))
+
+	for i, s := range hosts {
+		flows[i] = make([]float64, len(hosts))
+
+		for j, d := range hosts {
+			flows[i][j] = raw[s][d]
+		}
+	}
+
+	return hosts, flows, nil
 }
