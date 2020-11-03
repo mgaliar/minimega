@@ -86,7 +86,7 @@ func Get(name string) (*types.Experiment, error) {
 		return nil, fmt.Errorf("no experiment name provided")
 	}
 
-	c, err := types.NewConfig("experiment/" + name)
+	c, err := store.NewConfig("experiment/" + name)
 	if err != nil {
 		return nil, fmt.Errorf("getting experiment: %w", err)
 	}
@@ -129,7 +129,7 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 		apiVersion = version.StoredVersion[kind]
 	)
 
-	topoC, _ := types.NewConfig("topology/" + o.topology)
+	topoC, _ := store.NewConfig("topology/" + o.topology)
 
 	if err := store.Get(topoC); err != nil {
 		return fmt.Errorf("topology doesn't exist")
@@ -141,7 +141,7 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 		return fmt.Errorf("decoding topology from config: %w", err)
 	}
 
-	meta := types.ConfigMetadata{
+	meta := store.ConfigMetadata{
 		Name: o.name,
 		Annotations: map[string]string{
 			"topology": o.topology,
@@ -155,7 +155,7 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 	}
 
 	if o.scenario != "" {
-		scenarioC, _ := types.NewConfig("scenario/" + o.scenario)
+		scenarioC, _ := store.NewConfig("scenario/" + o.scenario)
 
 		if err := store.Get(scenarioC); err != nil {
 			return fmt.Errorf("scenario doesn't exist")
@@ -180,8 +180,8 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 		specMap["scenario"] = scenario
 	}
 
-	c := &types.Config{
-		Version:  types.API_GROUP + "/" + apiVersion,
+	c := &store.Config{
+		Version:  store.API_GROUP + "/" + apiVersion,
 		Kind:     kind,
 		Metadata: meta,
 		Spec:     specMap,
@@ -223,7 +223,7 @@ func Create(ctx context.Context, opts ...CreateOption) error {
 func Schedule(opts ...ScheduleOption) error {
 	o := newScheduleOptions(opts...)
 
-	c, _ := types.NewConfig("experiment/" + o.name)
+	c, _ := store.NewConfig("experiment/" + o.name)
 
 	if err := store.Get(c); err != nil {
 		return fmt.Errorf("getting experiment %s from store: %w", o.name, err)
@@ -256,7 +256,7 @@ func Schedule(opts ...ScheduleOption) error {
 func Start(opts ...StartOption) error {
 	o := newStartOptions(opts...)
 
-	c, _ := types.NewConfig("experiment/" + o.name)
+	c, _ := store.NewConfig("experiment/" + o.name)
 
 	if err := store.Get(c); err != nil {
 		return fmt.Errorf("getting experiment %s from store: %w", o.name, err)
@@ -343,7 +343,7 @@ func Start(opts ...StartOption) error {
 // Stop stops the experiment with the given name. It returns any errors
 // encountered while stopping the experiment.
 func Stop(name string) error {
-	c, _ := types.NewConfig("experiment/" + name)
+	c, _ := store.NewConfig("experiment/" + name)
 
 	if err := store.Get(c); err != nil {
 		return fmt.Errorf("getting experiment %s from store: %w", name, err)
@@ -399,7 +399,7 @@ func Status(name string) (*v1.ExperimentStatus, error) {
 }
 
 func Running(name string) bool {
-	c, _ := types.NewConfig("experiment/" + name)
+	c, _ := store.NewConfig("experiment/" + name)
 
 	if err := store.Get(c); err != nil {
 		return false
@@ -420,7 +420,7 @@ func Save(opts ...SaveOption) error {
 		return fmt.Errorf("experiment name required")
 	}
 
-	c, _ := types.NewConfig("experiment/" + o.name)
+	c, _ := store.NewConfig("experiment/" + o.name)
 
 	if err := store.Get(c); err != nil {
 		return fmt.Errorf("getting experiment %s from store: %w", o.name, err)
@@ -454,7 +454,7 @@ func Delete(name string) error {
 		return fmt.Errorf("cannot delete a running experiment")
 	}
 
-	c, _ := types.NewConfig("experiment/" + name)
+	c, _ := store.NewConfig("experiment/" + name)
 
 	if err := store.Get(c); err != nil {
 		return fmt.Errorf("getting experiment %s: %w", name, err)
