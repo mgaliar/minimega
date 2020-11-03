@@ -1,6 +1,6 @@
 ## ELASTIC SERVER ##
 
-{{- range .Exp.Topology.FindNodesWithLabels "elastic-server" }}
+{{- range .Exp.Topology.FindNodesWithLabels "soh-elastic-server" }}
 ## VM: {{ .General.Hostname }} ##
 {{ $firstDrive := index .Hardware.Drives 0 }}
 disk snapshot {{ $firstDrive.Image }} {{ $.Exp.SnapshotName .General.Hostname }} 
@@ -23,7 +23,7 @@ vm launch {{ .General.VMType }} {{ .General.Hostname }}
 
 ## CAPTURE/MONITOR VMS ##
 
-{{- range .Exp.Topology.FindNodesWithLabels "monitor-node" }}
+{{- range .Exp.Topology.FindNodesWithLabels "soh-monitor-node" }}
 ## VM: {{ .General.Hostname }} ##
         {{ $firstDrive := index .Hardware.Drives 0 }}
 disk snapshot {{ $firstDrive.Image }} {{ $.Exp.SnapshotName .General.Hostname }} 
