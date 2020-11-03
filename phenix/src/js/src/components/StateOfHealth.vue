@@ -719,6 +719,7 @@ export default {
         .attr("d", arc);
 
       group.append("title")
+      .style("color", "whitesmoke")
         .text(d => `${names[d.index]}
           ${formatValue(d.value)}`);
 
