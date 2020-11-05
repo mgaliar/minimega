@@ -55,7 +55,7 @@ func (this *SOH) buildElasticServerNode(exp *types.Experiment, ip string, cidr i
 func (this *SOH) buildPacketBeatNode(exp *types.Experiment, target ifaces.NodeSpec, es, ip string, cidr int) (ifaces.NodeSpec, []string, error) {
 	var (
 		monitored = target.General().Hostname()
-		name      = monitored + "-monitor"
+		name      = monitored + "-soh-monitor"
 		tz        = "Etc/UTC"
 
 		startupDir   = exp.Spec.BaseDir() + "/startup"
