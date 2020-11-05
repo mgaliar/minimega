@@ -138,5 +138,25 @@ spec:
       Terminal=false
       Hidden=false
       EOF
+      mkdir -p /usr/local/bin
+      cat > /usr/local/bin/query-flows.sh <<EOF
+      #!/bin/bash
+      curl -H "Content-Type: application/json" http://localhost:9200/packetbeat-\*/_search -d '\
+        {
+          "_source": [
+            "source.ip",
+            "destination.ip",
+            "network.bytes"
+          ],
+          "query": {
+            "query_string": {
+              "query": "type:flow AND network.type:ipv4"
+            }
+          },
+          "size": 10000
+        }
+      ' 2> /dev/null
+      EOF
+      chmod +x /usr/local/bin/query-flows.sh
   size: 25G
   variant: minbase
