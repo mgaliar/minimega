@@ -170,7 +170,24 @@ func (SOH) Name() string {
 	return "soh"
 }
 
-func (SOH) Configure(exp *types.Experiment) error {
+func (this *SOH) Configure(exp *types.Experiment) error {
+	if err := this.decodeMetadata(exp); err != nil {
+		return err
+	}
+
+	if len(this.md.PacketCapture.CaptureHosts) == 0 {
+		return nil
+	}
+
+	ip, mask, _ := net.ParseCIDR(this.md.PacketCapture.ElasticServer.IPAddress)
+	cidr, _ := mask.Mask.Size()
+
+	if _, err := this.buildElasticServerNode(exp, ip.String(), cidr); err != nil {
+		return fmt.Errorf("building Elastic server node: %w", err)
+	}
+
+	exp.Spec.Topology().Init()
+
 	return nil
 }
 
@@ -193,14 +210,17 @@ func (this *SOH) deployCapture(exp *types.Experiment) error {
 	cidr, _ := mask.Mask.Size()
 	svrAddr := currentIP.String()
 
-	svr, err := this.buildElasticServerNode(exp, svrAddr, cidr)
-	if err != nil {
-		return fmt.Errorf("building Elastic server node: %w", err)
-	}
+	/*
+		svr, err := this.buildElasticServerNode(exp, svrAddr, cidr)
+		if err != nil {
+			return fmt.Errorf("building Elastic server node: %w", err)
+		}
 
-	caps := []ifaces.NodeSpec{svr}
+		caps := []ifaces.NodeSpec{svr}
+	*/
 
 	var (
+		caps     []ifaces.NodeSpec
 		sched    = make(map[string]string)
 		monitors = make(map[string][]string)
 	)

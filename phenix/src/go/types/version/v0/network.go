@@ -9,10 +9,10 @@ import (
 )
 
 type Network struct {
-	InterfacesF []Interface `json:"interfaces" yaml:"interfaces" structs:"interfaces" mapstructure:"interfaces"`
-	RoutesF     []Route     `json:"routes" yaml:"routes" structs:"routes" mapstructure:"routes"`
-	OSPFF       *OSPF       `json:"ospf" yaml:"ospf" structs:"ospf" mapstructure:"ospf"`
-	RulesetsF   []Ruleset   `json:"rulesets" yaml:"rulesets" structs:"rulesets" mapstructure:"rulesets"`
+	InterfacesF []*Interface `json:"interfaces" yaml:"interfaces" structs:"interfaces" mapstructure:"interfaces"`
+	RoutesF     []Route      `json:"routes" yaml:"routes" structs:"routes" mapstructure:"routes"`
+	OSPFF       *OSPF        `json:"ospf" yaml:"ospf" structs:"ospf" mapstructure:"ospf"`
+	RulesetsF   []Ruleset    `json:"rulesets" yaml:"rulesets" structs:"rulesets" mapstructure:"rulesets"`
 }
 
 func (this Network) Interfaces() []ifaces.NodeNetworkInterface {
@@ -130,6 +130,62 @@ func (this Interface) RulesetIn() string {
 
 func (this Interface) RulesetOut() string {
 	return this.RulesetOutF
+}
+
+func (this *Interface) SetName(name string) {
+	this.NameF = name
+}
+
+func (this *Interface) SetType(typ string) {
+	this.TypeF = typ
+}
+
+func (this *Interface) SetProto(proto string) {
+	this.ProtoF = proto
+}
+
+func (this *Interface) SetUDPPort(port int) {
+	this.UDPPortF = port
+}
+
+func (this *Interface) SetBaudRate(rate int) {
+	this.BaudRateF = rate
+}
+
+func (this *Interface) SetDevice(dev string) {
+	this.DeviceF = dev
+}
+
+func (this *Interface) SetVLAN(vlan string) {
+	this.VLANF = vlan
+}
+
+func (this *Interface) SetBridge(br string) {
+	this.BridgeF = br
+}
+
+func (this *Interface) SetAutostart(auto bool) {
+	this.AutostartF = auto
+}
+
+func (this *Interface) SetMAC(mac string) {
+	this.MACF = mac
+}
+
+func (this *Interface) SetMTU(mtu int) {
+	this.MTUF = mtu
+}
+
+func (this *Interface) SetAddress(addr string) {
+	this.AddressF = addr
+}
+
+func (this *Interface) SetMask(mask int) {
+	this.MaskF = mask
+}
+
+func (this *Interface) SetGateway(gw string) {
+	this.GatewayF = gw
 }
 
 type Route struct {

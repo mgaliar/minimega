@@ -24,7 +24,7 @@ import (
 )
 
 func init() {
-	config.RegisterConfigHook("Experiment", func(s string, c *types.Config) error {
+	config.RegisterConfigHook("Experiment", func(s string, c *store.Config) error {
 		if s != "create" {
 			return nil
 		}
@@ -383,7 +383,7 @@ func Stop(name string) error {
 }
 
 func Status(name string) (*v1.ExperimentStatus, error) {
-	c, _ := types.NewConfig("experiment/" + name)
+	c, _ := store.NewConfig("experiment/" + name)
 
 	if err := store.Get(c); err != nil {
 		return nil, fmt.Errorf("unable to get experiment status from store: %w", err)
