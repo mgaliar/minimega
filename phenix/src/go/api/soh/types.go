@@ -1,5 +1,10 @@
 package soh
 
+import (
+	"fmt"
+	"time"
+)
+
 type Font struct {
 	Color string `json:"color"`
 	Align string `json:"align"`
@@ -58,4 +63,98 @@ type HostState struct {
 	Reachability []Reachability `json:"reachability,omitempty" mapstructure:"reachability,omitempty" structs:"reachability,omitempty"`
 	Processes    []Process      `json:"processes,omitempty" mapstructure:"processes,omitempty" structs:"processes,omitempty"`
 	Listeners    []Listener     `json:"listeners,omitempty" mapstructure:"listeners,omitempty" structs:"listeners,omitempty"`
+}
+
+type flowsStruct struct {
+	Source struct {
+		IP    string `json:"ip"`
+		Bytes int    `json:"bytes"`
+	} `json:"source"`
+	Destination struct {
+		IP    string `json:"ip"`
+		Bytes int    `json:"bytes"`
+	} `json:"destination"`
+}
+
+type packetCapture struct {
+	ElasticImage    string              `mapstructure:"elasticImage"`
+	PacketBeatImage string              `mapstructure:"packetBeatImage"`
+	ElasticServer   elasticServer       `mapstructure:"elasticServer"`
+	CaptureHosts    map[string][]string `mapstructure:"captureHosts"`
+}
+
+type elasticServer struct {
+	Hostname  string `mapstructure:"hostname"`
+	IPAddress string `mapstructure:"ipAddress"`
+	VLAN      string `mapstructure:"vlan"`
+}
+
+type sohMetadata struct {
+	C2Timeout         string              `mapstructure:"c2Timeout"`
+	Reachability      string              `mapstructure:"testReachability"`
+	SkipNetworkConfig bool                `mapstructure:"skipInitialNetworkConfigTests"`
+	SkipHosts         []string            `mapstructure:"skipHosts"`
+	HostProcesses     map[string][]string `mapstructure:"hostProcesses"`
+	HostListeners     map[string][]string `mapstructure:"hostListeners"`
+	AppProfileKey     string              `mapstructure:"appMetadataProfileKey"`
+	PacketCapture     packetCapture       `mapstructure:"packetCapture"`
+
+	// set after parsing
+	c2Timeout time.Duration
+}
+
+func (this *sohMetadata) init() error {
+	if this.SkipNetworkConfig {
+		// Default reachability test to off if skipping initial network config
+		// tests.
+		this.Reachability = "off"
+	}
+
+	if this.Reachability == "" {
+		// Default to reachability test being disabled if not specified in the
+		// scenario app config.
+		this.Reachability = "off"
+	}
+
+	if this.C2Timeout == "" {
+		// Default C2 timeout to 5m if not specified in the scenario app config.
+		this.c2Timeout = 5 * time.Minute
+	} else {
+		var err error
+
+		if this.c2Timeout, err = time.ParseDuration(this.C2Timeout); err != nil {
+			return fmt.Errorf("parsing C2 timeout setting '%s': %w", this.C2Timeout, err)
+		}
+	}
+
+	if this.AppProfileKey == "" {
+		this.AppProfileKey = "sohProfile"
+	}
+
+	return nil
+}
+
+type sohProfile struct {
+	C2Timeout string   `mapstructure:"c2Timeout"`
+	Processes []string `mapstructure:"processes"`
+	Listeners []string `mapstructure:"listeners"`
+	Captures  []string `mapstructure:"captureInterfaces"`
+
+	// set after parsing
+	c2Timeout time.Duration
+}
+
+func (this *sohProfile) init() error {
+	if this.C2Timeout == "" {
+		// Default C2 timeout to 5m if not specified in the SoH Profile config.
+		this.c2Timeout = 5 * time.Minute
+	} else {
+		var err error
+
+		if this.c2Timeout, err = time.ParseDuration(this.C2Timeout); err != nil {
+			return fmt.Errorf("parsing C2 timeout setting '%s': %w", this.C2Timeout, err)
+		}
+	}
+
+	return nil
 }

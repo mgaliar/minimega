@@ -17,9 +17,6 @@ func init() {
 	apps["startup"] = new(Startup)
 	apps["vyatta"] = new(Vyatta)
 
-	// Built-in user apps
-	apps["soh"] = newSOH()
-
 	// External user apps
 	apps["user-shell"] = new(UserApp)
 }
@@ -44,6 +41,17 @@ var (
 		"vyatta":  {},
 	}
 )
+
+var ErrUserAppAlreadyRegistered = fmt.Errorf("user app already registered")
+
+func RegisterUserApp(app App) error {
+	if _, ok := apps[app.Name()]; ok {
+		return ErrUserAppAlreadyRegistered
+	}
+
+	apps[app.Name()] = app
+	return nil
+}
 
 // List returns a list of non-default phenix applications.
 func List() []string {
@@ -164,7 +172,7 @@ func ApplyApps(action Action, exp *types.Experiment) error {
 		}
 	}
 
-	if exp.Spec.Scenario != nil {
+	if exp.Spec.Scenario() != nil {
 		for _, app := range exp.Spec.Scenario().Apps() {
 			// Don't apply default apps again if configured via the Scenario.
 			if _, ok := defaultApps[app.Name()]; ok {

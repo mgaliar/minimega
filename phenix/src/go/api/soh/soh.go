@@ -232,19 +232,8 @@ func GetFlows(ctx context.Context, expName string) ([]string, [][]int, error) {
 
 	raw := make(map[string]map[string]int)
 
-	type fieldStruct struct {
-		Source struct {
-			IP    string `json:"ip"`
-			Bytes int    `json:"bytes"`
-		} `json:"source"`
-		Destination struct {
-			IP    string `json:"ip"`
-			Bytes int    `json:"bytes"`
-		} `json:"destination"`
-	}
-
 	for _, hit := range result.Hits.Hits {
-		var fields fieldStruct
+		var fields flowsStruct
 
 		if err := json.Unmarshal(hit.Source, &fields); err != nil {
 			return nil, nil, fmt.Errorf("unable to parse hit source: %w", err)
