@@ -395,6 +395,13 @@ export default {
         this.running = state.started;
         this.nodes = state.nodes;
         this.edges = state.edges;
+        this.mockData = Object.assign(
+          state.host_flows,
+          {
+            names: state.hosts,
+            colors: ["#c4c4c4", "#69b40f", "#ec1d25", "#c8125c", "#008fc8", "#10218b", "#134b24", "#737373"]
+          }
+        )
       } catch {
         this.$buefy.toast.open ({
           message: 'Getting Network Failed',
@@ -816,6 +823,7 @@ export default {
         vm: '',
         soh: null
       },
+      chordData: null,
       mockData: Object.assign([
         [.0, .008859, .000554, .004430, .025471, .024363, .005537, .025471],
         [.001107, .0, .000000, .004983, .011074, .010520, .002215, .004983],
