@@ -15,7 +15,11 @@ type Network struct {
 	RulesetsF   []Ruleset    `json:"rulesets" yaml:"rulesets" structs:"rulesets" mapstructure:"rulesets"`
 }
 
-func (this Network) Interfaces() []ifaces.NodeNetworkInterface {
+func (this *Network) Interfaces() []ifaces.NodeNetworkInterface {
+	if this == nil {
+		return nil
+	}
+
 	interfaces := make([]ifaces.NodeNetworkInterface, len(this.InterfacesF))
 
 	for i, iface := range this.InterfacesF {
@@ -25,7 +29,11 @@ func (this Network) Interfaces() []ifaces.NodeNetworkInterface {
 	return interfaces
 }
 
-func (this Network) Routes() []ifaces.NodeNetworkRoute {
+func (this *Network) Routes() []ifaces.NodeNetworkRoute {
+	if this == nil {
+		return nil
+	}
+
 	routes := make([]ifaces.NodeNetworkRoute, len(this.RoutesF))
 
 	for i, r := range this.RoutesF {
@@ -35,11 +43,19 @@ func (this Network) Routes() []ifaces.NodeNetworkRoute {
 	return routes
 }
 
-func (this Network) OSPF() ifaces.NodeNetworkOSPF {
+func (this *Network) OSPF() ifaces.NodeNetworkOSPF {
+	if this == nil {
+		return nil
+	}
+
 	return this.OSPFF
 }
 
-func (this Network) Rulesets() []ifaces.NodeNetworkRuleset {
+func (this *Network) Rulesets() []ifaces.NodeNetworkRuleset {
+	if this == nil {
+		return nil
+	}
+
 	sets := make([]ifaces.NodeNetworkRuleset, len(this.RulesetsF))
 
 	for i, r := range this.RulesetsF {

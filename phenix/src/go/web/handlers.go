@@ -756,13 +756,6 @@ func GetExperimentSoH(w http.ResponseWriter, r *http.Request) {
 	}
 
 	hosts, flows, err := soh.GetFlows(ctx, exp)
-	/*
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	*/
-
 	if err == nil {
 		state.Hosts = hosts
 		state.HostFlows = flows
@@ -2344,7 +2337,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	body, err = marshaler.Marshal(resp)
 	if err != nil {
-		log.Error("marshaling user %s: %v", user.Username, err)
+		log.Error("marshaling user %s: %v", user.Username(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -2389,7 +2382,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	body, err := marshaler.Marshal(resp)
 	if err != nil {
-		log.Error("marshaling user %s: %v", user.Username, err)
+		log.Error("marshaling user %s: %v", user.Username(), err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

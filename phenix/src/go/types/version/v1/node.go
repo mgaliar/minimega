@@ -188,7 +188,11 @@ func (this Hardware) OSType() string {
 	return this.OSTypeF
 }
 
-func (this Hardware) Drives() []ifaces.NodeDrive {
+func (this *Hardware) Drives() []ifaces.NodeDrive {
+	if this == nil {
+		return nil
+	}
+
 	drives := make([]ifaces.NodeDrive, len(this.DrivesF))
 
 	for i, d := range this.DrivesF {

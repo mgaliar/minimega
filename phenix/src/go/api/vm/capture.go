@@ -95,7 +95,7 @@ func StopCaptures(expName, vmName string) error {
 		return fmt.Errorf("getting experiment %s: %w", expName, err)
 	}
 
-	dir := fmt.Sprintf("%s/captures", exp.Spec.BaseDir)
+	dir := fmt.Sprintf("%s/captures", exp.Spec.BaseDir())
 
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("creating files directory for experiment %s: %w", expName, err)
