@@ -145,8 +145,9 @@ spec:
         {
           "_source": [
             "source.ip",
+            "source.bytes",
             "destination.ip",
-            "network.bytes"
+            "destination.bytes"
           ],
           "query": {
             "query_string": {

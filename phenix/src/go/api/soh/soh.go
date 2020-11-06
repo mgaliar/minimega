@@ -2,13 +2,16 @@ package soh
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
-	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"phenix/api/experiment"
 	"phenix/api/vm"
+	"phenix/internal/mm"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/olivere/elastic/v7"
@@ -166,41 +169,57 @@ func Get(expName, statusFilter string) (*Network, error) {
 	return network, err
 }
 
-func GetFlows(ctx context.Context, expName string) ([]string, [][]float64, error) {
+func GetFlows(ctx context.Context, expName string) ([]string, [][]int, error) {
 	exp, err := experiment.Get(expName)
 	if err != nil {
 		return nil, nil, fmt.Errorf("unable to get experiment %s: %w", expName, err)
 	}
 
-	svr := exp.Spec.Topology().FindNodesWithLabels("soh-elastic-server")
+	node := exp.Spec.Topology().FindNodesWithLabels("soh-elastic-server")
 
-	if len(svr) == 0 {
+	if len(node) == 0 {
 		return nil, nil, fmt.Errorf("no SoH Elastic server found in experiment")
 	}
 
-	c := new(http.Client)
+	hostname := node[0].General().Hostname()
+	var id string
 
-	client, err := elastic.NewClient(
-		elastic.SetHttpClient(c),
-		elastic.SetScheme("http"),
-		elastic.SetURL(svr[0].Network().Interfaces()[0].Address()),
-		elastic.SetSniff(false),
-	)
+	for {
+		select {
+		case <-ctx.Done():
+			return nil, nil, ctx.Err()
+		default:
+			var err error
 
-	if err != nil {
-		return nil, nil, fmt.Errorf("connecting to Elastic server: %w", err)
+			opts := []mm.C2Option{mm.C2NS(expName), mm.C2VM(hostname), mm.C2Command("query-flows.sh")}
+
+			id, err = mm.ExecC2Command(opts...)
+			if err != nil {
+				if errors.Is(err, mm.ErrC2ClientNotActive) {
+					time.Sleep(5 * time.Second)
+					continue
+				}
+
+				return nil, nil, fmt.Errorf("executing command 'query-flows.sh': %w", err)
+			}
+		}
+
+		if id != "" {
+			break
+		}
 	}
 
-	q := elastic.NewBoolQuery().Must(elastic.NewTermQuery("type", "flow"))
+	opts := []mm.C2Option{mm.C2NS(expName), mm.C2CommandID(id)}
 
-	result, err := client.Search().
-		Index("packetbeat-*").
-		Query(q).
-		Size(10000).
-		Do(ctx)
-
+	resp, err := mm.WaitForC2Response(opts...)
 	if err != nil {
-		return nil, nil, fmt.Errorf("querying Elastic for PacketBeat data: %w", err)
+		return nil, nil, fmt.Errorf("getting response for command 'query-flows.sh': %w", err)
+	}
+
+	var result elastic.SearchResult
+
+	if err := json.Unmarshal([]byte(resp), &result); err != nil {
+		return nil, nil, fmt.Errorf("parsing Elasticsearch results: %w", err)
 	}
 
 	if result.Hits == nil {
@@ -211,22 +230,48 @@ func GetFlows(ctx context.Context, expName string) ([]string, [][]float64, error
 		return nil, nil, fmt.Errorf("no flow data found")
 	}
 
-	raw := make(map[string]map[string]float64)
+	raw := make(map[string]map[string]int)
+
+	type fieldStruct struct {
+		Source struct {
+			IP    string `json:"ip"`
+			Bytes int    `json:"bytes"`
+		} `json:"source"`
+		Destination struct {
+			IP    string `json:"ip"`
+			Bytes int    `json:"bytes"`
+		} `json:"destination"`
+	}
 
 	for _, hit := range result.Hits.Hits {
+		var fields fieldStruct
+
+		if err := json.Unmarshal(hit.Source, &fields); err != nil {
+			return nil, nil, fmt.Errorf("unable to parse hit source: %w", err)
+		}
+
 		var (
-			src   = hit.Fields["source.ip"].(string)
-			dst   = hit.Fields["destination.ip"].(string)
-			bytes = hit.Fields["network.bytes"].(float64)
+			src      = fields.Source.IP
+			srcBytes = fields.Source.Bytes
+			dst      = fields.Destination.IP
+			dstBytes = fields.Destination.Bytes
 		)
 
 		v, ok := raw[src]
 		if !ok {
-			v = make(map[string]float64)
+			v = make(map[string]int)
 		}
 
-		v[dst] += bytes
+		v[dst] += srcBytes
 		raw[src] = v
+
+		v, ok = raw[dst]
+		if !ok {
+			v = make(map[string]int)
+		}
+
+		v[src] += dstBytes
+		raw[dst] = v
 	}
 
 	var hosts []string
@@ -235,10 +280,10 @@ func GetFlows(ctx context.Context, expName string) ([]string, [][]float64, error
 		hosts = append(hosts, k)
 	}
 
-	flows := make([][]float64, len(hosts))
+	flows := make([][]int, len(hosts))
 
 	for i, s := range hosts {
-		flows[i] = make([]float64, len(hosts))
+		flows[i] = make([]int, len(hosts))
 
 		for j, d := range hosts {
 			flows[i][j] = raw[s][d]
