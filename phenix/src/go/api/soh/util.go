@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -18,6 +19,81 @@ import (
 	"github.com/fatih/color"
 	"github.com/mitchellh/mapstructure"
 )
+
+func (this *SOH) deployCapture(exp *types.Experiment) error {
+	if err := this.decodeMetadata(exp); err != nil {
+		return err
+	}
+
+	if len(this.md.PacketCapture.CaptureHosts) == 0 {
+		return nil
+	}
+
+	currentIP, mask, _ := net.ParseCIDR(this.md.PacketCapture.ElasticServer.IPAddress)
+	cidr, _ := mask.Mask.Size()
+	svrAddr := currentIP.String()
+
+	var (
+		caps     []ifaces.NodeSpec
+		sched    = make(map[string]string)
+		monitors = make(map[string][]string)
+	)
+
+	for nodeToMonitor := range this.md.PacketCapture.CaptureHosts {
+		node := exp.Spec.Topology().FindNodeByName(nodeToMonitor)
+
+		if node == nil {
+			// TODO: yell loudly
+			continue
+		}
+
+		ip := nextIP(currentIP)
+
+		cap, mon, err := this.buildPacketBeatNode(exp, node, svrAddr, ip.String(), cidr)
+		if err != nil {
+			return fmt.Errorf("building PacketBeat node: %w", err)
+		}
+
+		caps = append(caps, cap)
+
+		sched[cap.General().Hostname()] = exp.Status.Schedules()[nodeToMonitor]
+		monitors[cap.General().Hostname()] = mon
+	}
+
+	spec := map[string]interface{}{
+		"experimentName": exp.Spec.ExperimentName(),
+		"topology": map[string]interface{}{
+			"nodes": caps,
+		},
+		"schedules": sched,
+	}
+
+	expMonitor, _ := version.GetStoredSpecForKind("Experiment")
+
+	if err := mapstructure.Decode(spec, &expMonitor); err != nil {
+		return fmt.Errorf("decoding experiment spec for monitor nodes: %w", err)
+	}
+
+	data := struct {
+		Exp ifaces.ExperimentSpec
+		Mon map[string][]string
+	}{
+		Exp: expMonitor.(ifaces.ExperimentSpec),
+		Mon: monitors,
+	}
+
+	filename := fmt.Sprintf("%s/mm_files/%s-monitor.mm", exp.Spec.BaseDir(), exp.Spec.ExperimentName())
+
+	if err := tmpl.CreateFileFromTemplate("packet_capture_script.tmpl", data, filename); err != nil {
+		return fmt.Errorf("generating packet capture script: %w", err)
+	}
+
+	if err := mm.ReadScriptFromFile(filename); err != nil {
+		return fmt.Errorf("reading packet capture script: %w", err)
+	}
+
+	return nil
+}
 
 func (this *SOH) buildElasticServerNode(exp *types.Experiment, ip string, cidr int) (ifaces.NodeSpec, error) {
 	var (
@@ -219,6 +295,7 @@ func (this *SOH) waitForReachabilityTest(ns string) {
 	wg := new(mm.ErrGroup)
 
 	for host := range this.reachabilityHosts {
+
 		// Assume we're not skipping this host by default.
 		var skipHost error
 
@@ -255,7 +332,7 @@ func (this *SOH) waitForReachabilityTest(ns string) {
 						wg.AddError(skipHost, map[string]interface{}{"host": host, "target": targetIP})
 					} else {
 						printer.Printf("  Pinging %s (%s) from host %s\n", targetHost, targetIP, host)
-						pingTest(wg, ns, host, targetIP)
+						pingTest(wg, ns, this.nodes[host], targetIP)
 					}
 
 					break
@@ -298,7 +375,7 @@ func (this *SOH) waitForReachabilityTest(ns string) {
 						wg.AddError(skipHost, map[string]interface{}{"host": host, "target": targetIP})
 					} else {
 						printer.Printf("  Pinging %s from host %s\n", targetIP, host)
-						pingTest(wg, ns, host, targetIP)
+						pingTest(wg, ns, this.nodes[host], targetIP)
 					}
 				}
 			}
@@ -358,8 +435,7 @@ func (this *SOH) waitForProcTest(ns string) {
 
 		for _, proc := range processes {
 			printer.Printf("  Checking for process %s on host %s\n", proc, host)
-
-			procTest(wg, ns, host, proc)
+			procTest(wg, ns, this.nodes[host], proc)
 		}
 	}
 
@@ -381,7 +457,7 @@ func (this *SOH) waitForProcTest(ns string) {
 
 				for _, proc := range profile.Processes {
 					printer.Printf("  Checking for process %s on host %s\n", proc, host.Hostname())
-					procTest(wg, ns, host.Hostname(), proc)
+					procTest(wg, ns, this.nodes[host.Hostname()], proc)
 				}
 			}
 		}
@@ -436,8 +512,7 @@ func (this *SOH) waitForPortTest(ns string) {
 
 		for _, port := range listeners {
 			printer.Printf("  Checking for listener %s on host %s\n", port, host)
-
-			portTest(wg, ns, host, port)
+			portTest(wg, ns, this.nodes[host], port)
 		}
 	}
 
@@ -459,7 +534,7 @@ func (this *SOH) waitForPortTest(ns string) {
 
 				for _, port := range profile.Listeners {
 					printer.Printf("  Checking for listener %s on host %s\n", port, host.Hostname())
-					portTest(wg, ns, host.Hostname(), port)
+					portTest(wg, ns, this.nodes[host.Hostname()], port)
 				}
 			}
 		}
@@ -500,49 +575,98 @@ func (this *SOH) waitForPortTest(ns string) {
 	}
 }
 
-func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
+func isNetworkingConfigured(wg *mm.ErrGroup, ns string, node ifaces.NodeSpec, iface ifaces.NodeNetworkInterface) {
 	retryUntil := time.Now().Add(5 * time.Minute)
+
+	host := node.General().Hostname()
+	gateway := iface.Gateway()
 
 	// First, we wait for the IP address to be set on the interface. Then, we wait
 	// for the default gateway to be set. Last, we wait for the default gateway to
 	// be up (pingable). This is all done via nested commands streamed to the C2
 	// processor within `expected` functions.
 	ipExpected := func(resp string) error {
-		// If `resp` doesn't contain the IP address, then the IP address isn't
-		// configured yet, so keep retrying the C2 command.
-		if !strings.Contains(resp, addr) {
-			return mm.C2RetryError{Delay: 5 * time.Second}
+		switch node.Hardware().OSType() {
+		case "linux", "rhel", "centos":
+			cidr := fmt.Sprintf("%s/%d", iface.Address(), iface.Mask())
+
+			// If `resp` doesn't contain the IP address, then the IP address isn't
+			// configured yet, so keep retrying the C2 command.
+			if !strings.Contains(resp, cidr) {
+				return mm.C2RetryError{Delay: 5 * time.Second}
+			}
+		case "windows":
+			// If `resp` doesn't contain the IP address, then the IP address isn't
+			// configured yet, so keep retrying the C2 command.
+			if !strings.Contains(resp, iface.Address()) {
+				return mm.C2RetryError{Delay: 5 * time.Second}
+			}
+		default:
+			return fmt.Errorf("unknown OS type %s when checking interface IP", node.Hardware().OSType())
 		}
 
 		if gateway != "" {
 			// The IP address is now set, so schedule a C2 command for determining if
 			// the default gateway is set.
 			gwExpected := func(resp string) error {
-				expected := fmt.Sprintf("default via %s", gateway)
+				switch node.Hardware().OSType() {
+				case "linux", "rhel", "centos":
+					expected := fmt.Sprintf("default via %s", gateway)
 
-				// If `resp` doesn't contain the default gateway, then the default gateway
-				// isn't configured yet, so keep retrying the C2 command.
-				if !strings.Contains(resp, expected) {
-					return mm.C2RetryError{Delay: 5 * time.Second}
+					// If `resp` doesn't contain the default gateway, then the default gateway
+					// isn't configured yet, so keep retrying the C2 command.
+					if !strings.Contains(resp, expected) {
+						return mm.C2RetryError{Delay: 5 * time.Second}
+					}
+				case "windows":
+					expected := fmt.Sprintf(`%s\s+Default`, gateway)
+
+					// If `resp` doesn't contain the default gateway, then the default gateway
+					// isn't configured yet, so keep retrying the C2 command.
+					if found, _ := regexp.MatchString(expected, resp); !found {
+						return mm.C2RetryError{Delay: 5 * time.Second}
+					}
+				default:
+					return fmt.Errorf("unknown OS type %s when checking default route", node.Hardware().OSType())
 				}
 
 				// The default gateway is now set, so schedule a C2 command for
 				// determining if the default gateway is up (pingable).
 				gwPingExpected := func(resp string) error {
-					// If `resp` contains `0 received`, the default gateway isn't up
-					// (pingable) yet, so keep retrying the C2 command.
-					if strings.Contains(resp, "0 received") {
-						if time.Now().After(retryUntil) {
-							return fmt.Errorf("retry time expired waiting for gateway to be up")
-						}
+					switch node.Hardware().OSType() {
+					case "linux", "rhel", "centos":
+						// If `resp` contains `0 received`, the default gateway isn't up
+						// (pingable) yet, so keep retrying the C2 command.
+						if strings.Contains(resp, "0 received") {
+							if time.Now().After(retryUntil) {
+								return fmt.Errorf("retry time expired waiting for gateway to be up")
+							}
 
-						return mm.C2RetryError{Delay: 5 * time.Second}
+							return mm.C2RetryError{Delay: 5 * time.Second}
+						}
+					case "windows":
+						// If `resp` contains `Destination host unreachable`, the
+						// default gateway isn't up (pingable) yet, so keep retrying the C2
+						// command.
+						if strings.Contains(resp, "Destination host unreachable") {
+							if time.Now().After(retryUntil) {
+								return fmt.Errorf("retry time expired waiting for gateway to be up")
+							}
+
+							return mm.C2RetryError{Delay: 5 * time.Second}
+						}
+					default:
+						return fmt.Errorf("unknown OS type %s waiting for gateway to be up", node.Hardware().OSType())
 					}
 
 					return nil
 				}
 
 				exec := fmt.Sprintf("ping -c 1 %s", gateway)
+
+				if node.Hardware().OSType() == "windows" {
+					exec = fmt.Sprintf("ping -n 1 %s", gateway)
+				}
 
 				cmd := &mm.C2ParallelCommand{
 					Wait:     wg,
@@ -556,9 +680,15 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 				return nil
 			}
 
+			exec := "ip route"
+
+			if node.Hardware().OSType() == "windows" {
+				exec = "route print"
+			}
+
 			cmd := &mm.C2ParallelCommand{
 				Wait:     wg,
-				Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command("ip route")},
+				Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 				Meta:     map[string]interface{}{"host": host},
 				Expected: gwExpected,
 			}
@@ -569,9 +699,15 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 		return nil
 	}
 
+	exec := "ip addr"
+
+	if node.Hardware().OSType() == "windows" {
+		exec = "ipconfig /all"
+	}
+
 	cmd := &mm.C2ParallelCommand{
 		Wait:     wg,
-		Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command("ip addr")},
+		Options:  []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 		Meta:     map[string]interface{}{"host": host},
 		Expected: ipExpected,
 	}
@@ -579,16 +715,36 @@ func isNetworkingConfigured(wg *mm.ErrGroup, ns, host, addr, gateway string) {
 	mm.ScheduleC2ParallelCommand(cmd)
 }
 
-func pingTest(wg *mm.ErrGroup, ns, host, target string) {
+func pingTest(wg *mm.ErrGroup, ns string, node ifaces.NodeSpec, target string) {
 	exec := fmt.Sprintf("ping -c 1 %s", target)
+
+	if node.Hardware().OSType() == "windows" {
+		exec = fmt.Sprintf("ping -n 1 %s", target)
+	}
+
+	host := node.General().Hostname()
 
 	cmd := &mm.C2ParallelCommand{
 		Wait:    wg,
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 		Meta:    map[string]interface{}{"host": host, "target": target},
 		Expected: func(resp string) error {
-			if strings.Contains(resp, "0 received") {
-				return fmt.Errorf("no successful pings")
+			switch node.Hardware().OSType() {
+			case "linux", "rhel", "centos":
+				// If `resp` contains `0 received`, the default gateway isn't up
+				// (pingable) yet, so keep retrying the C2 command.
+				if strings.Contains(resp, "0 received") {
+					return fmt.Errorf("no successful pings")
+				}
+			case "windows":
+				// If `resp` contains `Destination host unreachable`, the
+				// default gateway isn't up (pingable) yet, so keep retrying the C2
+				// command.
+				if strings.Contains(resp, "Destination host unreachable") {
+					return fmt.Errorf("no successful pings")
+				}
+			default:
+				return fmt.Errorf("unknown OS type %s waiting for gateway to be up", node.Hardware().OSType())
 			}
 
 			return nil
@@ -598,9 +754,14 @@ func pingTest(wg *mm.ErrGroup, ns, host, target string) {
 	mm.ScheduleC2ParallelCommand(cmd)
 }
 
-func procTest(wg *mm.ErrGroup, ns, host, proc string) {
+func procTest(wg *mm.ErrGroup, ns string, node ifaces.NodeSpec, proc string) {
 	exec := fmt.Sprintf("pgrep %s", proc)
 
+	if node.Hardware().OSType() == "windows" {
+		exec = fmt.Sprintf(`powershell -command "Get-Process %s -ErrorAction SilentlyContinue"`, proc)
+	}
+
+	host := node.General().Hostname()
 	retries := 5
 
 	cmd := &mm.C2ParallelCommand{
@@ -625,9 +786,14 @@ func procTest(wg *mm.ErrGroup, ns, host, proc string) {
 	mm.ScheduleC2ParallelCommand(cmd)
 }
 
-func portTest(wg *mm.ErrGroup, ns, host, port string) {
+func portTest(wg *mm.ErrGroup, ns string, node ifaces.NodeSpec, port string) {
 	exec := fmt.Sprintf("ss -lntu state all 'sport = %s'", port)
 
+	if node.Hardware().OSType() == "windows" {
+		exec = fmt.Sprintf(`powershell -command "netstat -an | select-string -pattern 'listening' | select-string -pattern '%s'"`, port)
+	}
+
+	host := node.General().Hostname()
 	retries := 5
 
 	cmd := &mm.C2ParallelCommand{
@@ -635,9 +801,15 @@ func portTest(wg *mm.ErrGroup, ns, host, port string) {
 		Options: []mm.C2Option{mm.C2NS(ns), mm.C2VM(host), mm.C2Command(exec)},
 		Meta:    map[string]interface{}{"host": host, "port": port},
 		Expected: func(resp string) error {
+			lineCount := 1
+
+			if node.Hardware().OSType() == "windows" {
+				lineCount = 0
+			}
+
 			lines := trim(resp)
 
-			if len(lines) <= 1 {
+			if len(lines) <= lineCount {
 				if retries > 0 {
 					fmt.Println("retrying port test")
 					retries--

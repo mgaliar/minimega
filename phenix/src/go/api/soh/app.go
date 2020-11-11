@@ -10,14 +10,11 @@ import (
 
 	"phenix/app"
 	"phenix/internal/mm"
-	"phenix/tmpl"
 	"phenix/types"
 	ifaces "phenix/types/interfaces"
-	"phenix/types/version"
 
 	"github.com/activeshadow/structs"
 	"github.com/fatih/color"
-	"github.com/mitchellh/mapstructure"
 )
 
 func init() {
@@ -28,6 +25,8 @@ type SOH struct {
 	// App configuration metadata (from scenario config)
 	md sohMetadata
 
+	// Track Hostname -> Node mapping
+	nodes map[string]ifaces.NodeSpec
 	// Track hosts with active C2
 	c2Hosts map[string]struct{}
 	// Track hosts that should be tested for reachability
@@ -49,6 +48,7 @@ type SOH struct {
 
 func newSOH() *SOH {
 	return &SOH{
+		nodes:             make(map[string]ifaces.NodeSpec),
 		c2Hosts:           make(map[string]struct{}),
 		reachabilityHosts: make(map[string]struct{}),
 		addrHosts:         make(map[string]string),
@@ -93,81 +93,6 @@ func (this *SOH) PreStart(exp *types.Experiment) error {
 	return nil
 }
 
-func (this *SOH) deployCapture(exp *types.Experiment) error {
-	if err := this.decodeMetadata(exp); err != nil {
-		return err
-	}
-
-	if len(this.md.PacketCapture.CaptureHosts) == 0 {
-		return nil
-	}
-
-	currentIP, mask, _ := net.ParseCIDR(this.md.PacketCapture.ElasticServer.IPAddress)
-	cidr, _ := mask.Mask.Size()
-	svrAddr := currentIP.String()
-
-	var (
-		caps     []ifaces.NodeSpec
-		sched    = make(map[string]string)
-		monitors = make(map[string][]string)
-	)
-
-	for nodeToMonitor := range this.md.PacketCapture.CaptureHosts {
-		node := exp.Spec.Topology().FindNodeByName(nodeToMonitor)
-
-		if node == nil {
-			// TODO: yell loudly
-			continue
-		}
-
-		ip := nextIP(currentIP)
-
-		cap, mon, err := this.buildPacketBeatNode(exp, node, svrAddr, ip.String(), cidr)
-		if err != nil {
-			return fmt.Errorf("building PacketBeat node: %w", err)
-		}
-
-		caps = append(caps, cap)
-
-		sched[cap.General().Hostname()] = exp.Status.Schedules()[nodeToMonitor]
-		monitors[cap.General().Hostname()] = mon
-	}
-
-	spec := map[string]interface{}{
-		"experimentName": exp.Spec.ExperimentName(),
-		"topology": map[string]interface{}{
-			"nodes": caps,
-		},
-		"schedules": sched,
-	}
-
-	expMonitor, _ := version.GetStoredSpecForKind("Experiment")
-
-	if err := mapstructure.Decode(spec, &expMonitor); err != nil {
-		return fmt.Errorf("decoding experiment spec for monitor nodes: %w", err)
-	}
-
-	data := struct {
-		Exp ifaces.ExperimentSpec
-		Mon map[string][]string
-	}{
-		Exp: expMonitor.(ifaces.ExperimentSpec),
-		Mon: monitors,
-	}
-
-	filename := fmt.Sprintf("%s/mm_files/%s-monitor.mm", exp.Spec.BaseDir(), exp.Spec.ExperimentName())
-
-	if err := tmpl.CreateFileFromTemplate("packet_capture_script.tmpl", data, filename); err != nil {
-		return fmt.Errorf("generating packet capture script: %w", err)
-	}
-
-	if err := mm.ReadScriptFromFile(filename); err != nil {
-		return fmt.Errorf("reading packet capture script: %w", err)
-	}
-
-	return nil
-}
-
 func (this *SOH) PostStart(exp *types.Experiment) error {
 	if err := this.decodeMetadata(exp); err != nil {
 		return err
@@ -197,7 +122,17 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 			continue
 		}
 
+		// FIXME: remove once miniccc reconnects after reboots
+		if node.Hardware().OSType() == "windows" {
+			// Windows VMs get rebooted after setting the hostname, and once rebooted
+			// miniccc doesn't reconnect. As such, all tests will never complete, so
+			// for now just skip Windows VMs.
+			continue
+		}
+
 		host := node.General().Hostname()
+
+		this.nodes[host] = node
 
 		if skip(node, this.md.SkipHosts) {
 			printer.Printf("  Skipping host %s per config\n", host)
@@ -226,7 +161,7 @@ func (this *SOH) PostStart(exp *types.Experiment) error {
 
 				printer.Printf("  Waiting for IP %s on host %s to be set...\n", cidr, host)
 
-				isNetworkingConfigured(wg, ns, host, cidr, iface.Gateway())
+				isNetworkingConfigured(wg, ns, node, iface)
 			}
 		}
 	}
