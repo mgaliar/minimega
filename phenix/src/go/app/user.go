@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"strconv"
 	"strings"
 
 	"phenix/internal/common"
@@ -86,6 +87,7 @@ func (this UserApp) shellOut(action Action, exp *types.Experiment) error {
 			"PHENIX_LOG_LEVEL=DEBUG",
 			"PHENIX_LOG_FILE=/tmp/phenix-apps.log",
 			"PHENIX_DIR="+common.PhenixBase,
+			"PHENIX_DRYRUN="+strconv.FormatBool(this.options.DryRun),
 		),
 	}
 
