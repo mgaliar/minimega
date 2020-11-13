@@ -16,21 +16,34 @@ func (this *ScenarioSpec) Apps() []ifaces.ScenarioApp {
 	apps := make([]ifaces.ScenarioApp, len(this.AppsF))
 
 	for i, a := range this.AppsF {
-		apps[i] = a
+		apps[i] = &a
 	}
 
 	return apps
 }
 
 type ScenarioApp struct {
-	NameF     string                 `json:"name" yaml:"name" structs:"name" mapstructure:"name"`
-	AssetDirF string                 `json:"assetDir" yaml:"assetDir" structs:"assetDir" mapstructure:"assetDir"`
-	MetadataF map[string]interface{} `json:"metadata" yaml:"metadata" structs:"metadata" mapstructure:"metadata"`
-	HostsF    []ScenarioAppHost      `json:"hosts" yaml:"hosts" structs:"hosts" mapstructure:"hosts"`
+	NameF         string                 `json:"name" yaml:"name" structs:"name" mapstructure:"name"`
+	FromScenarioF string                 `json:"fromScenario,omitempty" yaml:"fromScenario,omitempty" structs:"fromScenario" mapstructure:"fromScenario"`
+	AssetDirF     string                 `json:"assetDir,omitempty" yaml:"assetDir,omitempty" structs:"assetDir" mapstructure:"assetDir"`
+	MetadataF     map[string]interface{} `json:"metadata,omitempty" yaml:"metadata,omitempty" structs:"metadata" mapstructure:"metadata"`
+	HostsF        []*ScenarioAppHost     `json:"hosts,omitempty" yaml:"hosts,omitempty" structs:"hosts" mapstructure:"hosts"`
 }
 
 func (this ScenarioApp) Name() string {
 	return this.NameF
+}
+
+func (this ScenarioApp) FromScenario() string {
+	return this.FromScenarioF
+}
+
+func (this ScenarioApp) AssetDir() string {
+	return this.AssetDirF
+}
+
+func (this ScenarioApp) Metadata() map[string]interface{} {
+	return this.MetadataF
 }
 
 func (this ScenarioApp) Hosts() []ifaces.ScenarioAppHost {
@@ -41,6 +54,24 @@ func (this ScenarioApp) Hosts() []ifaces.ScenarioAppHost {
 	}
 
 	return hosts
+}
+
+func (this *ScenarioApp) SetAssetDir(dir string) {
+	this.AssetDirF = dir
+}
+
+func (this *ScenarioApp) SetMetadata(md map[string]interface{}) {
+	this.MetadataF = md
+}
+
+func (this *ScenarioApp) SetHosts(hosts []ifaces.ScenarioAppHost) {
+	h := make([]*ScenarioAppHost, len(hosts))
+
+	for i, j := range hosts {
+		h[i] = j.(*ScenarioAppHost)
+	}
+
+	this.HostsF = h
 }
 
 type ScenarioAppHost struct {

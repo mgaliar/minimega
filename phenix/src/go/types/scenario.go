@@ -18,10 +18,10 @@ func init() {
 	spec = new(v2.ScenarioSpec)
 	_ = spec.(ifaces.ScenarioSpec)
 
-	spec = v2.ScenarioApp{}
+	spec = new(v2.ScenarioApp)
 	_ = spec.(ifaces.ScenarioApp)
 
-	spec = v2.ScenarioAppHost{}
+	spec = new(v2.ScenarioAppHost)
 	_ = spec.(ifaces.ScenarioAppHost)
 }
 
@@ -94,10 +94,10 @@ func (scenario) Upgrade(version string, spec map[string]interface{}, md store.Co
 		}
 
 		for _, host := range V1.AppsF.HostF {
-			hosts := make([]v2.ScenarioAppHost, len(host.HostsF))
+			hosts := make([]*v2.ScenarioAppHost, len(host.HostsF))
 
 			for i, h1 := range host.HostsF {
-				hosts[i] = v2.ScenarioAppHost{
+				hosts[i] = &v2.ScenarioAppHost{
 					HostnameF: h1.HostnameF,
 					MetadataF: h1.MetadataF,
 				}
