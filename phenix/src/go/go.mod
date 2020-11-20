@@ -17,6 +17,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/websocket v1.4.2
+	github.com/hashicorp/go-multierror v1.0.0
 	github.com/hpcloud/tail v1.0.0
 	github.com/mitchellh/mapstructure v1.2.2
 	github.com/olekukonko/tablewriter v0.0.4

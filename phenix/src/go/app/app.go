@@ -219,5 +219,10 @@ func ApplyApps(action Action, exp *types.Experiment) error {
 		}
 	}
 
+	if action == ACTIONCONFIG || action == ACTIONPRESTART {
+		// just in case one of the apps added some nodes to the topology...
+		exp.Spec.Topology().Init()
+	}
+
 	return nil
 }

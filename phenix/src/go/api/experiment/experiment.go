@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 
@@ -20,34 +21,53 @@ import (
 	v1 "phenix/types/version/v1"
 
 	"github.com/activeshadow/structs"
+	"github.com/hashicorp/go-multierror"
 	"github.com/mitchellh/mapstructure"
 )
 
 func init() {
-	config.RegisterConfigHook("Experiment", func(s string, c *store.Config) error {
-		if s != "create" {
-			return nil
-		}
+	config.RegisterConfigHook("Experiment", func(stage string, c *store.Config) error {
+		switch stage {
+		case "create":
+			exp, err := types.DecodeExperimentFromConfig(*c)
+			if err != nil {
+				return fmt.Errorf("decoding experiment from config: %w", err)
+			}
 
-		exp, err := types.DecodeExperimentFromConfig(*c)
-		if err != nil {
-			return fmt.Errorf("decoding experiment from config: %w", err)
-		}
+			exp.Spec.Init()
 
-		exp.Spec.Init()
+			if err := exp.Spec.VerifyScenario(context.TODO()); err != nil {
+				return fmt.Errorf("verifying experiment scenario: %w", err)
+			}
 
-		if err := exp.Spec.VerifyScenario(context.TODO()); err != nil {
-			return fmt.Errorf("verifying experiment scenario: %w", err)
-		}
+			if err := app.ApplyApps(app.ACTIONCONFIG, exp); err != nil {
+				return fmt.Errorf("applying apps to experiment: %w", err)
+			}
 
-		if err := app.ApplyApps(app.ACTIONCONFIG, exp); err != nil {
-			return fmt.Errorf("applying apps to experiment: %w", err)
-		}
+			c.Spec = structs.MapDefaultCase(exp.Spec, structs.CASESNAKE)
 
-		c.Spec = structs.MapDefaultCase(exp.Spec, structs.CASESNAKE)
+			if err := types.ValidateConfigSpec(*c); err != nil {
+				return fmt.Errorf("validating experiment config: %w", err)
+			}
+		case "delete":
+			var errors error
 
-		if err := types.ValidateConfigSpec(*c); err != nil {
-			return fmt.Errorf("validating experiment config: %w", err)
+			exp, err := types.DecodeExperimentFromConfig(*c)
+			if err != nil {
+				return fmt.Errorf("decoding experiment from config: %w", err)
+			}
+
+			// Delete any snapshot files created by this headnode for this experiment
+			// after deleting the experiment.
+			if err := deleteSnapshots(exp); err != nil {
+				errors = multierror.Append(errors, fmt.Errorf("deleting experiment snapshots: %w", err))
+			}
+
+			if err := os.RemoveAll(exp.Spec.BaseDir()); err != nil {
+				errors = multierror.Append(errors, fmt.Errorf("deleting experiment base directory: %w", err))
+			}
+
+			return errors
 		}
 
 		return nil
@@ -294,6 +314,16 @@ func Start(opts ...StartOption) error {
 	if o.dryrun {
 		exp.Status.SetVLANs(exp.Spec.VLANs().Aliases())
 	} else {
+		// Delete any snapshot files created by this headnode for this experiment
+		// previously before starting the experiment. This way, cluster nodes that VMs
+		// get scheduled on will pull the most up-to-date snapshot files. We don't do
+		// this after stopping an experiment just in case users need to access the
+		// snapshots for any reason, but we do clean them up when an experiment is
+		// deleted.
+		if err := deleteSnapshots(exp); err != nil {
+			return fmt.Errorf("deleting experiment snapshots: %w", err)
+		}
+
 		if err := mm.ReadScriptFromFile(filename); err != nil {
 			mm.ClearNamespace(exp.Spec.ExperimentName())
 			return fmt.Errorf("reading minimega script: %w", err)
@@ -490,7 +520,24 @@ func Delete(name string) error {
 		return fmt.Errorf("deleting experiment %s: %w", name, err)
 	}
 
-	return nil
+	exp, err := types.DecodeExperimentFromConfig(*c)
+	if err != nil {
+		return fmt.Errorf("decoding experiment from config: %w", err)
+	}
+
+	var errors error
+
+	// Delete any snapshot files created by this headnode for this experiment
+	// after deleting the experiment.
+	if err := deleteSnapshots(exp); err != nil {
+		errors = multierror.Append(errors, fmt.Errorf("deleting experiment snapshots: %w", err))
+	}
+
+	if err := os.RemoveAll(exp.Spec.BaseDir()); err != nil {
+		errors = multierror.Append(errors, fmt.Errorf("deleting experiment base directory: %w", err))
+	}
+
+	return errors
 }
 
 func Files(name string) ([]string, error) {
@@ -517,4 +564,37 @@ func File(name, fileName string) ([]byte, error) {
 	}
 
 	return nil, fmt.Errorf("file not found")
+}
+
+func deleteSnapshots(exp *types.Experiment) error {
+	// Snapshot naming convention is as follows:
+	//   {hostname}_{experiment_name}_{vm_name}_snapshot
+	// Now, we *could* use {hostname}_{experiment_name}_*_snapshot as the deletion
+	// filter to delete all the VMs for a given experiment on a given headnode,
+	// but... if another experiment has a similar name but with an underscore in
+	// it, we may accidentally end up deleting those snapshots as well. For
+	// example, lets say we have two experiments in phenix, one named "foo" and
+	// the other named "foo_bar". Using the deletion filter above, if we went to
+	// delete snapshots for experiment "foo" we would also delete the snapshots
+	// for experiment "foo_bar". As such, the safest bet is to loop through all
+	// the VMs in an experiment and delete the snapshots one by one. Note that by
+	// including the hostname we ensure that only snapshots created for
+	// experiments by this headnode get deleted. This is important when multiple
+	// headnodes exist for a single minimega cluster.
+
+	var (
+		expName  = exp.Metadata.Name
+		headnode = mm.Headnode()
+	)
+
+	for _, node := range exp.Spec.Topology().Nodes() {
+		hostname := node.General().Hostname()
+		snapshot := fmt.Sprintf("%s_%s_%s_snapshot", headnode, expName, hostname)
+
+		if err := file.DeleteFile(snapshot); err != nil {
+			return fmt.Errorf("deleting snapshot file for VM %s in experiment %s: %w", hostname, expName, err)
+		}
+	}
+
+	return nil
 }
